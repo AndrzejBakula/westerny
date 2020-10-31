@@ -2,15 +2,15 @@
 {% load static %}
 
 {% block content %}
-
-<!-- <div class="body">
-    <h1 class="header">Western Movie Database</h1>
-    <div class="westerns">
-
-        <button class="button"><a class="button_link" href="/movies">Western Movies</a></button>
-        <button class="button"><a class="button_link" href="/persons">Western People</a></button>
-        <button class="button"><a class="button_link" href="/genres">Western Genres</a></button>
+<div class="d-flex flex-column" style="height: 100%;">
+    <div class="d-flex flex-row justify-content-center align-items-center" style="height: 10%;">
+        <h1 class="header">Western Movie Database</h1>
     </div>
-</div> -->
+    <div class="d-flex flex-column justify-content-center align-items-center" style="height: 90%;">
+        <a class="btn btn-secondary btn-lg guzik" href="/movies">Western Movies</a>
+        <a class="btn btn-secondary btn-lg guzik" href="/persons">Western People</a>
+        <a class="btn btn-secondary btn-lg guzik" href="/genres">Western Genres</a>
+    </div>
+</div>
 
 {% endblock %}
