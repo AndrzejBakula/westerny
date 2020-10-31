@@ -1,0 +1,88 @@
+.body {
+    background-image: url(monument_valley.png);
+    background-repeat: inherit;
+    background-size: cover;
+}
+.header {
+    display: flex;
+    flex-grow: 0;
+    justify-self: center;
+    align-self: center;
+    font-family: Georgia, serif;
+    color: #ffffff;
+    text-shadow: 2px 2px 1px #000000;
+    margin-top: 15vh;
+}
+.westerns {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    align-content: flex-start;
+    align-self: center;
+    margin-bottom: 25vh;
+}
+.button {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 15vh;
+    width: 15vw;
+    font-family: Georgia, serif;
+    font-size: x-large;
+    color: #ffffff;
+    opacity: 0.8;
+    margin-right: 20px;
+    margin-left: 20px;
+}
+.button_link {
+    display: flex;
+    text-decoration: none;
+    color: #000000;
+    font-family: Georgia, serif;
+    font-size: large;
+    font-weight: bold;
+}
+.menu_link {
+    display: flex;
+    text-decoration: none;
+    color: #000000;
+
+    font-family: Georgia, serif;
+    font-size: large;
+}
+h1, h2, h3, h4 {
+    color: #ffffff;
+    text-shadow: 2px 2px 1px #000000;
+}
+p {
+    color: #000000;
+    font-size: medium;
+    font-weight: bold;
+
+}
+div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+}
+.fieldset {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    color: #ffffff;
+    text-shadow: 2px 2px #000000;
+}
+label {
+    font-size: large;
+}
+select {
+    font-weight: bold;
+}
+.submit {
+    font-weight: bold;
+}
