@@ -1,9 +1,9 @@
-# western-movie-database
-Movie database - my first project written using django (also psql, html and css).
+# western-movie-database v 2.0
+Western database - second version of my first django project (also psql, html and css).
 
-![site view](movies_app/static/images/wizu1_3.png)
-![site view](movies_app/static/images/wizu2_3.png)
-![site view](movies_app/static/images/wizu3_3.png)
+![site view](westerny_app/static/images/wizu1_3.png)
+![site view](westerny_app/static/images/wizu2_3.png)
+![site view](westerny_app/static/images/wizu3_3.png)
 
 ## How to run and use western movie database?
 For Linux: you will need python3, django and postgresql.
