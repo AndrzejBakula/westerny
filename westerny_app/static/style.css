@@ -9,7 +9,7 @@
     color: #ffffff;
     text-shadow: 2px 2px 1px #000000;
     text-align: center;
-    margin-top: 10vh;
+    margin-top: 1vh;
 }
 .guzik {
     font-family: Georgia, serif;
@@ -18,7 +18,7 @@
     opacity: 0.8;
     border-color: black;
     border-style: solid;
-    margin: 2vh;
+    margin: 5vh;
 }
 .menu_link {
     text-decoration: none;
