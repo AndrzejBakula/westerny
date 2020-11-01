@@ -14,7 +14,7 @@ from pathlib import Path
 import os
 import django_heroku
 from decouple import config
-#import dropbox
+import dropbox
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -128,6 +128,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+#dropbox
+DEFAULT_FILE_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
+DROPBOX_OAUTH2_TOKEN = config("DBX", default="")
+DROPBOX_ROOT_PATH = config("DROPBOX_ROOT_PATH", default="/WESTERNY")
 
 #Heroku
 django_heroku.settings(locals())
