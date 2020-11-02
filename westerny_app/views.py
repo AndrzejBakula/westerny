@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from datetime import timezone, date, timedelta
 from django.views import View
-from westerny_app.models import Movie, Genre
+from westerny_app.models import Movie, Genre, Person
 from westerny_app.forms import AddMovieForm, AddGenreForm
 
 
@@ -34,3 +34,9 @@ class AddGenreView(View):
     def get(self, request):
         form = AddGenreForm()
         return render(request, "add_genre.html", {"form": form})
+
+
+class PeopleView(View):
+    def get(self, request):
+        people = Person.objects.all().order_by("last_name")
+        return render(request, "people.html", {"people": people})

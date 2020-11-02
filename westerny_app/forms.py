@@ -8,7 +8,7 @@ from .models import Person, Genre
 
 
 class AddMovieForm(forms.Form):
-    title = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 40, "placeholder": "Tytuł westernu"}))
+    title = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Tytuł westernu"}))
     director = forms.ModelMultipleChoiceField(label="Reżyser", queryset=Person.objects.all())
     screenplay = forms.ModelMultipleChoiceField(label="Scenariusz", queryset=Person.objects.all())
     year = forms.CharField(label="", max_length=4, widget=forms.TextInput(attrs={"placeholder": "Rok produkcji"}))
@@ -18,5 +18,5 @@ class AddMovieForm(forms.Form):
 
 
 class AddGenreForm(forms.Form):
-    name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 40, "placeholder": "Nazwa gatunku"}))
+    name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa gatunku"}))
     image = forms.ImageField(label="Obraz", required=None)

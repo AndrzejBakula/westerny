@@ -1,22 +1,22 @@
 {% extends "base.html" %}
 
-{% block title %} Gatunki Westernu {% endblock %}
+{% block title %} Ludzie Westernu {% endblock %}
 
 {% block content %}
 
 <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h1 class="display-5 align-self-center header">Gatunki Westernu</h1>
+        <h1 class="display-5 align-self-center header">Ludzie Westernu</h1>
     </div>
     <div class="d-flex flex-row justify-content-around flex-wrap">
         <a class="btn btn-secondary btn-lg guzik" href="{% url 'index' %}">STRONA GŁÓWNA</a>
         <a class="btn btn-secondary btn-lg guzik" href="{% url 'movies' %}">WESTERNY</a>
-        <a class="btn btn-secondary btn-lg guzik" href="/people">LUDZIE</a>
-        <a class="btn btn-success btn-lg guzik" href="{% url 'add-genre' %}"> Dodaj Gatunek</a>
+        <a class="btn btn-secondary btn-lg guzik" href="{% url 'genres' %}">GATUNKI</a>
+        <a class="btn btn-success btn-lg guzik" href="/add-person"> Dodaj Osobę</a>
     </div>
     <ul>
-        {% for genre in genres %}
-            <li><a class="menu_link" href="/genre-details/{{genre.id}}">{{genre}}</a></li>
+        {% for person in people %}
+            <li><a class="menu_link" href="/person-details/{{person.id}}">{{person}}</a></li>
         {% endfor %}
     </ul>
 
