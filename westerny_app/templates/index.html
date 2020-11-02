@@ -4,12 +4,16 @@
 {% block content %}
 <div class="d-flex flex-column align-items-center" style="height: 100%;">
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h1 class="display-5 align-self-center header">Western Movie Database</h1>
+        <h1 class="display-5 align-self-center header">Westernowa Baza Danych</h1>
     </div>
     <div class="d-flex flex-row justify-content-around flex-wrap">
-        <a class="btn btn-secondary btn-lg guzik" href="{% url 'movies' %}">Western Movies</a>
-        <a class="btn btn-secondary btn-lg guzik" href="/persons">Western People</a>
-        <a class="btn btn-secondary btn-lg guzik" href="/genres">Western Genres</a>
+        <a class="btn btn-secondary btn-lg guzik" href="{% url 'movies' %}">Westerny</a>
+        <a class="btn btn-secondary btn-lg guzik" href="/persons">Ludzie</a>
+        <a class="btn btn-secondary btn-lg guzik" href="/genres">Gatunki</a>
+    </div>
+
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <a class="btn btn-link align-self-center" href="https://www.facebook.com/Westerny" target="_blank" style="color: white;">powered by Westerny</a>
     </div>
 </div>
 

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} Dodaj Western {% endblock %}
+
+{% block content %}
+
+<div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h1 class="display-5 align-self-center header">Dodaj Western</h2>
+    </div>
+    <hr>
+    <div class="d-flex flex-row justify-content-around flex-wrap">
+        <a class="btn btn-secondary btn-lg guzik" href="{% url 'index' %}" class="btn btn-primary">Strona główna</a>
+        <a class="btn btn-secondary btn-lg guzik" href="{% url 'movies' %}" class="btn btn-primary">Westerny</a>
+    </div>
+    <hr>
+    <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'add-movie' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit" id="submit">Dodaj Western</button>
+    </form>
+    <hr>
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <a class="btn btn-link align-self-center" href="https://www.facebook.com/Westerny" target="_blank" style="color: white;">powered by Westerny</a>
+    </div>
+</div>
+
+{% endblock %}

@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMix
 from datetime import timezone, date, timedelta
 from django.views import View
 from westerny_app.models import Movie
+from westerny_app.forms import AddMovieForm
 
 
 class IndexView(View):
@@ -16,3 +17,8 @@ class MoviesView(View):
         movies = Movie.objects.all().order_by("year")
         return render(request, "movies.html", {"movies": movies})
 
+
+class AddMovieView(View):
+    def get(self, request):
+        form = AddMovieForm()
+        return render(request, "add_movie.html", {"form": form})

@@ -16,6 +16,9 @@ class Genre(models.Model):
     genre_image = models.ImageField(blank=True, null=True, upload_to="genre_images/")
     who_added = models.CharField(max_length=64, default="Westerny")
 
+    def __str__(self):
+        return self.name
+
 
 class Movie(models.Model):
     title = models.CharField(max_length=128)

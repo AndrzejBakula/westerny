@@ -2,7 +2,7 @@
     background-image: url(images/monument_valley.png);
     background-repeat: inherit;
     background-size: cover;
-    height: 100vh;
+    height: 100%;
 }
 .header {
     font-family: Georgia, serif;

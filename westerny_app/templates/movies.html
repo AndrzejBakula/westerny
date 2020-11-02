@@ -6,17 +6,21 @@
 
 <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h1 class="display-5 align-self-center header">Western Movies</h1>
+        <h1 class="display-5 align-self-center header">Lista Westernów</h1>
     </div>
     <div class="d-flex flex-row justify-content-around flex-wrap">
-        <a class="btn btn-secondary btn-lg guzik" href="{% url 'index' %}">Main Page</a>
-        <a class="btn btn-success btn-lg guzik" href="/add-movie/"> Add New Western</a>
+        <a class="btn btn-secondary btn-lg guzik" href="{% url 'index' %}">Strona Główna</a>
+        <a class="btn btn-success btn-lg guzik" href="{% url 'add-movie' %}"> Dodaj Western</a>
     </div>
     <ul>
         {% for movie in movies %}
             <li><a class="menu_link" href="/movie-details/{{i.id}}">{{movie.title}} - {{movie.year}} - {{movie.director.first_name}} {{movie.director.last_name}} - {{movie.rating}}</a></li>
         {% endfor %}
     </ul>
+
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <a class="btn btn-link align-self-center" href="https://www.facebook.com/Westerny" target="_blank" style="color: white;">powered by Westerny</a>
+    </div>
 </div>
 
 {% endblock %}
