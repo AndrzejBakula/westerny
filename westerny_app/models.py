@@ -7,6 +7,9 @@ class Person(models.Model):
     person_image = models.ImageField(blank=True, null=True, upload_to="person_images/")
     who_added = models.CharField(max_length=64, default="Westerny")
 
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
 
 class Genre(models.Model):
     name = models.CharField(max_length=64)
@@ -16,13 +19,14 @@ class Genre(models.Model):
 
 class Movie(models.Model):
     title = models.CharField(max_length=128)
-    director = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='director')
-    screenplay = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='screenplay')
+    director = models.ManyToManyField(Person, related_name='director')
+    screenplay = models.ManyToManyField(Person, related_name='screenplay')
     starring = models.ManyToManyField(Person, through="PersonMovie")
     year = models.IntegerField(null=False)
     rating = models.FloatField(null=True)
     genre = models.ManyToManyField(Genre)
     movie_image = models.ImageField(blank=True, null=True, upload_to="movie_images/")
+    description = models.TextField(null=True, default="")
     who_added = models.CharField(max_length=64, default="Westerny")
 
 
