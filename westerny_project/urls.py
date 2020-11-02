@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from westerny_app.views import IndexView, MoviesView, AddMovieView, GenresView, AddGenreView, PeopleView
+from westerny_app.views import AddPersonView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,5 +26,6 @@ urlpatterns = [
     path('add_movie/', AddMovieView.as_view(), name="add-movie"),
     path('genres/', GenresView.as_view(), name="genres"),
     path('add_genre/', AddGenreView.as_view(), name="add-genre"),
-    path('people/', PeopleView.as_view(), name="people")
+    path('people/', PeopleView.as_view(), name="people"),
+    path('add_person/', AddPersonView.as_view(), name="add-person")
 ]

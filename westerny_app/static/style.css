@@ -20,6 +20,16 @@
     border-style: solid;
     margin: 1vh;
 }
+.guzik2 {
+    font-family: Georgia, serif;
+    font-size: x-large;
+    color: #000000;
+    opacity: 0.8;
+    border-color: black;
+    border-style: solid;
+    margin: 1vh;
+}
+
 .menu_link {
     text-decoration: none;
     color: #000000;

@@ -20,3 +20,9 @@ class AddMovieForm(forms.Form):
 class AddGenreForm(forms.Form):
     name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa gatunku"}))
     image = forms.ImageField(label="Obraz", required=None)
+
+
+class AddPersonForm(forms.Form):
+    first_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Imię"}))
+    last_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwisko"}))
+    image = forms.ImageField(label="Obraz", required=None)
