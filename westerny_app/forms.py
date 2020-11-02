@@ -8,12 +8,15 @@ from .models import Person, Genre
 
 
 class AddMovieForm(forms.Form):
-    title = forms.CharField(label="Nazwa", max_length=128, widget=forms.TextInput(attrs={"size": 40}))
+    title = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 40, "placeholder": "Tytuł westernu"}))
     director = forms.ModelMultipleChoiceField(label="Reżyser", queryset=Person.objects.all())
     screenplay = forms.ModelMultipleChoiceField(label="Scenariusz", queryset=Person.objects.all())
-    year = forms.CharField(label="Rok", max_length=4)
+    year = forms.CharField(label="", max_length=4, widget=forms.TextInput(attrs={"placeholder": "Rok produkcji"}))
     genre = forms.ModelMultipleChoiceField(label="Gatunek", queryset=Genre.objects.all())
     image = forms.ImageField(label="Obraz", required=None)
-    description = forms.CharField(label="Opis filmu", required=None, widget=forms.Textarea(attrs={"rows": 6, "cols": 40}))
+    description = forms.CharField(label="", required=None, widget=forms.Textarea(attrs={"rows": 6, "cols": 40, "placeholder": "Krótki opis"}))
 
 
+class AddGenreForm(forms.Form):
+    name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 40, "placeholder": "Nazwa gatunku"}))
+    image = forms.ImageField(label="Obraz", required=None)

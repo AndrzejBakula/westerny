@@ -1,20 +1,20 @@
 {% extends "base.html" %}
 
-{% block title %} Westerny {% endblock %}
+{% block title %} Gatunki Westernu {% endblock %}
 
 {% block content %}
 
 <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h1 class="display-5 align-self-center header">Lista Westernów</h1>
+        <h1 class="display-5 align-self-center header">Gatunki Westernu</h1>
     </div>
     <div class="d-flex flex-row justify-content-around flex-wrap">
         <a class="btn btn-secondary btn-lg guzik" href="{% url 'index' %}">Strona Główna</a>
-        <a class="btn btn-success btn-lg guzik" href="{% url 'add-movie' %}"> Dodaj Western</a>
+        <a class="btn btn-success btn-lg guzik" href="{% url 'add-genre' %}"> Dodaj Gatunek</a>
     </div>
     <ul>
-        {% for movie in movies %}
-            <li><a class="menu_link" href="/movie-details/{{i.id}}">{{movie.title}} - {{movie.year}} - {{movie.director.first_name}} {{movie.director.last_name}} - {{movie.rating}}</a></li>
+        {% for genre in genres %}
+            <li><a class="menu_link" href="/genre-details/{{genre.id}}">{{genre}}</a></li>
         {% endfor %}
     </ul>
 
