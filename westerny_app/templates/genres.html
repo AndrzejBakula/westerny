@@ -11,12 +11,16 @@
     <div class="d-flex flex-row justify-content-around flex-wrap">
         <a class="btn btn-primary btn-lg guzik" href="{% url 'index' %}">STRONA GŁÓWNA</a>
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'movies' %}">WESTERNY</a>
-        <a class="btn btn-warning btn-lg guzik2" href="/people">LUDZIE</a>
+        <a class="btn btn-warning btn-lg guzik2" href="{% url 'people' %}">LUDZIE</a>
         <a class="btn btn-success btn-lg guzik" href="{% url 'add-genre' %}"> Dodaj Gatunek</a>
     </div>
+    <hr>
+
     <ul>
         {% for genre in genres %}
-            <li><a class="menu_link" href="/genre-details/{{genre.id}}">{{genre}}</a></li>
+        <div class="d-flex flex-row justify-content-center align-items-center">
+            <a  class="btn btn-link align-self-center" href="/genre-details/{{ genre.id }}" target="_blank" style="font-size: x-large; color: white; text-shadow: 1px 1px 2px black">{{ genre }}</a>
+        </div>
         {% endfor %}
     </ul>
 

@@ -29,12 +29,12 @@
     border-style: solid;
     margin: 1vh;
 }
-
 .menu_link {
     text-decoration: none;
-    color: #000000;
+    color: #ffffff;
     font-family: Georgia, serif;
-    font-size: large;
+    font-size: x-large;
+    text-shadow: 2px 2px 1px #000000;
 }
 h1, h2, h3, h4, h5, h6 {
     color: #ffffff;

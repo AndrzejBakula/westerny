@@ -34,6 +34,28 @@ class AddGenreView(View):
     def get(self, request):
         form = AddGenreForm()
         return render(request, "add_genre.html", {"form": form})
+    
+    def post(self, request):
+        form = AddGenreForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            genres = [i.name.title() for i in Genre.objects.all()]
+            genre = data["name"].title()
+            if genre in genres:
+                ctx = {
+                    "error_message": "Ten gatunek już jest w bazie.",
+                    "form": form,
+                    "data": request.POST
+                }
+                return render(request, "add_genre.html", ctx)
+            else:
+                Genre.objects.create(
+                    name=genre,
+                    genre_image=data["image"],
+                    who_added="Westerny" #PILNIE DO POPRAWY O USERA
+                )
+                return redirect("/genres")
+
 
 
 class PeopleView(View):
