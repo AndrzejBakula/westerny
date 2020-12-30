@@ -1,29 +1,30 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %} Gatunki Westernu {% endblock %}
+{% block title %} Szczegóły Gatunku {% endblock %}
 
 {% block content %}
 
 <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h1 class="display-5 align-self-center header">Gatunki Westernu</h1>
+        <h1 class="display-5 align-self-center header">Szczegóły Gatunku</h2>
     </div>
     <div class="d-flex flex-row justify-content-around flex-wrap">
         <a class="btn btn-primary btn-lg guzik" href="{% url 'index' %}">STRONA GŁÓWNA</a>
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'movies' %}">WESTERNY</a>
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'people' %}">LUDZIE</a>
-        <a class="btn btn-success btn-lg guzik" href="{% url 'add-genre' %}"> Dodaj Gatunek</a>
+        <a class="btn btn-warning btn-lg guzik2" href="{% url 'genres' %}" class="btn btn-primary">GATUNKI</a>
+        <a class="btn btn-success btn-lg guzik" href="{% url 'edit-genre' genre.id %}"> Edytuj Gatunek</a>
     </div>
     <hr>
 
-    <ul>
-        {% for genre in genres %}
-        <div class="d-flex flex-row justify-content-center align-items-center">
-            <a  class="btn btn-link align-self-center" href="{% url 'genre-details' genre.id %}" target="_blank" style="font-size: x-large; color: white; text-shadow: 1px 1px 2px black">{{ genre }}</a>
-        </div>
-        {% endfor %}
-    </ul>
-
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h2 class="display-5 align-self-center header">
+            {{ genre.name }}
+        </h2>
+    </div>
+    <hr>
+    
     <hr>
     <div class="d-flex flex-column justify-content-center align-items-center">
         <span>powered by:</span>

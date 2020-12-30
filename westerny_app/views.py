@@ -57,6 +57,17 @@ class AddGenreView(View):
                 return redirect("/genres")
 
 
+class GenreDetailsView(View):
+    def get(self, request, id):
+        genre = Genre.objects.get(id=id)
+        return render(request, "genre_details.html", {"genre": genre})
+
+
+class EditGenreView(View):
+    def get(self, request, id):
+        genre = Genre.objects.get(id=id)
+        return render(request, "edit_genre.html", {"genre": genre})
+
 
 class PeopleView(View):
     def get(self, request):
