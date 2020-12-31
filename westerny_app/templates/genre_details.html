@@ -33,6 +33,17 @@
     {% endif %}
     <hr>
 
+    {% if genre.description %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h3 class="display-5 align-self-center header">
+            Opis gatunku
+        </h3>
+        <h5 class="display-5 align-self-center header">
+            {{ genre.description }}
+        </h5>
+    </div>
+    {% endif %}
+
     <hr>
     <div class="d-flex flex-column justify-content-center align-items-center">
         <span>powered by:</span>
