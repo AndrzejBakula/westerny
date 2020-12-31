@@ -89,9 +89,10 @@ class EditGenreView(View):
         form = EditGenreForm(initial=initial_data)
         ctx = {
             "genre": genre,
-            "form": form
+            "form": form,
+            "message": "message"
         }
-        return render(request, "edit_genre.html", {"genre": genre})
+        return render(request, "edit_genre.html", ctx)
 
 
 

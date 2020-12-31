@@ -23,6 +23,14 @@
             {{ genre.name }}
         </h2>
     </div>
+
+    {% if message %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h1 class="display-5 align-self-center header">
+            Edycja zakończona sukcesem.
+        </h1>
+    </div>
+    {% endif %}
     <hr>
 
     {% if error_message %}
@@ -41,7 +49,7 @@
 
         {% if genre.genre_image %}
         <label style="color: #000000;">Aktualny obraz:</label>
-        <img src="{{ genre.genre_image.url }}" alt="obraz {{ genre.name }}" width="280" class="img-thumbnail border border-secondary rounded-0">
+        <img src="{{ genre.genre_image.url }}" alt="obraz {{ genre.name }}" width="380px" class="img-thumbnail border border-secondary rounded-0">
       {% endif %}
 
       <hr>
