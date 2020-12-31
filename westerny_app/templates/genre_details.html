@@ -25,6 +25,13 @@
     </div>
     <hr>
     
+    {% if genre.image %}
+    <div class="m-2">
+      <img src="{{ genre.image.url }}" alt="obraz {{ i.name }}" height="280"
+        width="140" class="img-thumbnail border border-secondary rounded-0">
+    </div>
+    {% endif %}
+
     <hr>
     <div class="d-flex flex-column justify-content-center align-items-center">
         <span>powered by:</span>

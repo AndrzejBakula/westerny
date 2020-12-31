@@ -15,6 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls.static import static
+from django.conf import settings
+from django.conf.urls import url
+from django.views.static import serve
 from westerny_app.views import IndexView, MoviesView, AddMovieView, GenresView, AddGenreView, PeopleView
 from westerny_app.views import AddPersonView, GenreDetailsView, EditGenreView
 
@@ -30,4 +34,4 @@ urlpatterns = [
     path('edit_genre/<int:id>', EditGenreView.as_view(), name="edit-genre"),
     path('people/', PeopleView.as_view(), name="people"),
     path('add_person/', AddPersonView.as_view(), name="add-person")
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

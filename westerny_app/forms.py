@@ -13,16 +13,16 @@ class AddMovieForm(forms.Form):
     screenplay = forms.ModelMultipleChoiceField(label="Scenariusz", queryset=Person.objects.all())
     year = forms.CharField(label="", max_length=4, widget=forms.TextInput(attrs={"placeholder": "Rok produkcji"}))
     genre = forms.ModelMultipleChoiceField(label="Gatunek", queryset=Genre.objects.all())
-    image = forms.ImageField(label="Obraz", required=None)
+    image = forms.ImageField(label="Dodaj obraz", required=None)
     description = forms.CharField(label="", required=None, widget=forms.Textarea(attrs={"rows": 6, "cols": 40, "placeholder": "Krótki opis"}))
 
 
 class AddGenreForm(forms.Form):
     name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa gatunku"}))
-    image = forms.ImageField(label="Obraz", required=None)
+    image = forms.ImageField(label="Dodaj obraz", required=None)
 
 
 class AddPersonForm(forms.Form):
     first_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Imię"}))
     last_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwisko"}))
-    image = forms.ImageField(label="Obraz", required=None)
+    image = forms.ImageField(label="Dodaj obraz", required=None)

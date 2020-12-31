@@ -51,7 +51,7 @@ class AddGenreView(View):
             else:
                 Genre.objects.create(
                     name=genre,
-                    genre_image=data["image"],
+                    genre_image=request.FILES.get("image"),
                     who_added="Westerny" #PILNIE DO POPRAWY O USERA
                 )
                 return redirect("/genres")
