@@ -2,6 +2,7 @@ appdirs==1.4.3
 asgiref==3.2.10
 astroid==2.4.2
 CacheControl==0.12.6
+captcha==0.3
 certifi==2019.11.28
 chardet==3.0.4
 colorama==0.4.3
