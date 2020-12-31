@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMix
 from datetime import timezone, date, timedelta
 from django.views import View
 from westerny_app.models import Movie, Genre, Person
-from westerny_app.forms import AddMovieForm, AddGenreForm, AddPersonForm
+from westerny_app.forms import AddMovieForm, AddGenreForm, AddPersonForm, EditGenreForm
 
 
 class IndexView(View):
@@ -66,7 +66,44 @@ class GenreDetailsView(View):
 class EditGenreView(View):
     def get(self, request, id):
         genre = Genre.objects.get(id=id)
+        initial_data = {
+            "name": genre.name
+        }
+        form = EditGenreForm(initial=initial_data)
+        ctx = {
+            "genre": genre,
+            "form": form
+        }
+        return render(request, "edit_genre.html", ctx)
+    
+    def post(self, request, id):
+        genre = Genre.objects.get(id=id)
+        genre.name = request.POST.get("name")
+        genre.who_added = "Westerny" #PILNIE TO POPRAWIĆ
+        if request.FILES.get("image") != None or request.POST.get("delete_image"):
+            genre.genre_image = request.FILES.get("image")
+        genre.save()
+        initial_data = {
+            "name": genre.name
+        }
+        form = EditGenreForm(initial=initial_data)
+        ctx = {
+            "genre": genre,
+            "form": form
+        }
         return render(request, "edit_genre.html", {"genre": genre})
+
+
+
+class DeleteGenreView(View):
+    def get(self, request, id):
+        genre = Genre.objects.get(id=id)
+        return render(request, "delete_genre.html", {"genre": genre})
+    
+    def post(self, request, id):
+        genre = Genre.objects.get(id=id)
+        genre.delete()
+        return redirect("/genres")
 
 
 class PeopleView(View):

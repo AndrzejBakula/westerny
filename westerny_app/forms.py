@@ -22,6 +22,12 @@ class AddGenreForm(forms.Form):
     image = forms.ImageField(label="Dodaj obraz", required=None)
 
 
+class EditGenreForm(forms.Form):
+    name = forms.CharField(label="Nazwa", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa gatunku"}))
+    image = forms.ImageField(label="Dodaj obraz", required=None)
+    delete_image = forms.BooleanField(label="Skasować istniejący obraz?", required=None)
+
+
 class AddPersonForm(forms.Form):
     first_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Imię"}))
     last_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwisko"}))

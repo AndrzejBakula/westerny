@@ -15,23 +15,22 @@
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'people' %}">LUDZIE</a>
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'genres' %}" class="btn btn-primary">GATUNKI</a>
         <a class="btn btn-success btn-lg guzik" href="{% url 'edit-genre' genre.id %}"> Edytuj Gatunek</a>
-        <a class="btn btn-danger btn-lg guzik" href="{% url 'delete-genre' genre.id %}"> Usuń Gatunek</a>
     </div>
     <hr>
 
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h2 class="display-5 align-self-center header">
-            {{ genre.name }}
+            Czy na pewno skasować gatunek: {{ genre.name }}?
         </h2>
     </div>
+
+    <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'delete-genre' genre.id %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <button type="submit" id="submit">Usuń</button>
+    </form>
+
     <hr>
-    
-    {% if genre.image %}
-    <div class="m-2">
-      <img src="{{ genre.image.url }}" alt="obraz {{ i.name }}" height="280"
-        width="140" class="img-thumbnail border border-secondary rounded-0">
-    </div>
-    {% endif %}
 
     <hr>
     <div class="d-flex flex-column justify-content-center align-items-center">
