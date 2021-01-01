@@ -33,13 +33,16 @@
     {% endif %}
     <hr>
 
-    {% if genre.description %}
+    {% if genre.genre_description %}
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h3 class="display-5 align-self-center header">
             Opis gatunku
         </h3>
+    </div>
+        <hr>
+    <div>
         <h5 class="display-5 align-self-center header">
-            {{ genre.description }}
+            {{ genre.genre_description }}
         </h5>
     </div>
     {% endif %}

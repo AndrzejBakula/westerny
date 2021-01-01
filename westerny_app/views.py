@@ -51,6 +51,7 @@ class AddGenreView(View):
             else:
                 Genre.objects.create(
                     name=genre,
+                    genre_description=request.POST.get("description"),
                     genre_image=request.FILES.get("image"),
                     who_added="Westerny" #PILNIE DO POPRAWY O USERA
                 )
@@ -67,7 +68,8 @@ class EditGenreView(View):
     def get(self, request, id):
         genre = Genre.objects.get(id=id)
         initial_data = {
-            "name": genre.name
+            "name": genre.name,
+            "description": genre.genre_description
         }
         form = EditGenreForm(initial=initial_data)
         ctx = {
@@ -79,6 +81,7 @@ class EditGenreView(View):
     def post(self, request, id):
         genre = Genre.objects.get(id=id)
         genre.name = request.POST.get("name")
+        genre.genre_description = request.POST.get("description")
         genre.who_added = "Westerny" #PILNIE TO POPRAWIĆ
         if request.FILES.get("image") != None or request.POST.get("delete_image"):
             genre.genre_image = request.FILES.get("image")

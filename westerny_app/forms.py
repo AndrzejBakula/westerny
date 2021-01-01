@@ -19,11 +19,13 @@ class AddMovieForm(forms.Form):
 
 class AddGenreForm(forms.Form):
     name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa gatunku"}))
+    description = forms.CharField(label="", required=None, widget=forms.Textarea(attrs={"rows": 6, "cols": 40, "placeholder": "Krótki opis"}))
     image = forms.ImageField(label="Dodaj obraz", required=None)
 
 
 class EditGenreForm(forms.Form):
     name = forms.CharField(label="Nazwa", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa gatunku"}))
+    description = forms.CharField(label="", required=None, widget=forms.Textarea(attrs={"rows": 6, "cols": 40, "placeholder": "Krótki opis"}))
     image = forms.ImageField(label="Dodaj obraz", required=None)
     delete_image = forms.BooleanField(label="Skasować istniejący obraz?", required=None)
 
