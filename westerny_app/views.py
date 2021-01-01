@@ -87,7 +87,8 @@ class EditGenreView(View):
             genre.genre_image = request.FILES.get("image")
         genre.save()
         initial_data = {
-            "name": genre.name
+            "name": genre.name,
+            "description": genre.genre_description
         }
         form = EditGenreForm(initial=initial_data)
         ctx = {
