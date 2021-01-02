@@ -21,11 +21,15 @@ from django.conf.urls import url
 from django.views.static import serve
 from westerny_app.views import IndexView, MoviesView, AddMovieView, GenresView, AddGenreView, PeopleView
 from westerny_app.views import AddPersonView, GenreDetailsView, EditGenreView, DeleteGenreView
+from westerny_app.views import RegisterView, LoginView, LogoutView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', IndexView.as_view(), name='index'),
     path('index/', IndexView.as_view(), name="index"),
+    path('register/', RegisterView.as_view(), name='register'),
+    path('login/', LoginView.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(), name='logout'),
     path('movies/', MoviesView.as_view(), name="movies"),
     path('add_movie/', AddMovieView.as_view(), name="add-movie"),
     path('genres/', GenresView.as_view(), name="genres"),

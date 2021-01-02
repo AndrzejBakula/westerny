@@ -15,6 +15,19 @@
 
   <body class="d-flex flex-column body">
 
+    <div class="d-flex flex-column align-items-center" style="height: 100%;">
+      <hr>
+      <div class="d-flex flex-row justify-content-around flex-wrap">
+          {% if user.is_authenticated %}
+          <span>Witaj, {{ user.username }}</span>
+          <a class="btn btn-primary btn-sm" href="{% url 'logout' %}">Logout</a>
+          {% else %}
+          <a class="btn btn-primary btn-sm" href="{% url 'register' %}">Rejestracja</a>
+          <span style="visibility: hidden;"> ... </span>
+          <a class="btn btn-primary btn-sm" href="{% url 'login' %}">Login</a>
+          {% endif %}
+      </div>
+
     {% block content %}{% endblock %}
 
     <!-- Optional JavaScript; choose one of the two! -->

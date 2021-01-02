@@ -3,13 +3,86 @@ from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from datetime import timezone, date, timedelta
 from django.views import View
+from django.contrib.auth.models import User
 from westerny_app.models import Movie, Genre, Person
-from westerny_app.forms import AddMovieForm, AddGenreForm, AddPersonForm, EditGenreForm
+from westerny_app.forms import AddMovieForm, AddGenreForm, AddPersonForm, EditGenreForm, RegisterForm, LoginForm
 
 
 class IndexView(View):
     def get(self, request):
         return render(request, "index.html")
+
+
+class RegisterView(View):
+    def get(self, request):
+        form = RegisterForm()
+        return render(request, "register.html", {"form": form})
+    
+    def post(self, request):
+        username = request.POST["username"]
+        email = request.POST["email"]
+        password = request.POST["password"]
+        password2 = request.POST["password2"]
+        message = ""
+        initial_data = {
+            "username": username,
+            "email": email,
+        }
+        form = RegisterForm(initial=initial_data)
+        if password != password2:
+            message = "Proszę podać dwa takie same hasła"
+            ctx = {
+                "username": username,
+                "email": email,
+                "message": message,
+                "form": form
+            }
+            return render(request, "register.html", ctx)
+        elif username in ("", None) or email in ("", None) or password in ("", None):
+            message = "Proszę wypełnić wszystkie pola"
+            ctx = {
+                "username": username,
+                "email": email,
+                "message": message,
+                "form": form
+            }
+            return render(request, "register.html", ctx)
+        else:
+            user = User.objects.create(username=username, email=email)
+            user.set_password(password)
+            user.save()
+            message = f"Dodano nowego użytkownika {user.first_name} {user.last_name}. Proszę się zalogować."
+            form = LoginForm()
+            ctx = {
+                "message": message,
+                "form": form
+            }
+            return render(request, "login.html", ctx)
+
+
+class LoginView(View):
+    def get(self, request):
+        form = LoginForm()
+        return render(request, "login.html", {"form": form})
+    
+    def post(self, request):
+        username = request.POST["username"]
+        password = request.POST["password"]
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            request.session["logged"] = True
+            request.session["user_id"] = user.pk
+            return redirect("/")
+        return redirect("/register")
+
+
+class LogoutView(View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            logout(request)
+            request.session["logged"] = False
+        return redirect("/index")
 
 
 class MoviesView(View):
