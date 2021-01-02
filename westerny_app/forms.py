@@ -34,3 +34,10 @@ class AddPersonForm(forms.Form):
     first_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Imię"}))
     last_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwisko"}))
     image = forms.ImageField(label="Dodaj obraz", required=None)
+
+
+class RegisterForm(forms.Form):
+    username = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa użytkownika"}))
+    email = forms.EmailField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "adres email"}))
+    password = forms.CharField(label="", widget=forms.PasswordInput({"size": 38, "placeholder": "hasło"},))
+    password2 = forms.CharField(label="", widget=forms.PasswordInput({"size": 38, "placeholder": "powtórz hasło"},))
