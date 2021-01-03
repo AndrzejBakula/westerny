@@ -6,9 +6,6 @@
 {% block content %}
 
 <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
-    <div class="d-flex flex-row justify-content-center align-items-center">
-        <h1 class="display-5 align-self-center header">Szczegóły Gatunku</h2>
-    </div>
     <div class="d-flex flex-row justify-content-around flex-wrap">
         <a class="btn btn-primary btn-lg guzik" href="{% url 'index' %}">STRONA GŁÓWNA</a>
     </div>
@@ -21,21 +18,24 @@
         <a class="btn btn-danger btn-lg guzik" href="{% url 'delete-genre' genre.id %}"> Usuń Gatunek</a>
         {% endif %}
     </div>
-    <hr>
-
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h2 class="display-5 align-self-center header">
-            {{ genre.name }}
-        </h2>
+        <h2 class="display-5 align-self-center header">Szczegóły gatunku {{ genre.name }}:</h2>
     </div>
+    <hr>
     
     {% if genre.genre_image %}
     <div class="m-2">
       <img src="{{ genre.genre_image.url }}" alt="obraz {{ i.name }}"
         width="380" class="img-thumbnail border border-secondary rounded-0">
     </div>
-    {% endif %}
+    {% else %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h4 class="display-5 align-self-center header">
+            Brak zdjęcia.
+        </h4>
+    </div>
     <hr>
+    {% endif %}
 
     {% if genre.genre_description %}
     <div class="d-flex flex-row justify-content-center align-items-center">
@@ -44,9 +44,15 @@
         </h3>
     </div>
     <div>
-        <h5 class="display-5 align-self-center header">
+        <h5 style="text-align: justify; margin-left: 2vh; margin-right: 2vh;" class="display-5 align-self-center header">
             {{ genre.genre_description }}
         </h5>
+    </div>
+    {% else %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h4 class="display-5 align-self-center header">
+            Brak opisu.
+        </h4>
     </div>
     {% endif %}
 

@@ -33,8 +33,8 @@
             {{ message }}
         </h3>
     </div>
-    {% endif %}
     <hr>
+    {% endif %}
     
     <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'edit-genre' genre.id %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
