@@ -29,6 +29,24 @@
     border-style: solid;
     margin: 1vh;
 }
+.guzik3 {
+    font-family: Georgia, serif;
+    font-size: medium;
+    color: #000000;
+    opacity: 0.8;
+    border-color: black;
+    border-style: solid;
+    margin: 1vh;
+}
+.guzik4 {
+    font-family: Georgia, serif;
+    font-size: medium;
+    color: #ffffff;
+    opacity: 0.8;
+    border-color: rgb(24, 22, 22);
+    border-style: solid;
+    margin: 0.5vh;
+}
 .menu_link {
     text-decoration: none;
     color: #ffffff;

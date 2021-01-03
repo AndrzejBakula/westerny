@@ -6,11 +6,17 @@ from django.views import View
 from django.contrib.auth.models import User
 from westerny_app.models import Movie, Genre, Person
 from westerny_app.forms import AddMovieForm, AddGenreForm, AddPersonForm, EditGenreForm, RegisterForm, LoginForm
+from westerny_app.forms import SearchMovieForm
 
 
 class IndexView(View):
     def get(self, request):
         return render(request, "index.html")
+
+
+class RulesView(View):
+    def get(self, request):
+        return render(request, "rules.html")
 
 
 class RegisterView(View):
@@ -85,10 +91,36 @@ class LogoutView(View):
         return redirect("/index")
 
 
+class MyPlaceView(View):
+    def get(self, request):
+        return render(request, "my_place.html")
+
+
 class MoviesView(View):
     def get(self, request):
         movies = Movie.objects.all().order_by("year")
         return render(request, "movies.html", {"movies": movies})
+
+
+class SearchMovieView(View):
+    def get(self, request):
+        form = SearchMovieForm()
+        return render(request, "search_movie.html", {"form": form})
+
+    def post(self, request):
+        form = SearchMovieForm(request.POST)
+        if form.is_valid():
+            movie_title = form.cleaned_data["movie_title"]
+            movies = Movie.objects.filter(title__icontains=movie_title).order_by(
+                "title"
+            )
+
+            ctx = {
+                "form": form,
+                "movies": movies,
+                "post": request.POST
+                }
+            return render(request, "search_movie.html", ctx)
 
 
 class AddMovieView(View):
