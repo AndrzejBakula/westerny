@@ -22,6 +22,8 @@
       </div>
       <div class="d-flex flex-row justify-content-center flex-wrap">
           <a class="btn btn-danger btn-sm guzik4" href="{% url 'logout' %}">Logout</a>
+          <span style="visibility: hidden;"> ... </span>
+          <a class="btn btn-secondary btn-sm guzik4" href="{% url 'my-place' %}">Mój kącik</a>
           {% else %}
           <a class="btn btn-secondary btn-sm guzik4" href="{% url 'register' %}">Rejestracja</a>
           <span style="visibility: hidden;"> ... </span>
@@ -29,8 +31,6 @@
           {% endif %}
           <span style="visibility: hidden;"> ... </span>
           <a class="btn btn-secondary btn-sm guzik4" href="{% url 'rules' %}">Regulamin</a>
-          <span style="visibility: hidden;"> ... </span>
-          <a class="btn btn-secondary btn-sm guzik4" href="{% url 'my-place' %}">Mój kącik</a>
       </div>
 
       <div class="d-flex flex-row justify-content-center align-items-center">
