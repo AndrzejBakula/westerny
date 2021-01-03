@@ -6,7 +6,7 @@ from django.views import View
 from django.contrib.auth.models import User
 from westerny_app.models import Movie, Genre, Person
 from westerny_app.forms import AddMovieForm, AddGenreForm, AddPersonForm, EditGenreForm, RegisterForm, LoginForm
-from westerny_app.forms import SearchMovieForm
+from westerny_app.forms import SearchMovieForm, SearchPersonForm
 
 
 class IndexView(View):
@@ -110,8 +110,8 @@ class SearchMovieView(View):
     def post(self, request):
         form = SearchMovieForm(request.POST)
         if form.is_valid():
-            movie_title = form.cleaned_data["movie_title"]
-            movies = Movie.objects.filter(title__icontains=movie_title).order_by(
+            text = form.cleaned_data["text"]
+            movies = Movie.objects.filter(title__icontains=text).order_by(
                 "title"
             )
 
@@ -154,11 +154,12 @@ class AddGenreView(View):
                 }
                 return render(request, "add_genre.html", ctx)
             else:
+                user = User.objects.get(pk=int(request.session.get("user_id")))
                 Genre.objects.create(
                     name=genre,
                     genre_description=request.POST.get("description"),
                     genre_image=request.FILES.get("image"),
-                    who_added="Westerny" #PILNIE DO POPRAWY O USERA
+                    who_added=user.username
                 )
                 return redirect("/genres")
 
@@ -241,6 +242,27 @@ class PeopleView(View):
     def get(self, request):
         people = Person.objects.all().order_by("last_name")
         return render(request, "people.html", {"people": people})
+
+
+class SearchPersonView(View):
+    def get(self, request):
+        form = SearchPersonForm()
+        return render(request, "search_person.html", {"form": form})
+
+    def post(self, request):
+        form = SearchPersonForm(request.POST)
+        if form.is_valid():
+            text = form.cleaned_data["text"]
+            persons = Person.objects.filter(last_name__icontains=text).order_by(
+                "last_name"
+            )
+
+            ctx = {
+                "form": form,
+                "persons": persons,
+                "post": request.POST
+                }
+            return render(request, "search_movie.html", ctx)
 
 
 class AddPersonView(View):

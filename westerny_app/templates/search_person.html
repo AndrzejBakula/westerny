@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %} Szukaj Westernu {% endblock %}
+{% block title %} Szukaj Osoby {% endblock %}
 
 {% block content %}
 
@@ -16,10 +16,10 @@
     </div>
     <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h2 class="display-5 align-self-center header">Szukaj Westernu</h2>
+        <h1 class="display-5 align-self-center header">Szukaj Osoby</h2>
     </div>
 
-    <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'search-movie' %}" method="POST" enctype="multipart/form-data">
+    <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'search-person' %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
         {{ form.as_p }}
@@ -28,24 +28,24 @@
     </form>
     <hr>
 
-    {% if movies %}
+    {% if persons %}
 
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h2 class="display-5 align-self-center header">
-            Lista znalezionych Westernów:
+            Lista znalezionych Osób:
         </h2>
     </div>
 
     <ul>
-        {% for movie in movies %}
+        {% for person in persons %}
         <div class="d-flex flex-row justify-content-center align-items-center">
-            <a  class="btn btn-link align-self-center" href="{% url 'movie-details' movie.id %}" style="font-size: x-large; color: white; text-shadow: 1px 1px 2px black">{{ movie.title }}</a>
+            <a  class="btn btn-link align-self-center" href="{% url 'person-details' movie.id %}" style="font-size: x-large; color: white; text-shadow: 1px 1px 2px black">{{ movie.title }}</a>
         </div>
         {% endfor %}
     </ul>
     
     {% endif %}
-    {% if not movies and post %}
+    {% if not persons and post %}
 
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h2 class="display-5 align-self-center header">

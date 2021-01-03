@@ -22,6 +22,7 @@ from django.views.static import serve
 from westerny_app.views import IndexView, MoviesView, AddMovieView, GenresView, AddGenreView, PeopleView
 from westerny_app.views import AddPersonView, GenreDetailsView, EditGenreView, DeleteGenreView
 from westerny_app.views import RegisterView, LoginView, LogoutView, RulesView, MyPlaceView, SearchMovieView
+from westerny_app.views import SearchPersonView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -41,5 +42,6 @@ urlpatterns = [
     path('edit_genre/<int:id>', EditGenreView.as_view(), name="edit-genre"),
     path('delete_genre/<int:id>', DeleteGenreView.as_view(), name="delete-genre"),
     path('people/', PeopleView.as_view(), name="people"),
+    path('search_person/', SearchPersonView.as_view(), name="search-person"),
     path('add_person/', AddPersonView.as_view(), name="add-person")
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

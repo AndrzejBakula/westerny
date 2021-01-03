@@ -44,9 +44,13 @@ class RegisterForm(forms.Form):
 
 
 class LoginForm(forms.Form):
-    username = forms.CharField(label="Nazwa", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa użytkownika"}))
-    password = forms.CharField(label="Hasło", widget=forms.PasswordInput({"size": 38, "placeholder": "hasło"},))
+    username = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa użytkownika"}))
+    password = forms.CharField(label="", widget=forms.PasswordInput({"size": 38, "placeholder": "hasło"},))
 
 
 class SearchMovieForm(forms.Form):
-    movie_title = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"placeholder": "Wprowadź szukany tekst" }))
+    text = forms.CharField(label="", max_length=64, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Wprowadź fragment tytułu" }))
+
+
+class SearchPersonForm(forms.Form):
+    text = forms.CharField(label="", max_length=64, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Wprowadź fragment nazwiska" }))
