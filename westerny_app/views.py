@@ -184,24 +184,45 @@ class EditGenreView(View):
         return render(request, "edit_genre.html", ctx)
     
     def post(self, request, id):
-        genre = Genre.objects.get(id=id)
-        genre.name = request.POST.get("name")
-        genre.genre_description = request.POST.get("description")
-        genre.who_added = "Westerny" #PILNIE TO POPRAWIĆ
-        if request.FILES.get("image") != None or request.POST.get("delete_image"):
-            genre.genre_image = request.FILES.get("image")
-        genre.save()
-        initial_data = {
-            "name": genre.name,
-            "description": genre.genre_description
-        }
-        form = EditGenreForm(initial=initial_data)
-        ctx = {
-            "genre": genre,
-            "form": form,
-            "message": "message"
-        }
-        return render(request, "edit_genre.html", ctx)
+        form = EditGenreForm(request.POST)
+        if form.is_valid:
+            genre = Genre.objects.get(id=id)
+            genre_name = genre.name.title()
+            genres = [i.name.title() for i in Genre.objects.all()]
+            if genre.name in genres:
+                genres.remove(genre.name)
+            genre_name = request.POST.get("name").title()
+            if genre_name in genres:
+                initial_data = {
+                    "name": genre.name,
+                    "description": genre.genre_description
+                }
+                form = EditGenreForm(initial=initial_data)
+                ctx = {
+                    "message": f"Gatunek {genre_name} już jest w bazie.",
+                    "genre": genre,
+                    "form": form,
+                    "data": request.POST
+                }
+                return render(request, "edit_genre.html", ctx)
+            genre.name = request.POST.get("name")
+            genre.genre_description = request.POST.get("description")
+            genre.who_added = "Westerny" #PILNIE TO POPRAWIĆ
+            if request.FILES.get("image") != None or request.POST.get("delete_image"):
+                genre.genre_image = request.FILES.get("image")
+            genre.save()
+            message = "Edycja zakończona sukcesem"
+            initial_data = {
+                "name": genre.name,
+                "description": genre.genre_description
+            }
+            form = EditGenreForm(initial=initial_data)
+            ctx = {
+                "genre": genre,
+                "form": form,
+                "message": message
+            }
+            return render(request, "edit_genre.html", ctx)
 
 
 

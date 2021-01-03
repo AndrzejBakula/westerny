@@ -1,14 +1,11 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %} Dodaj Gatunek {% endblock %}
+{% block title %} Edytuj Gatunek {% endblock %}
 
 {% block content %}
 
 <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
-    <div class="d-flex flex-row justify-content-center align-items-center">
-        <h1 class="display-5 align-self-center header">Edytuj Gatunek</h2>
-    </div>
     <div class="d-flex flex-row justify-content-around flex-wrap">
         <a class="btn btn-primary btn-lg guzik" href="{% url 'index' %}">STRONA GŁÓWNA</a>
     </div>
@@ -19,31 +16,25 @@
         <a class="btn btn-success btn-lg guzik" href="{% url 'genre-details' genre.id %}"> Szczegóły Gatunku</a>
         <a class="btn btn-danger btn-lg guzik" href="{% url 'delete-genre' genre.id %}"> Usuń Gatunek</a>
     </div>
-    <hr>
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h2 class="display-5 align-self-center header">Edytuj Gatunek:</h2>
+    </div>
 
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h2 class="display-5 align-self-center header">
+        <h3 class="display-5 align-self-center header">
             {{ genre.name }}
-        </h2>
+        </h3>
     </div>
 
     {% if message %}
-    <div class="d-flex flex-row justify-content-center align-items-center">
-        <h1 class="display-5 align-self-center header">
-            Edycja zakończona sukcesem.
-        </h1>
-    </div>
-    {% endif %}
     <hr>
-
-    {% if error_message %}
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h3 class="display-5 align-self-center header">
-            {{ error_message }}
+            {{ message }}
         </h3>
     </div>
-    <hr>
     {% endif %}
+    <hr>
     
     <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'edit-genre' genre.id %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
