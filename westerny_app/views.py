@@ -96,6 +96,11 @@ class MyPlaceView(View):
         return render(request, "my_place.html")
 
 
+class StatsView(View):
+    def get(self, request):
+        return render(request, "stats.html")
+
+
 class MoviesView(View):
     def get(self, request):
         movies = Movie.objects.all().order_by("year")

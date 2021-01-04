@@ -45,7 +45,7 @@
     opacity: 0.8;
     border-color: rgb(24, 22, 22);
     border-style: solid;
-    margin: 0.5vh;
+    margin-top: 1vh;
 }
 .menu_link {
     text-decoration: none;
