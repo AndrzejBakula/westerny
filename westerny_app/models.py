@@ -6,7 +6,9 @@ from datetime import timezone, date, timedelta
 class Person(models.Model):
     first_name = models.CharField(max_length=64)
     last_name = models.CharField(max_length=64)
+    person_rating = models.FloatField(null=True, max_length=4)
     person_image = models.ImageField(blank=True, null=True, upload_to="person_images/")
+    person_description = models.TextField(null=True, max_length=1600)
     person_added = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="person_added")
     person_accepted = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="person_accepted")
     person_edited = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="person_edited")
@@ -18,7 +20,7 @@ class Person(models.Model):
 class Genre(models.Model):
     name = models.CharField(max_length=64)
     genre_image = models.ImageField(blank=True, null=True, upload_to="genre_images/")
-    genre_description = models.TextField(null=True, default="")
+    genre_description = models.TextField(null=True, max_length=1600)
     genre_added = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="genre_added")
     genre_accepted = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="genre_accepted")
     genre_edited = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="genre_edited")
@@ -38,10 +40,10 @@ class Movie(models.Model):
     music = models.ManyToManyField(Person, related_name='music')
     starring = models.ManyToManyField(Person, through="PersonMovie")
     year = models.ForeignKey(Year, null=False, on_delete=models.DO_NOTHING)
-    rating = models.FloatField(null=True)
+    movie_rating = models.FloatField(null=True, max_length=4)
     genre = models.ManyToManyField(Genre)
     movie_image = models.ImageField(blank=True, null=True, upload_to="movie_images/")
-    description = models.TextField(null=True, default="")
+    movie_description = models.TextField(null=True, max_length=1600)
     movie_added = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="movie_added")
     movie_accepted = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="movie_accepted")
     movie_edited = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="movie_edited")
@@ -49,6 +51,7 @@ class Movie(models.Model):
 
 class PersonMovie(models.Model):
     role = models.CharField(max_length=128, null=True)
+    role_rating = models.FloatField(null=True, max_length=4)
     persons = models.ForeignKey(Person, on_delete=models.DO_NOTHING)
     movies = models.ForeignKey(Movie, on_delete=models.DO_NOTHING)
 
