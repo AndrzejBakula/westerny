@@ -159,7 +159,7 @@ class AddGenreView(View):
                     name=genre,
                     genre_description=request.POST.get("description"),
                     genre_image=request.FILES.get("image"),
-                    who_added=user.username
+                    genre_added=user
                 )
                 return redirect("/genres")
 
@@ -206,9 +206,10 @@ class EditGenreView(View):
                     "data": request.POST
                 }
                 return render(request, "edit_genre.html", ctx)
+            user = User.objects.get(pk=int(request.session.get("user_id")))
             genre.name = request.POST.get("name")
             genre.genre_description = request.POST.get("description")
-            genre.who_added = "Westerny" #PILNIE TO POPRAWIĆ
+            genre.genre_edited = user
             if request.FILES.get("image") != None or request.POST.get("delete_image"):
                 genre.genre_image = request.FILES.get("image")
             genre.save()

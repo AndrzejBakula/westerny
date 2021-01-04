@@ -9,9 +9,10 @@ class Person(models.Model):
     person_rating = models.FloatField(null=True, max_length=4)
     person_image = models.ImageField(blank=True, null=True, upload_to="person_images/")
     person_description = models.TextField(null=True, max_length=1600)
-    person_added = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="person_added")
-    person_accepted = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="person_accepted")
-    person_edited = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="person_edited")
+    person_added_by = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="person_added")
+    person_accepted_by = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="person_accepted")
+    person_edited_by = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="person_edited")
+    person_accepted = models.BooleanField(null=False, default=False)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
@@ -21,9 +22,10 @@ class Genre(models.Model):
     name = models.CharField(max_length=64)
     genre_image = models.ImageField(blank=True, null=True, upload_to="genre_images/")
     genre_description = models.TextField(null=True, max_length=1600)
-    genre_added = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="genre_added")
-    genre_accepted = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="genre_accepted")
-    genre_edited = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="genre_edited")
+    genre_added_by = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="genre_added")
+    genre_accepted_by = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="genre_accepted")
+    genre_edited_by = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="genre_edited")
+    genre_accepted = models.BooleanField(null=False, default=False)
 
     def __str__(self):
         return self.name
@@ -44,9 +46,10 @@ class Movie(models.Model):
     genre = models.ManyToManyField(Genre)
     movie_image = models.ImageField(blank=True, null=True, upload_to="movie_images/")
     movie_description = models.TextField(null=True, max_length=1600)
-    movie_added = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="movie_added")
-    movie_accepted = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="movie_accepted")
-    movie_edited = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="movie_edited")
+    movie_added_by = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="movie_added")
+    movie_accepted_by = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="movie_accepted")
+    movie_edited_by = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="movie_edited")
+    movie_accepted = models.BooleanField(null=False, default=False)
 
 
 class PersonMovie(models.Model):
