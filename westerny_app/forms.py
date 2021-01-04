@@ -45,8 +45,8 @@ class RegisterForm(forms.Form):
 
 
 class LoginForm(forms.Form):
-    username = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa użytkownika"}))
-    password = forms.CharField(label="", widget=forms.PasswordInput({"size": 38, "placeholder": "hasło"},))
+    username = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 32, "placeholder": "Nazwa użytkownika"}))
+    password = forms.CharField(label="", widget=forms.PasswordInput({"size": 32, "placeholder": "hasło"},))
     captcha = ReCaptchaField(label="", widget=ReCaptchaV3(attrs={'required_score':0.85}))
 
 
