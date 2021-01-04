@@ -37,16 +37,16 @@ class AddPersonForm(forms.Form):
 
 
 class RegisterForm(forms.Form):
-    username = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa użytkownika"}))
-    email = forms.EmailField(label="", max_length=128, widget=forms.EmailInput(attrs={"size": 38, "placeholder": "Adres email"}))
-    password = forms.CharField(label="", widget=forms.PasswordInput({"size": 38, "placeholder": "Hasło"},))
-    password2 = forms.CharField(label="", widget=forms.PasswordInput({"size": 38, "placeholder": "Powtórz hasło"},))
+    username = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 34, "placeholder": "Nazwa użytkownika"}))
+    email = forms.EmailField(label="", max_length=128, widget=forms.EmailInput(attrs={"size": 34, "placeholder": "Adres email"}))
+    password = forms.CharField(label="", widget=forms.PasswordInput({"size": 34, "placeholder": "Hasło"},))
+    password2 = forms.CharField(label="", widget=forms.PasswordInput({"size": 34, "placeholder": "Powtórz hasło"},))
     captcha = ReCaptchaField(label="", widget=ReCaptchaV3(attrs={'required_score':0.85}))
 
 
 class LoginForm(forms.Form):
-    username = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 32, "placeholder": "Nazwa użytkownika"}))
-    password = forms.CharField(label="", widget=forms.PasswordInput({"size": 32, "placeholder": "hasło"},))
+    username = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 34, "placeholder": "Nazwa użytkownika"}))
+    password = forms.CharField(label="", widget=forms.PasswordInput({"size": 34, "placeholder": "Hasło"},))
     captcha = ReCaptchaField(label="", widget=ReCaptchaV3(attrs={'required_score':0.85}))
 
 
