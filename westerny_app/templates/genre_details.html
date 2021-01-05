@@ -13,15 +13,17 @@
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'movies' %}">WESTERNY</a>
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'people' %}">LUDZIE</a>
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'genres' %}" class="btn btn-primary">GATUNKI</a>
-        {% if user.is_authenticated %}
+        {% if user.is_staff %}
         <a class="btn btn-success btn-lg guzik" href="{% url 'edit-genre' genre.id %}"> Edytuj Gatunek</a>
+        {% endif %}
+        {% if user.is_superuser %}
         <a class="btn btn-danger btn-lg guzik" href="{% url 'delete-genre' genre.id %}"> Usuń Gatunek</a>
         {% endif %}
     </div>
+    <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h2 class="display-5 align-self-center header">Szczegóły gatunku {{ genre.name }}:</h2>
     </div>
-    <hr>
     
     {% if genre.genre_image %}
     <div class="m-2">
@@ -55,8 +57,15 @@
         </h4>
     </div>
     {% endif %}
-    
 
+
+
+    <hr>
+    <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
+        <span>Dodane przez: {{ genre.genre_added_by }}</span>
+        {% if genre.genre_accepted_by %}<span>Zaakceptowane przez: {{ genre.genre_accepted_by }}</span>{% endif %}
+        {% if genre.genre_edited_by %}<span>Ostatnia edycja: {{ genre.genre_edited_by }}</span>{% endif %}
+    </div>
 
 </div>
 

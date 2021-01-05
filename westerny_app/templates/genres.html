@@ -11,7 +11,7 @@
     <div class="d-flex flex-row justify-content-around flex-wrap">
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'movies' %}">WESTERNY</a>
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'people' %}">LUDZIE</a>
-        {% if user.is_authenticated %}
+        {% if user.is_staff %}
         <a class="btn btn-success btn-lg guzik" href="{% url 'add-genre' %}"> Dodaj Gatunek</a>
         {% endif %}
     </div>

@@ -1,12 +1,29 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model, authenticate, login, logout
-from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.admin.views.decorators import staff_member_required
+from django.utils.decorators import method_decorator
 from datetime import timezone, date, timedelta
 from django.views import View
 from django.contrib.auth.models import User
 from westerny_app.models import Movie, Genre, Person
 from westerny_app.forms import AddMovieForm, AddGenreForm, AddPersonForm, EditGenreForm, RegisterForm, LoginForm
 from westerny_app.forms import SearchMovieForm, SearchPersonForm
+
+
+class SuperUserCheck(UserPassesTestMixin, View):
+    def test_func(self):
+        return self.request.user.is_superuser
+
+
+class StaffMemberCheck(UserPassesTestMixin, View):
+    def test_func(self):
+        return self.request.user.is_staff
+
+
+class ActivateUserCheck(UserPassesTestMixin, View):
+    def test_func(self):
+        return self.request.user.is_authenticated
 
 
 class IndexView(View):
@@ -36,7 +53,7 @@ class RegisterView(View):
         }
         form = RegisterForm(initial=initial_data)
         if password != password2:
-            message = "Proszę podać dwa takie same hasła"
+            message = "Proszę podać dwa takie same hasła."
             ctx = {
                 "username": username,
                 "email": email,
@@ -45,7 +62,7 @@ class RegisterView(View):
             }
             return render(request, "register.html", ctx)
         elif username in ("", None) or email in ("", None) or password in ("", None):
-            message = "Proszę wypełnić wszystkie pola"
+            message = "Proszę wypełnić wszystkie pola."
             ctx = {
                 "username": username,
                 "email": email,
@@ -57,7 +74,7 @@ class RegisterView(View):
             user = User.objects.create(username=username, email=email)
             user.set_password(password)
             user.save()
-            message = f"Dodano nowego użytkownika {user.first_name} {user.last_name}. Proszę się zalogować."
+            message = f"Dodano nowego kawalerzystę {user.username}. Proszę się zameldować u kwatermistrza."
             form = LoginForm()
             ctx = {
                 "message": message,
@@ -83,7 +100,7 @@ class LoginView(View):
         return redirect("/register")
 
 
-class LogoutView(View):
+class LogoutView(ActivateUserCheck, View):
     def get(self, request):
         if request.user.is_authenticated:
             logout(request)
@@ -91,7 +108,7 @@ class LogoutView(View):
         return redirect("/index")
 
 
-class MyPlaceView(View):
+class MyPlaceView(ActivateUserCheck, View):
     def get(self, request):
         return render(request, "my_place.html")
 
@@ -128,7 +145,7 @@ class SearchMovieView(View):
             return render(request, "search_movie.html", ctx)
 
 
-class AddMovieView(View):
+class AddMovieView(ActivateUserCheck, View):
     def get(self, request):
         form = AddMovieForm()
         return render(request, "add_movie.html", {"form": form})
@@ -140,7 +157,7 @@ class GenresView(View):
         return render(request, "genres.html", {"genres": genres})
 
 
-class AddGenreView(View):
+class AddGenreView(StaffMemberCheck, View):
     def get(self, request):
         form = AddGenreForm()
         return render(request, "add_genre.html", {"form": form})
@@ -175,7 +192,7 @@ class GenreDetailsView(View):
         return render(request, "genre_details.html", {"genre": genre})
 
 
-class EditGenreView(View):
+class EditGenreView(StaffMemberCheck, View):
     def get(self, request, id):
         genre = Genre.objects.get(id=id)
         initial_data = {
@@ -214,7 +231,7 @@ class EditGenreView(View):
             user = User.objects.get(pk=int(request.session.get("user_id")))
             genre.name = request.POST.get("name")
             genre.genre_description = request.POST.get("description")
-            genre.genre_edited = user
+            genre.genre_edited_by = user
             if request.FILES.get("image") != None or request.POST.get("delete_image"):
                 genre.genre_image = request.FILES.get("image")
             genre.save()
@@ -229,11 +246,10 @@ class EditGenreView(View):
                 "form": form,
                 "message": message
             }
-            return render(request, "edit_genre.html", ctx)
+            return redirect(f"/genre_details/{genre.id}")
 
 
-
-class DeleteGenreView(View):
+class DeleteGenreView(SuperUserCheck, View):
     def get(self, request, id):
         genre = Genre.objects.get(id=id)
         return render(request, "delete_genre.html", {"genre": genre})

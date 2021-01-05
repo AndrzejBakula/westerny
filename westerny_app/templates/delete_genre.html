@@ -13,7 +13,9 @@
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'movies' %}">WESTERNY</a>
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'people' %}">LUDZIE</a>
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'genres' %}" class="btn btn-primary">GATUNKI</a>
+        {% if user.is_staff %}
         <a class="btn btn-success btn-lg guzik" href="{% url 'edit-genre' genre.id %}"> Edytuj Gatunek</a>
+        {% endif %}
     </div>
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h2 class="display-5 align-self-center header">Usuń Gatunek</h2>
