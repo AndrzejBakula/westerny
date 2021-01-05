@@ -164,7 +164,7 @@ class AddGenreView(View):
                     name=genre,
                     genre_description=request.POST.get("description"),
                     genre_image=request.FILES.get("image"),
-                    genre_added=user
+                    genre_added_by=user
                 )
                 return redirect("/genres")
 

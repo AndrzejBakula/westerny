@@ -5,7 +5,6 @@
 
 {% block content %}
 
-<div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
     <div class="d-flex flex-row justify-content-around flex-wrap">
         <a class="btn btn-primary btn-lg guzik" href="{% url 'index' %}">STRONA GŁÓWNA</a>
     </div>
@@ -16,7 +15,7 @@
     </div>
     <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h1 class="display-5 align-self-center header">Szukaj Osoby</h2>
+        <h2 class="display-5 align-self-center header">Szukaj Osoby</h2>
     </div>
 
     <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'search-person' %}" method="POST" enctype="multipart/form-data">
@@ -55,11 +54,5 @@
 
     {% endif %}
 
-    <hr>
-    <div class="d-flex flex-column justify-content-center align-items-center">
-        <span>powered by:</span>
-        <a class="btn btn-link align-self-center" href="https://www.facebook.com/Westerny" target="_blank" style="color: white;">Westerny</a>
-    </div>
-</div>
 
 {% endblock %}

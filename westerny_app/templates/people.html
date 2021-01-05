@@ -18,6 +18,7 @@
         <a class="btn btn-success btn-lg guzik" href="{% url 'add-person' %}"> Dodaj Osobę</a>
         {% endif %}
     </div>
+    <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h2 class="display-5 align-self-center header">Ludzie Westernu:</h2>
     </div>
@@ -27,11 +28,8 @@
         {% endfor %}
     </ul>
 
-    <hr>
-    <div class="d-flex flex-column justify-content-center align-items-center">
-        <span>powered by:</span>
-        <a class="btn btn-link align-self-center" href="https://www.facebook.com/Westerny" target="_blank" style="color: white;">Westerny</a>
-    </div>
+
+
 </div>
 
 {% endblock %}
