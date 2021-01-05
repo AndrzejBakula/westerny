@@ -52,8 +52,8 @@ class LoginForm(forms.Form):
 
 
 class SearchMovieForm(forms.Form):
-    text = forms.CharField(label="", max_length=64, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Wprowadź fragment tytułu" }))
+    text = forms.CharField(label="", max_length=64, widget=forms.TextInput(attrs={"size": 34, "placeholder": "Wprowadź fragment tytułu" }))
 
 
 class SearchPersonForm(forms.Form):
-    text = forms.CharField(label="", max_length=64, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Wprowadź fragment nazwiska" }))
+    text = forms.CharField(label="", max_length=64, widget=forms.TextInput(attrs={"size": 34, "placeholder": "Wprowadź fragment nazwiska" }))
