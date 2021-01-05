@@ -19,16 +19,15 @@
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h2 class="display-5 align-self-center header">Gatunki Westernu:</h1>
     </div>
-    <ul>
-        {% for genre in genres %}
-        <div class="d-flex flex-row justify-content-center align-items-center">
-            <a  class="btn btn-link align-self-center" href="{% url 'genre-details' genre.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ genre }}</a>
-        </div>
-        {% endfor %}
-    </ul>
+
+    {% for genre in genres %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <a  class="btn btn-link align-self-center" href="{% url 'genre-details' genre.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ genre }}</a>
+    </div>
+    {% endfor %}
 
 
-    
+
 </div>
 
 {% endblock %}

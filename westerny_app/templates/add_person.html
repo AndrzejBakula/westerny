@@ -14,8 +14,9 @@
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'people' %}">LUDZIE</a>
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'genres' %}" class="btn btn-primary">GATUNKI</a>
     </div>
+    <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h1 class="display-5 align-self-center header">Dodaj Osobę</h2>
+        <h2 class="display-5 align-self-center header">Dodaj Osobę</h2>
     </div>
     <hr>
     <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'add-genre' %}" method="POST" enctype="multipart/form-data">
