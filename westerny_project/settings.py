@@ -144,3 +144,11 @@ django_heroku.settings(locals())
 #reCAPTCHA
 RECAPTCHA_PUBLIC_KEY = config("RECAPTCHA_PUBLIC_KEY", default="")
 RECAPTCHA_PRIVATE_KEY = config("RECAPTCHA_PRIVATE_KEY", default="")
+
+#Email
+EMAIL_HOST = config("EMAIL_HOST", default="")
+EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
+DEFAULT_FROM_EMAIL= config("DEFAUL_FROM_EMAIL", default="")
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True

@@ -2,13 +2,29 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.admin.views.decorators import staff_member_required
+from django.core.mail import EmailMessage
 from django.utils.decorators import method_decorator
+from django.utils.encoding import force_bytes, force_text, DjangoUnicodeDecodeError
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.contrib.sites.shortcuts import get_current_site
+from django.urls import reverse
 from datetime import timezone, date, timedelta
+from .utils import token_generator
 from django.views import View
 from django.contrib.auth.models import User
 from westerny_app.models import Movie, Genre, Person
 from westerny_app.forms import AddMovieForm, AddGenreForm, AddPersonForm, EditGenreForm, RegisterForm, LoginForm
 from westerny_app.forms import SearchMovieForm, SearchPersonForm
+
+
+#USER CHECK CLASSES:
+class VerificationView(View):
+    def get(self, request, uidb64, token):
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+        user.is_active = True
+        user.save()
+        return redirect("login")
 
 
 class SuperUserCheck(UserPassesTestMixin, View):
@@ -26,6 +42,7 @@ class ActivateUserCheck(UserPassesTestMixin, View):
         return self.request.user.is_authenticated
 
 
+#MAIN VIEWS CLASSES:
 class IndexView(View):
     def get(self, request):
         return render(request, "index.html")
@@ -73,8 +90,28 @@ class RegisterView(View):
         else:
             user = User.objects.create(username=username, email=email)
             user.set_password(password)
+            user.is_active = False
             user.save()
-            message = f"Dodano nowego kawalerzystę {user.username}. Proszę się zameldować u kwatermistrza."
+
+            uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+            # uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+            domain = get_current_site(request).domain
+            link = reverse("activate", kwargs={'uidb64': uidb64, 'token': token_generator.make_token(user)})
+
+            activate_url = "http://"+domain+link
+
+            email_subject = "Aktywuj konto kawalerzysty."
+            email_body = "Baczność, rekrucie " + user.username + "! Użyj poniższego linku werbunkowego i udaj się do kwatermistrza.\n" + activate_url
+            email = EmailMessage(
+                email_subject,
+                email_body,
+                "noreply@semycolon.com",
+                [user.email],
+                )
+            
+            email.send(fail_silently=False)
+
+            message = f"Dodano nowego kawalerzystę {user.username}. Wysłano telegram potwierdzający do skrzynki na listy."
             form = LoginForm()
             ctx = {
                 "message": message,

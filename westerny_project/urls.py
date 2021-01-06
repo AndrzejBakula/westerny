@@ -23,7 +23,7 @@ from django.views.static import serve
 from westerny_app.views import IndexView, MoviesView, AddMovieView, GenresView, AddGenreView, PeopleView
 from westerny_app.views import AddPersonView, GenreDetailsView, EditGenreView, DeleteGenreView
 from westerny_app.views import RegisterView, LoginView, LogoutView, RulesView, MyPlaceView, SearchMovieView
-from westerny_app.views import SearchPersonView, StatsView
+from westerny_app.views import SearchPersonView, StatsView, VerificationView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -45,5 +45,6 @@ urlpatterns = [
     path('delete_genre/<int:id>', DeleteGenreView.as_view(), name="delete-genre"),
     path('people/', PeopleView.as_view(), name="people"),
     path('search_person/', SearchPersonView.as_view(), name="search-person"),
-    path('add_person/', AddPersonView.as_view(), name="add-person")
+    path('add_person/', AddPersonView.as_view(), name="add-person"),
+    path('activate/<uidb64>/<token>', VerificationView.as_view(), name="activate")
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
