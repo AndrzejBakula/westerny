@@ -17,6 +17,7 @@ from westerny_app.forms import AddMovieForm, AddGenreForm, AddPersonForm, EditGe
 from westerny_app.forms import SearchMovieForm, SearchPersonForm
 
 
+
 #USER CHECK CLASSES:
 class VerificationView(View):
     def get(self, request, uidb64, token):
@@ -94,7 +95,6 @@ class RegisterView(View):
             user.save()
 
             uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
-            # uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
             domain = get_current_site(request).domain
             link = reverse("activate", kwargs={'uidb64': uidb64, 'token': token_generator.make_token(user)})
 
