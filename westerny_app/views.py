@@ -17,7 +17,6 @@ from westerny_app.forms import AddMovieForm, AddGenreForm, AddPersonForm, EditGe
 from westerny_app.forms import SearchMovieForm, SearchPersonForm
 
 
-
 #USER CHECK CLASSES:
 class VerificationView(View):
     def get(self, request, uidb64, token):
