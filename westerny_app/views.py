@@ -97,7 +97,7 @@ class RegisterView(View):
             domain = get_current_site(request).domain
             link = reverse("activate", kwargs={'uidb64': uidb64, 'token': token_generator.make_token(user)})
 
-            activate_url = "http://"+domain+link
+            activate_url = "https://"+domain+link
 
             email_subject = "Aktywuj konto kawalerzysty."
             email_body = "Baczność, rekrucie " + user.username + "! Użyj poniższego linku werbunkowego i udaj się do kwatermistrza.\n" + activate_url
