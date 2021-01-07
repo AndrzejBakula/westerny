@@ -61,6 +61,7 @@ class RegisterView(View):
     
     def post(self, request):
         users = [i.username for i in User.objects.all()]
+        # emails = [i.email for i in User.objeects.all()]
         username = request.POST["username"]
         email = request.POST["email"]
         password = request.POST["password"]
