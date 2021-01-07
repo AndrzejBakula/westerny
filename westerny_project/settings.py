@@ -152,3 +152,5 @@ EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
 DEFAULT_FROM_EMAIL= config("DEFAUL_FROM_EMAIL", default="")
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+PROTOCOLE = config("PROTOCOLE", default="")

@@ -12,6 +12,7 @@ from datetime import timezone, date, timedelta
 from .utils import token_generator
 from django.views import View
 from django.contrib.auth.models import User
+from westerny_project.settings import PROTOCOLE
 from westerny_app.models import Movie, Genre, Person
 from westerny_app.forms import AddMovieForm, AddGenreForm, AddPersonForm, EditGenreForm, RegisterForm, LoginForm
 from westerny_app.forms import SearchMovieForm, SearchPersonForm
@@ -59,6 +60,7 @@ class RegisterView(View):
         return render(request, "register.html", {"form": form})
     
     def post(self, request):
+        users = [i.username for i in User.objects.all()]
         username = request.POST["username"]
         email = request.POST["email"]
         password = request.POST["password"]
@@ -87,6 +89,14 @@ class RegisterView(View):
                 "form": form
             }
             return render(request, "register.html", ctx)
+        elif username in users:
+            message = "Taki kawalerzysta widnieje już w rejestrze pułku."
+            ctx = {
+                "email": email,
+                "message": message,
+                "form": form
+            }
+            return render(request, "register.html", ctx)
         else:
             user = User.objects.create(username=username, email=email)
             user.set_password(password)
@@ -97,7 +107,7 @@ class RegisterView(View):
             domain = get_current_site(request).domain
             link = reverse("activate", kwargs={'uidb64': uidb64, 'token': token_generator.make_token(user)})
 
-            activate_url = "https://"+domain+link
+            activate_url = PROTOCOLE+domain+link
 
             email_subject = "Aktywuj konto kawalerzysty."
             email_body = "Baczność, rekrucie " + user.username + "! Użyj poniższego linku werbunkowego i udaj się do kwatermistrza.\n" + activate_url
