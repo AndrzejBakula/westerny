@@ -14,18 +14,18 @@ class AddMovieForm(forms.Form):
     year = forms.CharField(label="", max_length=4, widget=forms.TextInput(attrs={"placeholder": "Rok produkcji"}))
     genre = forms.ModelMultipleChoiceField(label="Gatunek", queryset=Genre.objects.all())
     image = forms.ImageField(label="Dodaj obraz", required=None)
-    description = forms.CharField(label="", max_length=1600, required=None, widget=forms.Textarea(attrs={"rows": 6, "cols": 40, "placeholder": "Krótki opis (do 1600 znaków)"}))
+    description = forms.CharField(label="", max_length=1500, required=None, widget=forms.Textarea(attrs={"rows": 6, "cols": 40, "placeholder": "Krótki opis (do 1600 znaków)"}))
 
 
 class AddGenreForm(forms.Form):
     name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa gatunku"}))
-    description = forms.CharField(label="", max_length=1600, required=None, widget=forms.Textarea(attrs={"rows": 6, "cols": 40, "placeholder": "Krótki opis (do 1600 znaków)"}))
+    description = forms.CharField(label="", max_length=1500, required=None, widget=forms.Textarea(attrs={"rows": 6, "cols": 40, "placeholder": "Krótki opis (do 1600 znaków)"}))
     image = forms.ImageField(label="Dodaj obraz", required=None)
 
 
 class EditGenreForm(forms.Form):
     name = forms.CharField(label="Nazwa", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa gatunku"}))
-    description = forms.CharField(label="", max_length=1600, required=None, widget=forms.Textarea(attrs={"rows": 6, "cols": 40, "placeholder": "Krótki opis (do 1600 znaków"}))
+    description = forms.CharField(label="", max_length=1500, required=None, widget=forms.Textarea(attrs={"rows": 6, "cols": 40, "placeholder": "Krótki opis (do 1600 znaków"}))
     image = forms.ImageField(label="Dodaj obraz", required=None)
     delete_image = forms.BooleanField(label="Skasować istniejący obraz?", required=None)
 
@@ -33,7 +33,7 @@ class EditGenreForm(forms.Form):
 class AddPersonForm(forms.Form):
     first_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Imię"}))
     last_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwisko"}))
-    description = forms.CharField(label="", max_length=1600, required=None, widget=forms.Textarea(attrs={"rows": 6, "cols": 40, "placeholder": "Krótki opis (do 1600 znaków)"}))
+    description = forms.CharField(label="", max_length=1500, required=None, widget=forms.Textarea(attrs={"rows": 6, "cols": 40, "placeholder": "Krótki opis (do 1600 znaków)"}))
     image = forms.ImageField(label="Dodaj obraz", required=None)
 
 
