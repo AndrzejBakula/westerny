@@ -1,13 +1,30 @@
 .body {
-    background-image: url(images/monument_valley.png);
+    background-image: url(images/monument_valley3.png);
     background-repeat: inherit;
     background-size: cover;
     height: 100%;
 }
+
+.black_cover ::before {
+content: "";
+display: block;
+position: absolute;
+background-color: #000;
+opacity: 0.5;
+width: 100%;
+height: 100%;
+}
 .header {
     font-family: Georgia, serif;
     color: #ffffff;
-    text-shadow: 2px 2px 1px #000000;
+    text-shadow: 2px 2px 2px #000000;
+    text-align: center;
+    margin-top: 1vh;
+}
+.header2 {
+    font-family: Georgia, serif;
+    color: #ffffff;
+    text-shadow: 2px 2px 2px #000000;
     text-align: center;
     margin-top: 1vh;
 }
@@ -56,7 +73,7 @@
 }
 h1, h2, h3, h4, h5, h6 {
     color: #ffffff;
-    text-shadow: 2px 2px 1px #000000;
+    text-shadow: 2px 2px 8px #000000;
 }
 p {
     color: #000000;
