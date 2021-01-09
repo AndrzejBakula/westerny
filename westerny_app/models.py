@@ -3,6 +3,21 @@ from django.contrib.auth.models import User
 from datetime import timezone, date, timedelta
 
 
+RANKS = (
+    (1, "kawalerzysta"),
+    (2, "kapral"),
+    (3, "sierżant"),
+    (4, "porucznik"),
+    (5, "kapitan"),
+    (6, "major"),
+    (7, "pułkownik"),
+    (8, "generał")
+)
+
+class Rank(models.Model):
+    name = models.CharField(max_length=32, unique=True, choices=RANKS)
+
+
 class Person(models.Model):
     first_name = models.CharField(max_length=64)
     last_name = models.CharField(max_length=64)
@@ -12,20 +27,18 @@ class Person(models.Model):
     person_added_by = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="person_added")
     person_accepted_by = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="person_accepted")
     person_edited_by = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="person_edited")
-    person_accepted = models.BooleanField(null=False, default=False)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
 
 class Genre(models.Model):
-    name = models.CharField(max_length=64)
+    name = models.CharField(max_length=64, unique=True)
     genre_image = models.ImageField(blank=True, null=True, upload_to="genre_images/")
     genre_description = models.TextField(null=True, max_length=1500)
     genre_added_by = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="genre_added")
     genre_accepted_by = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="genre_accepted")
     genre_edited_by = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="genre_edited")
-    genre_accepted = models.BooleanField(null=False, default=False)
 
     def __str__(self):
         return self.name
@@ -49,7 +62,6 @@ class Movie(models.Model):
     movie_added_by = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="movie_added")
     movie_accepted_by = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="movie_accepted")
     movie_edited_by = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="movie_edited")
-    movie_accepted = models.BooleanField(null=False, default=False)
 
 
 class PersonMovie(models.Model):
