@@ -162,7 +162,28 @@ class MyPlaceView(ActivateUserCheck, View):
 
 class StatsView(View):
     def get(self, request):
-        return render(request, "stats.html")
+        users = len(User.objects.all())
+        officers = len(User.objects.filter(is_staff=True))
+        commanders = len(User.objects.filter(is_superuser=True))
+        cavaliers = len(User.objects.filter(is_active=True, is_staff=False, is_superuser=False))
+        civils = users - officers - commanders - cavaliers
+        westerns = len(Movie.objects.all())
+        people = len(Person.objects.all())
+        genres = len(Genre.objects.all())
+        notes = westerns + people + genres
+
+        ctx = {
+            "users": users,
+            "officers": officers,
+            "commanders": commanders,
+            "cavaliers": cavaliers,
+            "civils": civils,
+            "westerns": westerns,
+            "people": people,
+            "genres": genres,
+            "notes": notes
+        }
+        return render(request, "stats.html", ctx)
 
 
 class MoviesView(View):
@@ -201,7 +222,12 @@ class AddMovieView(ActivateUserCheck, View):
 class GenresView(View):
     def get(self, request):
         genres = Genre.objects.all().order_by("name")
-        return render(request, "genres.html", {"genres": genres})
+        waiting_genres = len([i for i in Genre.objects.all() if i.genre_accepted_by == None])
+        ctx = {
+            "genres": genres,
+            "waiting_genres": waiting_genres
+        }
+        return render(request, "genres.html", ctx)
 
 
 class AddGenreView(StaffMemberCheck, View):
@@ -224,12 +250,15 @@ class AddGenreView(StaffMemberCheck, View):
                 return render(request, "add_genre.html", ctx)
             else:
                 user = User.objects.get(pk=int(request.session.get("user_id")))
-                Genre.objects.create(
+                genre = Genre.objects.create(
                     name=genre,
                     genre_description=request.POST.get("description"),
                     genre_image=request.FILES.get("image"),
                     genre_added_by=user
                 )
+                if user.is_superuser is True:
+                    genre.genre_accepted_by = True
+                    genre.save()
                 return redirect("/genres")
 
 
@@ -281,6 +310,8 @@ class EditGenreView(StaffMemberCheck, View):
             genre.genre_edited_by = user
             if request.FILES.get("image") != None or request.POST.get("delete_image"):
                 genre.genre_image = request.FILES.get("image")
+            if user.is_superuser:
+                genre.genre_accepted_by = user
             genre.save()
             message = "Edycja zakończona sukcesem"
             initial_data = {
@@ -305,6 +336,25 @@ class DeleteGenreView(SuperUserCheck, View):
         genre = Genre.objects.get(id=id)
         genre.delete()
         return redirect("/genres")
+
+
+class WaitingGenresView(View):
+    def get(self, request):
+        genres = Genre.objects.all().order_by("name")
+        return render(request, "waiting_genres.html", {"genres": genres})
+
+
+class AcceptGenreView(SuperUserCheck, View):
+    def get(self, request, id):
+        genre = Genre.objects.get(id=id)
+        return render(request, "accept_genre.html", {"genre": genre})
+    
+    def post(self, request, id):
+        genre = Genre.objects.get(id=id)
+        user = User.objects.get(pk=int(request.session.get("user_id")))
+        genre.genre_accepted_by = user
+        genre.save()
+        return redirect("/waiting_genres")
 
 
 class PeopleView(View):
