@@ -13,7 +13,7 @@ from .utils import token_generator
 from django.views import View
 from django.contrib.auth.models import User
 from westerny_project.settings import PROTOCOLE
-from westerny_app.models import Movie, Genre, Person
+from westerny_app.models import Movie, Genre, Person, Article
 from westerny_app.forms import AddMovieForm, AddGenreForm, AddPersonForm, EditGenreForm, RegisterForm, LoginForm
 from westerny_app.forms import SearchMovieForm, SearchPersonForm
 
@@ -265,6 +265,7 @@ class AddGenreView(StaffMemberCheck, View):
 class GenreDetailsView(View):
     def get(self, request, id):
         genre = Genre.objects.get(id=id)
+        # articles = [i for i in Article.objects.filter()]
         return render(request, "genre_details.html", {"genre": genre})
 
 

@@ -21,7 +21,7 @@ class Rank(models.Model):
 class Article(models.Model):
     article_name = models.CharField(max_length=128)
     author = models.CharField(max_length=64)
-    article_adde_by = models.ForeignKey(User, null=False, on_delete=models.DO_NOTHING)
+    article_added_by = models.ForeignKey(User, null=False, on_delete=models.DO_NOTHING)
     link = models.URLField(unique=True, null=False)
 
 
