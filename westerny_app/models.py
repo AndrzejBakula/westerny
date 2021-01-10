@@ -18,6 +18,13 @@ class Rank(models.Model):
     name = models.CharField(max_length=32, unique=True, choices=RANKS)
 
 
+class Article(models.Model):
+    article_name = models.CharField(max_length=128)
+    author = models.CharField(max_length=64)
+    article_adde_by = models.ForeignKey(User, null=False, on_delete=models.DO_NOTHING)
+    link = models.URLField(unique=True, null=False)
+
+
 class Person(models.Model):
     first_name = models.CharField(max_length=64)
     last_name = models.CharField(max_length=64)
@@ -27,6 +34,7 @@ class Person(models.Model):
     person_added_by = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="person_added")
     person_accepted_by = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="person_accepted")
     person_edited_by = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="person_edited")
+    person_article = models.ManyToManyField(Article, default=None)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
@@ -39,6 +47,7 @@ class Genre(models.Model):
     genre_added_by = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="genre_added")
     genre_accepted_by = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="genre_accepted")
     genre_edited_by = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="genre_edited")
+    genre_article = models.ManyToManyField(Article, default=None)
 
     def __str__(self):
         return self.name
@@ -62,6 +71,7 @@ class Movie(models.Model):
     movie_added_by = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="movie_added")
     movie_accepted_by = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="movie_accepted")
     movie_edited_by = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="movie_edited")
+    movie_article = models.ManyToManyField(Article, default=None)
 
 
 class PersonMovie(models.Model):
