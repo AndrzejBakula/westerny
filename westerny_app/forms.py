@@ -57,3 +57,9 @@ class SearchMovieForm(forms.Form):
 
 class SearchPersonForm(forms.Form):
     text = forms.CharField(label="", max_length=64, widget=forms.TextInput(attrs={"size": 34, "placeholder": "Wprowadź fragment nazwiska" }))
+
+
+class AddArticleForm(forms.Form):
+    name = forms.CharField(label="", max_length=128, required=True, widget=forms.TextInput(attrs={"size": 40, "placeholder": "Nazwa artykułu"}))
+    author = forms.CharField(label="", max_length=64, required=None, widget=forms.TextInput(attrs={"size": 34, "placeholder": "Autor lub nazwa witryny"}))
+    url = forms.URLField(label="", required=True, widget=forms.TextInput(attrs={"size": 40, "placeholder": "tu skopiuj adres www"}))

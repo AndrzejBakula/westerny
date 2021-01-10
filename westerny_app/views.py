@@ -15,7 +15,7 @@ from django.contrib.auth.models import User
 from westerny_project.settings import PROTOCOLE
 from westerny_app.models import Movie, Genre, Person, Article
 from westerny_app.forms import AddMovieForm, AddGenreForm, AddPersonForm, EditGenreForm, RegisterForm, LoginForm
-from westerny_app.forms import SearchMovieForm, SearchPersonForm
+from westerny_app.forms import SearchMovieForm, SearchPersonForm, AddArticleForm
 
 
 #USER CHECK CLASSES:
@@ -265,8 +265,12 @@ class AddGenreView(StaffMemberCheck, View):
 class GenreDetailsView(View):
     def get(self, request, id):
         genre = Genre.objects.get(id=id)
-        # articles = [i for i in Article.objects.filter()]
-        return render(request, "genre_details.html", {"genre": genre})
+        articles = [i for i in Article.objects.filter(genre__id=id)]
+        ctx = {
+            "genre": genre,
+            "articles": articles
+        }
+        return render(request, "genre_details.html", ctx)
 
 
 class EditGenreView(StaffMemberCheck, View):
@@ -389,3 +393,41 @@ class AddPersonView(View):
     def get(self, request):
         form = AddPersonForm()
         return render(request, "add_person.html", {"form": form})
+
+
+class AddArticleGenreView(View):
+    def get(self, request, id):
+        genre = Genre.objects.get(id=id)
+        form = AddArticleForm()
+        ctx = {
+            "genre": genre,
+            "form": form
+        }
+        return render(request, "add_article_genre.html", ctx)
+    
+    def post(self, request, id):
+        form = AddArticleForm(request.POST)
+        genre = Genre.objects.get(id=id)
+        user = User.objects.get(pk=int(request.session.get("user_id")))
+        message = "Coś poszło nie tak"
+        if form.is_valid():
+            data = form.cleaned_data
+            article = Article.objects.create(article_name=data["name"], author=data["author"], article_added_by=user, link=data["url"])
+            genre.genre_article.add(article)
+            genre.save()
+            message = "Artykuł dodany pomyślnie"
+            ctx = {
+                "form": form,
+                "genre": genre,
+                "article": article,
+                "message": message
+            }
+            return redirect(f"/genre_details/{genre.id}")
+        ctx = {
+            "form": form,
+            "genre": genre,
+            "message": message
+        }
+        return render(request, "add_article_genre.html", ctx)
+
+

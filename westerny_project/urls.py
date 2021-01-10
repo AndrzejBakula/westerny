@@ -24,7 +24,7 @@ from westerny_app.views import IndexView, MoviesView, AddMovieView, GenresView, 
 from westerny_app.views import AddPersonView, GenreDetailsView, EditGenreView, DeleteGenreView
 from westerny_app.views import RegisterView, LoginView, LogoutView, RulesView, MyPlaceView, SearchMovieView
 from westerny_app.views import SearchPersonView, StatsView, VerificationView, WaitingGenresView
-from westerny_app.views import AcceptGenreView
+from westerny_app.views import AcceptGenreView, AddArticleGenreView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -49,5 +49,6 @@ urlpatterns = [
     path('people/', PeopleView.as_view(), name="people"),
     path('search_person/', SearchPersonView.as_view(), name="search-person"),
     path('add_person/', AddPersonView.as_view(), name="add-person"),
+    path('add_article_genre/<int:id>', AddArticleGenreView.as_view(), name="add-article-genre"),
     path('activate/<uidb64>/<token>', VerificationView.as_view(), name="activate")
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
