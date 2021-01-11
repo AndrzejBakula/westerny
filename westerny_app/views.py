@@ -171,6 +171,7 @@ class StatsView(View):
         people = len(Person.objects.all())
         genres = len(Genre.objects.all())
         notes = westerns + people + genres
+        links = len(Article.objects.all())
 
         ctx = {
             "users": users,
@@ -181,7 +182,8 @@ class StatsView(View):
             "westerns": westerns,
             "people": people,
             "genres": genres,
-            "notes": notes
+            "notes": notes,
+            "links": links
         }
         return render(request, "stats.html", ctx)
 
@@ -257,7 +259,7 @@ class AddGenreView(StaffMemberCheck, View):
                     genre_added_by=user
                 )
                 if user.is_superuser is True:
-                    genre.genre_accepted_by = True
+                    genre.genre_accepted_by = user
                     genre.save()
                 return redirect("/genres")
 
@@ -266,9 +268,11 @@ class GenreDetailsView(View):
     def get(self, request, id):
         genre = Genre.objects.get(id=id)
         articles = [i for i in Article.objects.filter(genre__id=id)]
+        articles_check = len(articles)
         ctx = {
             "genre": genre,
-            "articles": articles
+            "articles": articles,
+            "articles_check": articles_check
         }
         return render(request, "genre_details.html", ctx)
 
@@ -343,7 +347,7 @@ class DeleteGenreView(SuperUserCheck, View):
         return redirect("/genres")
 
 
-class WaitingGenresView(View):
+class WaitingGenresView(SuperUserCheck, View):
     def get(self, request):
         genres = Genre.objects.all().order_by("name")
         return render(request, "waiting_genres.html", {"genres": genres})
@@ -389,13 +393,13 @@ class SearchPersonView(View):
             return render(request, "search_movie.html", ctx)
 
 
-class AddPersonView(View):
+class AddPersonView(ActivateUserCheck, View):
     def get(self, request):
         form = AddPersonForm()
         return render(request, "add_person.html", {"form": form})
 
 
-class AddArticleGenreView(View):
+class AddArticleGenreView(StaffMemberCheck, View):
     def get(self, request, id):
         genre = Genre.objects.get(id=id)
         form = AddArticleForm()
@@ -431,3 +435,17 @@ class AddArticleGenreView(View):
         return render(request, "add_article_genre.html", ctx)
 
 
+class DeleteArticleGenreView(StaffMemberCheck, View):
+    def get(self, request, genre_id, article_id):
+        genre = Genre.objects.get(id=genre_id)
+        article = Article.objects.get(id=article_id)
+        ctx = {
+            "genre": genre,
+            "article": article
+        }
+        return render(request, "delete_article_genre.html", ctx)
+    
+    def post(self, request, genre_id, article_id):
+        article = Article.objects.get(id=article_id)
+        article.delete()
+        return redirect(f"/genre_details/{genre_id}")
