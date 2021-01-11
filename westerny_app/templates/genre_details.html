@@ -53,22 +53,23 @@
             {{ genre.genre_description }}
         </h5>
     </div>
+    <hr>
     {% else %}
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h4 class="display-5 align-self-center header">
             Brak opisu.
         </h4>
     </div>
+    <hr>
     {% endif %}
 
     {% if articles_check > 0 %}
-    <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h3 class="display-5 align-self-center header">
             <i>Artykuły o {{ genre.name }}</i>
         </h3>
     </div>
-    {% endif %}
+
     <div class="d-flex flex-column justify-content-center align-items-center">
         {% for article in articles %}
         <div class="d-flex flex-row justify-content-center align-items-center">
@@ -80,6 +81,7 @@
         </div>
         {% endfor %}
     </div>
+    {% endif %}
     {% if user.is_staff and genre.genre_accepted_by %}
     <div class="d-flex flex-row justify-content-center flex-wrap">
         <a class="btn btn-success btn-sm guzik4" href="{% url 'add-article-genre' genre.id %}">Dodaj link do artykułu</a>

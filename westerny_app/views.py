@@ -416,6 +416,15 @@ class AddArticleGenreView(StaffMemberCheck, View):
         message = "Coś poszło nie tak"
         if form.is_valid():
             data = form.cleaned_data
+            links = [i.link for i in Article.objects.all()]
+            if data["url"] in links:
+                message = "Taki link jest już w naszym archiwum."
+                ctx = {
+                    "form": form,
+                    "genre": genre,
+                    "message": message
+                }
+                return render(request, "add_article_genre.html", ctx)
             article = Article.objects.create(article_name=data["name"], author=data["author"], article_added_by=user, link=data["url"])
             genre.genre_article.add(article)
             genre.save()
@@ -448,4 +457,5 @@ class DeleteArticleGenreView(StaffMemberCheck, View):
     def post(self, request, genre_id, article_id):
         article = Article.objects.get(id=article_id)
         article.delete()
+        message = "Artykuł został usunięty."
         return redirect(f"/genre_details/{genre_id}")
