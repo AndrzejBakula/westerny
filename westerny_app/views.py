@@ -32,9 +32,12 @@ def check_rank(user):
     general = Rank.objects.get(name="generał")
     gubernator = Rank.objects.get(name="gubernator")
 
-    added_movies = len(Movie.objects.filter(movie_added_by=user.id))*2
-    added_people = len(Person.objects.filter(person_added_by=user.id))
-    added_genre = len(Genre.objects.filter(genre_added_by=user.id))*2
+    movies = Movie.objects.filter(movie_added_by=user.id)
+    added_movies = len([i for i in movies if i.movie_accepted_by])*2
+    people = Person.objects.filter(person_added_by=user.id)
+    added_people = len([i for i in people if i.person_accepted_by])
+    genres = Genre.objects.filter(genre_added_by=user.id)
+    added_genre = len([i for i in genres if i.genre_accepted_by])*2
     sum_of_added = added_genre+added_movies+added_people
 
     accpted_movies = len(Movie.objects.filter(movie_accepted_by=user.id))
@@ -215,11 +218,14 @@ class LogoutView(ActivateUserCheck, View):
 class MyPlaceView(ActivateUserCheck, View):
     def get(self, request):
         user = User.objects.get(pk=request.session.get("user_id"))
-        westerns = len(Movie.objects.filter(movie_added_by=user.id))
-        people = len(Person.objects.filter(person_added_by=user.id))
-        genres = len(Genre.objects.filter(genre_added_by=user.id))
+        westerns = Movie.objects.filter(movie_added_by=user.id)
+        added_westerns = len([i for i in westerns if i.movie_accepted_by])
+        people = Person.objects.filter(person_added_by=user.id)
+        added_people = len([i for i in people if i.person_accepted_by])
+        genres = Genre.objects.filter(genre_added_by=user.id)
+        added_genres = len([i for i in genres if i.genre_accepted_by])
         links = len(Article.objects.filter(article_added_by=user.id))
-        notes = westerns + people + genres + links
+        notes = added_westerns + added_people + added_genres + links
 
         accepted_westerns = len(Movie.objects.filter(movie_accepted_by=user.id))
         accepted_people = len(Person.objects.filter(person_accepted_by=user.id))
@@ -227,9 +233,9 @@ class MyPlaceView(ActivateUserCheck, View):
         accepted_notes = accepted_westerns + accepted_people + accepted_genres
 
         ctx = {
-            "westerns": westerns,
-            "people": people,
-            "genres": genres,
+            "westerns": added_westerns,
+            "people": added_people,
+            "genres": added_genres,
             "notes": notes,
             "links": links,
             "accepted_westerns": accepted_westerns,
