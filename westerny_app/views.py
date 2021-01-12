@@ -18,6 +18,59 @@ from westerny_app.forms import AddMovieForm, AddGenreForm, AddPersonForm, EditGe
 from westerny_app.forms import SearchMovieForm, SearchPersonForm, AddArticleForm
 
 
+#RANK METHODS:
+def check_rank(user):
+    userrank = UserRank.objects.get(user=user.id)
+
+    kawalerzysta = Rank.objects.get(name="kawalerzysta")
+    kapral = Rank.objects.get(name="kapral")
+    sierzant = Rank.objects.get(name="sierżant")
+    porucznik = Rank.objects.get(name="porucznik")
+    kapitan = Rank.objects.get(name="kapitan")
+    major = Rank.objects.get(name="major")
+    pulkownik = Rank.objects.get(name="pułkownik")
+    general = Rank.objects.get(name="generał")
+    gubernator = Rank.objects.get(name="gubernator")
+
+    added_movies = len(Movie.objects.filter(movie_added_by=user.id))*2
+    added_people = len(Person.objects.filter(person_added_by=user.id))
+    added_genre = len(Genre.objects.filter(genre_added_by=user.id))*2
+    sum_of_added = added_genre+added_movies+added_people
+
+    accpted_movies = len(Movie.objects.filter(movie_accepted_by=user.id))
+    accepted_people = len(Person.objects.filter(person_accepted_by=user.id))
+    accepted_genre = len(Genre.objects.filter(genre_accepted_by=user.id))
+    sum_of_accepted = accepted_genre+accepted_people+accpted_movies
+
+    if user.username == "Westerny":
+        userrank.rank = gubernator
+        return userrank.save()
+    elif user.is_staff == False:
+        userrank.rank = kawalerzysta
+        if 10 <= sum_of_added < 30:
+            userrank.rank = kapral
+            return userrank.save()
+        elif sum_of_added >= 30:
+            userrank.rank = sierzant
+            return userrank.save()
+        return userrank.save()
+    elif user.is_staff == True:
+        userrank.rank = porucznik
+        if (30 <= sum_of_added < 50) or ( 10 <= sum_of_accepted < 30):
+            userrank.rank = kapitan
+            return userrank.save()
+        elif (50 <= sum_of_added < 75) or (30 <= sum_of_accepted < 50):
+            userrank.rank = major
+            return userrank.save()
+        elif (75 <= sum_of_added < 100) or (50 <= sum_of_accepted < 75):
+            userrank.rank = pulkownik
+            return userrank.save()
+        return userrank.save()
+    elif user.is_superuser == True:
+        userrank.rank = general
+        return userrank.save()       
+
+
 #USER CHECK CLASSES:
 class VerificationView(View):
     def get(self, request, uidb64, token):
@@ -46,6 +99,9 @@ class ActivateUserCheck(UserPassesTestMixin, View):
 #MAIN VIEWS CLASSES:
 class IndexView(View):
     def get(self, request):
+        if request.session.get("user_id"):
+            user = User.objects.get(pk=int(request.session.get("user_id")))
+            check_rank(user)
         return render(request, "index.html")
 
 
@@ -158,7 +214,30 @@ class LogoutView(ActivateUserCheck, View):
 
 class MyPlaceView(ActivateUserCheck, View):
     def get(self, request):
-        return render(request, "my_place.html")
+        user = User.objects.get(pk=request.session.get("user_id"))
+        westerns = len(Movie.objects.filter(movie_added_by=user.id))
+        people = len(Person.objects.filter(person_added_by=user.id))
+        genres = len(Genre.objects.filter(genre_added_by=user.id))
+        links = len(Article.objects.filter(article_added_by=user.id))
+        notes = westerns + people + genres + links
+
+        accepted_westerns = len(Movie.objects.filter(movie_accepted_by=user.id))
+        accepted_people = len(Person.objects.filter(person_accepted_by=user.id))
+        accepted_genres = len(Genre.objects.filter(genre_accepted_by=user.id))
+        accepted_notes = accepted_westerns + accepted_people + accepted_genres
+
+        ctx = {
+            "westerns": westerns,
+            "people": people,
+            "genres": genres,
+            "notes": notes,
+            "links": links,
+            "accepted_westerns": accepted_westerns,
+            "accepted_people": accepted_people,
+            "accepted_genres": accepted_genres,
+            "accepted_notes": accepted_notes
+        }
+        return render(request, "my_place.html", ctx)
 
 
 class StatsView(View):

@@ -10,15 +10,47 @@
     </div>
     <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h2 class="display-5 align-self-center header2"><i>Kwatera Kawalerzysty {{ user.username }}</i></h2>
+        <h2 class="display-5 align-self-center header2"><i>Kwatera</i></h2>
     </div>
     <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h3 class="display-5 align-self-center header">
-            Tutaj będą informacje prywatne użytkownika.
-        </h3>
+        <h3 class="display-5 align-self-center header2"><i>Ranga w pułku: {{ user.userrank_set.all.0.rank.name }}</i></h3>
     </div>
-
+    <hr>
+    <div class="d-flex flex-column justify-content-center align-items-center">
+        <h3 class="display-5 align-self-center header">
+            <i>Suma zapisanych kart almanachu: {{ notes }}</i>
+        </h3>
+        <h4 class="display-5 align-self-center header">
+            Ilość dodanych westernów: {{ westerns }}
+        </h4>
+        <h4 class="display-5 align-self-center header">
+            Ilość dodanych ludzi: {{ people }}
+        </h4>
+        <h4 class="display-5 align-self-center header">
+            Ilość dodanych gatunków: {{ genres }}
+        </h4>
+        <h4 class="display-5 align-self-center header">
+            Ilość dodanych linków: {{ links }}
+        </h4>
+    </div>
+    {% if user.is_staff %}
+    <hr>
+    <div class="d-flex flex-column justify-content-center align-items-center">
+        <h3 class="display-5 align-self-center header">
+            <i>Suma zatwierdzonych kart almanachu: {{ accepted_notes }}</i>
+        </h3>
+        <h4 class="display-5 align-self-center header">
+            Ilość zatwierdzonych westernów: {{ accepted_westerns }}
+        </h4>
+        <h4 class="display-5 align-self-center header">
+            Ilość zatwierdzonych ludzi: {{ accepted_people }}
+        </h4>
+        <h4 class="display-5 align-self-center header">
+            Ilość zatwierdzonych gatunków: {{ accepted_genres }}
+        </h4>
+    </div>
+    {% endif %}
 
 
 </div>
