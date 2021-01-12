@@ -4,18 +4,27 @@ from datetime import timezone, date, timedelta
 
 
 RANKS = (
-    (1, "kawalerzysta"),
-    (2, "kapral"),
-    (3, "sierżant"),
-    (4, "porucznik"),
-    (5, "kapitan"),
-    (6, "major"),
-    (7, "pułkownik"),
-    (8, "generał")
+    (1, "Kawalerzysta"),
+    (2, "Kapral"),
+    (3, "Sierżant"),
+    (4, "Porucznik"),
+    (5, "Kapitan"),
+    (6, "Major"),
+    (7, "Pułkownik"),
+    (8, "Generał"),
+    (9, "Gubernator")
 )
 
 class Rank(models.Model):
     name = models.CharField(max_length=32, unique=True, choices=RANKS)
+
+
+class UserRank(models.Model):
+    user = models.ForeignKey(User, null=False, on_delete=models.DO_NOTHING)
+    rank = models.ForeignKey(Rank, null=False, default=1, on_delete=models.DO_NOTHING)
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
 
 
 class Article(models.Model):
