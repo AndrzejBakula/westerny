@@ -24,7 +24,7 @@ class UserRank(models.Model):
     rank = models.ForeignKey(Rank, null=False, default=1, on_delete=models.DO_NOTHING)
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return self.rank
 
 
 class Article(models.Model):
