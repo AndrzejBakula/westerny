@@ -25,6 +25,8 @@ from westerny_app.views import AddPersonView, GenreDetailsView, EditGenreView, D
 from westerny_app.views import RegisterView, LoginView, LogoutView, RulesView, MyPlaceView, SearchMovieView
 from westerny_app.views import SearchPersonView, StatsView, VerificationView, WaitingGenresView
 from westerny_app.views import AcceptGenreView, AddArticleGenreView, DeleteArticleGenreView
+from westerny_app.views import WaitingPeopleView, PersonDetailsView, EditPersonView, AcceptPersonView
+from westerny_app.views import AddArticlePersonView, DeleteArticlePersonView, DeletePersonView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -47,9 +49,16 @@ urlpatterns = [
     path('waiting_genres/', WaitingGenresView.as_view(), name="waiting-genres"),
     path('accept_genre/<int:id>', AcceptGenreView.as_view(), name="accept-genre"),
     path('people/', PeopleView.as_view(), name="people"),
-    path('search_person/', SearchPersonView.as_view(), name="search-person"),
     path('add_person/', AddPersonView.as_view(), name="add-person"),
+    path('person_details/<int:id>', PersonDetailsView.as_view(), name="person-details"),
+    path('edit_person/<int:id>', EditPersonView.as_view(), name="edit-person"),
+    path('delete_person/<int:id>', DeletePersonView.as_view(), name="delete-person"),
+    path('waiting_people/', WaitingPeopleView.as_view(), name="waiting-people"),
+    path('accept_person/<int:id>', AcceptPersonView.as_view(), name="accept-person"),
+    path('search_person/', SearchPersonView.as_view(), name="search-person"),
     path('add_article_genre/<int:id>', AddArticleGenreView.as_view(), name="add-article-genre"),
     path('delete_article_genre/<int:genre_id>/<int:article_id>', DeleteArticleGenreView.as_view(), name="delete-article-genre"),
+    path('add_article_person/<int:id>', AddArticlePersonView.as_view(), name="add-article-person"),
+    path('delete_article_person/<int:person_id>/<int:article_id>', DeleteArticlePersonView.as_view(), name="delete-article-person"),
     path('activate/<uidb64>/<token>', VerificationView.as_view(), name="activate")
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

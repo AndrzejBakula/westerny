@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %} Szczegóły Gatunku {% endblock %}
+{% block title %} Szczegóły Osoby {% endblock %}
 
 {% block content %}
 
@@ -13,24 +13,24 @@
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'movies' %}">WESTERNY</a>
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'people' %}">LUDZIE</a>
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'genres' %}">GATUNKI</a>
-        {% if user.is_staff %}
-        <a class="btn btn-success btn-lg guzik" href="{% url 'edit-genre' genre.id %}"> Edytuj Gatunek</a>
+        {% if person.person_added_by == user or user.is_staff %}
+        <a class="btn btn-success btn-lg guzik" href="{% url 'edit-person' person.id %}"> Edytuj Osobę</a>
         {% endif %}
         {% if user.is_superuser %}
-        <a class="btn btn-danger btn-lg guzik" href="{% url 'delete-genre' genre.id %}"> Usuń Gatunek</a>
-        {% if not genre.genre_accepted_by %}
-        <a class="btn btn-info btn-lg guzik" href="{% url 'accept-genre' genre.id %}"> Akceptuj</a>
+        <a class="btn btn-danger btn-lg guzik" href="{% url 'delete-person' person.id %}"> Usuń Osobę</a>
         {% endif %}
+        {% if user.is_staff and not person.person_accepted_by %}
+        <a class="btn btn-info btn-lg guzik" href="{% url 'accept-person' person.id %}"> Akceptuj</a>
         {% endif %}
     </div>
     <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h2 class="display-5 align-self-center header2" style="margin-left: 3vh; margin-right: 3vh;"><i>{{ genre.name }}</i></h2>
+        <h2 class="display-5 align-self-center header2" style="margin-left: 3vh; margin-right: 3vh;"><i>{{ person }}</i></h2>
     </div>
     
-    {% if genre.genre_image %}
+    {% if person.person_image %}
     <div class="m-2">
-      <img src="{{ genre.genre_image.url }}" alt="obraz {{ genre.name }}"
+      <img src="{{ person.person_image.url }}" alt="obraz {{ person.name }}"
         width="380" class="img-thumbnail border border-secondary rounded-0">
     </div>
     {% else %}
@@ -42,15 +42,15 @@
     <hr>
     {% endif %}
 
-    {% if genre.genre_description %}
+    {% if person.person_description %}
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h3 class="display-5 align-self-center header">
-            <i>Opis gatunku</i>
+            <i>Opis osoby</i>
         </h3>
     </div>
     <div>
         <h5 style="text-align: justify; margin-left: 3vh; margin-right: 3vh;" class="display-5 align-self-center header">
-            {{ genre.genre_description }}
+            {{ person.person_description }}
         </h5>
     </div>
     <hr>
@@ -66,7 +66,7 @@
     {% if articles_check > 0 %}
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h3 class="display-5 align-self-center header" style="margin-left: 3vh; margin-right: 3vh;">
-            <i>Artykuły o {{ genre.name }}</i>
+            <i>Artykuły o {{ person }}</i>
         </h3>
     </div>
 
@@ -76,21 +76,21 @@
             <a class="display-5 align-self-center header" href="{{ article.link }}" target="_blank" style="color: white;">{{ article.article_name }} - Autor: {{ article.author }}</a>
             {% if user.is_superuser or article.article_added_by == user %}
             <span style="visibility: hidden;">..</span>
-            <a class="btn btn-danger btn-sm guzik4" href="{% url 'delete-article-genre' genre.id article.id %}">Usuń</a>
+            <a class="btn btn-danger btn-sm guzik4" href="{% url 'delete-article-person' person.id article.id %}">Usuń</a>
             {% endif %}
         </div>
         {% endfor %}
     </div>
     {% endif %}
-    {% if user.is_staff and genre.genre_accepted_by %}
+    {% if user.is_staff and person.person_accepted_by %}
     <div class="d-flex flex-row justify-content-center flex-wrap">
-        <a class="btn btn-success btn-sm guzik4" href="{% url 'add-article-genre' genre.id %}">Dodaj link do artykułu</a>
+        <a class="btn btn-success btn-sm guzik4" href="{% url 'add-article-person' person.id %}">Dodaj link do artykułu</a>
     </div>
     {% endif %}
     <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h3 class="display-5 align-self-center header" style="margin-left: 3vh; margin-right: 3vh;">
-            <i>Westerny z gatunku {{ genre.name }}</i>
+            <i>Westerny z {{ person }}</i>
         </h3>
     </div>
 
@@ -98,9 +98,9 @@
 
     <hr>
     <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
-        <span>Dodane przez: {{ genre.genre_added_by }}</span>
-        {% if genre.genre_accepted_by %}<span>Zaakceptowane przez: {{ genre.genre_accepted_by }}</span>{% endif %}
-        {% if genre.genre_edited_by %}<span>Ostatnia edycja: {{ genre.genre_edited_by }}</span>{% endif %}
+        <span>Dodane przez: {{ person.person_added_by }}</span>
+        {% if person.person_accepted_by %}<span>Zaakceptowane przez: {{ person.person_accepted_by }}</span>{% endif %}
+        {% if person.person_edited_by %}<span>Ostatnia edycja: {{ person.person_edited_by }}</span>{% endif %}
     </div>
 
 </div>

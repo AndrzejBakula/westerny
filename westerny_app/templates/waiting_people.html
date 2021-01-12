@@ -1,7 +1,6 @@
 {% extends "base.html" %}
-{% load static %}
 
-{% block title %} Dodaj Osobę {% endblock %}
+{% block title %} Oczekujące Osoby {% endblock %}
 
 {% block content %}
 
@@ -11,32 +10,22 @@
     </div>
     <div class="d-flex flex-row justify-content-around flex-wrap">
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'movies' %}">WESTERNY</a>
+        <a class="btn btn-warning btn-lg guzik2" href="{% url 'genres' %}">GATUNKI</a>
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'people' %}">LUDZIE</a>
-        <a class="btn btn-warning btn-lg guzik2" href="{% url 'genres' %}" class="btn btn-primary">GATUNKI</a>
+        <a class="btn btn-success btn-lg guzik" href="{% url 'add-person' %}"> Dodaj Osobę</a>
     </div>
-    <hr>
-
-    <div class="d-flex flex-row justify-content-center align-items-center">
-        <h2 class="display-5 align-self-center header2"><i>Dodaj Osobę</i></h2>
-    </div>
-
-    {% if error_message %}
     <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h3 class="display-5 align-self-center header">
-            {{ error_message }}
-        </h3>
+        <h2 class="display-5 align-self-center header2"><i>Oczekujące Osoby</i></h1>
     </div>
-    <hr>
-    {% endif %}
-    
-    <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'add-person' %}" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
 
-        {{ form.as_p }}
-
-        <button type="submit" id="submit">Dodaj Osobę</button>
-    </form>
+    {% for person in people %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        {% if not person.person_accepted_by %}
+        <a  class="btn btn-link align-self-center" href="{% url 'person-details' person.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ person }}</a>
+        {% endif %}
+    </div>
+    {% endfor %}
 
 
 

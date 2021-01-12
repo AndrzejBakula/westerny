@@ -37,6 +37,14 @@ class AddPersonForm(forms.Form):
     image = forms.ImageField(label="Dodaj obraz", required=None)
 
 
+class EditPersonForm(forms.Form):
+    first_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Imię"}))
+    last_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwisko"}))
+    description = forms.CharField(label="", max_length=1500, required=None, widget=forms.Textarea(attrs={"rows": 6, "cols": 40, "placeholder": "Krótki opis (do 1500 znaków)"}))
+    image = forms.ImageField(label="Dodaj obraz", required=None)
+    delete_image = forms.BooleanField(label="Skasować istniejący obraz?", required=None)
+
+
 class RegisterForm(forms.Form):
     username = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 34, "placeholder": "Nazwa kawalerzysty"}))
     email = forms.EmailField(label="", max_length=128, widget=forms.EmailInput(attrs={"size": 34, "placeholder": "Adres email"}))

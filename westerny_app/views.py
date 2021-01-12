@@ -15,10 +15,10 @@ from django.contrib.auth.models import User
 from westerny_project.settings import PROTOCOLE
 from westerny_app.models import Movie, Genre, Person, Article, Rank, UserRank
 from westerny_app.forms import AddMovieForm, AddGenreForm, AddPersonForm, EditGenreForm, RegisterForm, LoginForm
-from westerny_app.forms import SearchMovieForm, SearchPersonForm, AddArticleForm
+from westerny_app.forms import SearchMovieForm, SearchPersonForm, AddArticleForm, EditPersonForm
 
 
-#RANK METHODS:
+#RANK CHECKING METHOD:
 def check_rank(user):
     userrank = UserRank.objects.get(user=user.id)
 
@@ -133,6 +133,15 @@ class RegisterView(View):
         form = RegisterForm(initial=initial_data)
         if password != password2:
             message = "Proszę podać dwa takie same hasła."
+            ctx = {
+                "username": username,
+                "email": email,
+                "message": message,
+                "form": form
+            }
+            return render(request, "register.html", ctx)
+        elif len(password) < 6:
+            message = "Hasło powinno mieć przynajmniej 6 znaków."
             ctx = {
                 "username": username,
                 "email": email,
@@ -338,16 +347,39 @@ class AddGenreView(StaffMemberCheck, View):
                 return render(request, "add_genre.html", ctx)
             else:
                 user = User.objects.get(pk=int(request.session.get("user_id")))
-                genre = Genre.objects.create(
-                    name=genre,
-                    genre_description=request.POST.get("description"),
-                    genre_image=request.FILES.get("image"),
-                    genre_added_by=user
-                )
-                if user.is_superuser is True:
-                    genre.genre_accepted_by = user
-                    genre.save()
-                return redirect("/genres")
+                if user.is_superuser == True:
+                    genre = Genre.objects.create(
+                        name=genre,
+                        genre_description=request.POST.get("description"),
+                        genre_image=request.FILES.get("image"),
+                        genre_added_by=user,
+                        genre_accepted_by=user
+                    )
+                    message = "Dodano nowy gatunek"
+                    genres = Genre.objects.all().order_by("name")
+                    waiting_genres = len([i for i in Genre.objects.all() if i.genre_accepted_by == None])
+                    ctx = {
+                        "message": message,
+                        "genres": genres,
+                        "waiting_genres": waiting_genres
+                    }
+                    return render(request, "genres.html", ctx)
+                else:
+                    genre = Genre.objects.create(
+                        name=genre,
+                        genre_description=request.POST.get("description"),
+                        genre_image=request.FILES.get("image"),
+                        genre_added_by=user
+                    )
+                    message = "Twoja propozycja czeka na akceptację"
+                    genres = Genre.objects.all().order_by("name")
+                    waiting_genres = len([i for i in Genre.objects.all() if i.genre_accepted_by == None])
+                    ctx = {
+                        "message": message,
+                        "genres": genres,
+                        "waiting_genres": waiting_genres
+                    }
+                    return render(request, "genres.html", ctx)
 
 
 class GenreDetailsView(View):
@@ -405,7 +437,7 @@ class EditGenreView(StaffMemberCheck, View):
             genre.genre_edited_by = user
             if request.FILES.get("image") != None or request.POST.get("delete_image"):
                 genre.genre_image = request.FILES.get("image")
-            if user.is_superuser:
+            if user.is_superuser and not genre.genre_accepted_by:
                 genre.genre_accepted_by = user
             genre.save()
             message = "Edycja zakończona sukcesem"
@@ -455,7 +487,31 @@ class AcceptGenreView(SuperUserCheck, View):
 class PeopleView(View):
     def get(self, request):
         people = Person.objects.all().order_by("last_name")
-        return render(request, "people.html", {"people": people})
+        waiting_people = len([i for i in people if i.person_accepted_by == None])
+        ctx = {
+            "people": people,
+            "waiting_people": waiting_people
+        }
+        return render(request, "people.html", ctx)
+
+
+class WaitingPeopleView(StaffMemberCheck, View):
+    def get(self, request):
+        people = Person.objects.all().order_by("last_name")
+        return render(request, "waiting_people.html", {"people": people})
+
+
+class PersonDetailsView(View):
+    def get(self, request, id):
+        person = Person.objects.get(id=id)
+        articles = [i for i in Article.objects.filter(person__id=id)]
+        articles_check = len(articles)
+        ctx = {
+            "person": person,
+            "articles": articles,
+            "articles_check": articles_check
+        }
+        return render(request, "person_details.html", ctx)
 
 
 class SearchPersonView(View):
@@ -483,6 +539,145 @@ class AddPersonView(ActivateUserCheck, View):
     def get(self, request):
         form = AddPersonForm()
         return render(request, "add_person.html", {"form": form})
+
+    def post(self, request):
+        form = AddPersonForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            names = [f"{i.first_name} {i.last_name}" for i in Person.objects.all()]
+            name = f"{data['first_name'].title()} {data['last_name'].title()}"
+            if name in names:
+                ctx = {
+                    "error_message": "Taka osoba jest już w bazie.",
+                    "form": form,
+                    "data": request.POST
+                }
+                return render(request, "add_person.html", ctx)
+            else:
+                user = User.objects.get(pk=int(request.session.get("user_id")))
+                if user.is_staff == True:
+                    person = Person.objects.create(
+                        first_name=request.POST.get("first_name"),
+                        last_name=request.POST.get("last_name"),
+                        person_description=request.POST.get("description"),
+                        person_image=request.FILES.get("image"),
+                        person_added_by=user,
+                        person_accepted_by=user
+                    )
+                    message = "Dodano nową osobę"
+                    people = Person.objects.all().order_by("last_name")
+                    waiting_people = len([i for i in Person.objects.all() if i.person_accepted_by == None])
+                    ctx = {
+                        "message": message,
+                        "people": people,
+                        "waiting_people": waiting_people
+                    }
+                    return render(request, "people.html", ctx)
+                else:
+                    person = Person.objects.create(
+                        first_name=request.POST.get("first_name"),
+                        last_name=request.POST.get("last_name"),
+                        person_description=request.POST.get("description"),
+                        person_image=request.FILES.get("image"),
+                        person_added_by=user
+                    )
+                    message = "Twoja propozycja czeka na akceptację"
+                    people = Person.objects.all().order_by("last_name")
+                    waiting_people = len([i for i in Person.objects.all() if i.person_accepted_by == None])
+                    ctx = {
+                        "message": message,
+                        "people": people,
+                        "waiting_people": waiting_people
+                    }
+                    return render(request, "people.html", ctx)
+
+
+class EditPersonView(StaffMemberCheck, View):
+    def get(self, request, id):
+        person = Person.objects.get(id=id)
+        initial_data = {
+            "first_name": person.first_name,
+            "last_name": person.last_name,
+            "description": person.person_description
+        }
+        form = EditPersonForm(initial=initial_data)
+        ctx = {
+            "person": person,
+            "form": form
+        }
+        return render(request, "edit_person.html", ctx)
+    
+    def post(self, request, id):
+        form = EditPersonForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            person = Person.objects.get(id=id)
+            names = [f"{i.first_name} {i.last_name}" for i in Person.objects.all()]
+            name = f"{person.first_name.title()} {person.last_name.title()}"
+            if name in names:
+                names.remove(name)
+            person_name = f"{request.POST.get('first_name').title()} {request.POST.get('last_name').title()}"
+            if person_name in names:
+                initial_data = {
+                    "first_name": person.first_name,
+                    "last_name": person.last_name,
+                    "description": person.person_description
+                }
+                form = EditPersonForm(initial=initial_data)
+                ctx = {
+                    "message": f"Osoba {person_name} już jest w bazie.",
+                    "person": person,
+                    "form": form,
+                    "data": request.POST
+                }
+                return render(request, "edit_person.html", ctx)
+            user = User.objects.get(pk=int(request.session.get("user_id")))
+            person.first_name = request.POST.get("first_name")
+            person.last_name = request.POST.get("last_name")
+            person.person_description = request.POST.get("description")
+            person.person_edited_by = user
+            if request.FILES.get("image") != None or request.POST.get("delete_image"):
+                person.person_image = request.FILES.get("image")
+            if user.is_staff and not person.person_accepted_by:
+                person.person_accepted_by = user
+            person.save()
+            message = "Edycja zakończona sukcesem"
+            initial_data = {
+                "first_name": person.first_name,
+                "last_name": person.last_name,
+                "description": person.person_description
+            }
+            form = EditPersonForm(initial=initial_data)
+            ctx = {
+                "person": person,
+                "form": form,
+                "message": message
+            }
+            return redirect(f"/person_details/{person.id}")
+
+
+class DeletePersonView(StaffMemberCheck, View):
+    def get(self, request, id):
+        person = Person.objects.get(id=id)
+        return render(request, "delete_person.html", {"person": person})
+    
+    def post(self, request, id):
+        person = Person.objects.get(id=id)
+        person.delete()
+        return redirect("/people")
+
+
+class AcceptPersonView(StaffMemberCheck, View):
+    def get(self, request, id):
+        person = Person.objects.get(id=id)
+        return render(request, "accept_person.html", {"person": person})
+    
+    def post(self, request, id):
+        person = Person.objects.get(id=id)
+        user = User.objects.get(pk=int(request.session.get("user_id")))
+        person.person_accepted_by = user
+        person.save()
+        return redirect("/waiting_people")
 
 
 class AddArticleGenreView(StaffMemberCheck, View):
@@ -545,3 +740,65 @@ class DeleteArticleGenreView(StaffMemberCheck, View):
         article.delete()
         message = "Artykuł został usunięty."
         return redirect(f"/genre_details/{genre_id}")
+
+
+class AddArticlePersonView(StaffMemberCheck, View):
+    def get(self, request, id):
+        person = Person.objects.get(id=id)
+        form = AddArticleForm()
+        ctx = {
+            "person": person,
+            "form": form
+        }
+        return render(request, "add_article_person.html", ctx)
+    
+    def post(self, request, id):
+        form = AddArticleForm(request.POST)
+        person = Person.objects.get(id=id)
+        user = User.objects.get(pk=int(request.session.get("user_id")))
+        message = "Coś poszło nie tak"
+        if form.is_valid():
+            data = form.cleaned_data
+            links = [i.link for i in Article.objects.all()]
+            if data["url"] in links:
+                message = "Taki link jest już w naszym archiwum."
+                ctx = {
+                    "form": form,
+                    "person": person,
+                    "message": message
+                }
+                return render(request, "add_article_person.html", ctx)
+            article = Article.objects.create(article_name=data["name"], author=data["author"], article_added_by=user, link=data["url"])
+            person.person_article.add(article)
+            person.save()
+            message = "Artykuł dodany pomyślnie"
+            ctx = {
+                "form": form,
+                "person": person,
+                "article": article,
+                "message": message
+            }
+            return redirect(f"/person_details/{person.id}")
+        ctx = {
+            "form": form,
+            "person": person,
+            "message": message
+        }
+        return render(request, "add_article_person.html", ctx)
+
+
+class DeleteArticlePersonView(StaffMemberCheck, View):
+    def get(self, request, person_id, article_id):
+        person = Person.objects.get(id=person_id)
+        article = Article.objects.get(id=article_id)
+        ctx = {
+            "person": person,
+            "article": article
+        }
+        return render(request, "delete_article_person.html", ctx)
+    
+    def post(self, request, person_id, article_id):
+        article = Article.objects.get(id=article_id)
+        article.delete()
+        message = "Artykuł został usunięty."
+        return redirect(f"/person_details/{person_id}")

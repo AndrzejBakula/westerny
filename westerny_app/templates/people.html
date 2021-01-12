@@ -14,22 +14,31 @@
     </div>
     <div class="d-flex flex-row justify-content-around flex-wrap">
         <a class="btn btn-dark btn-lg guzik" href="{% url 'search-person' %}"> Szukaj Osoby</a>
-        {% if user.is_authenticated %}
+        {% if user.is_staff %}
         <a class="btn btn-success btn-lg guzik" href="{% url 'add-person' %}"> Dodaj Osobę</a>
+        {% endif %}
+        {% if not user.is_staff %}
+        <a class="btn btn-success btn-lg guzik" href="{% url 'add-person' %}">Zaproponuj Osobę</a>
+        {% endif %}
+        {% if user.is_staff %}
+        {% if waiting_people > 0 %}
+        <a class="btn btn-info btn-lg guzik" href="{% url 'waiting-people' %}">Oczekujące</a>
+        {% endif %}
         {% endif %}
     </div>
     <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h2 class="display-5 align-self-center header2"><i>Ludzie Westernu</i></h2>
     </div>
-    <ul>
-        {% for person in people %}
-            <li><a class="menu_link" href="/person-details/{{person.id}}">{{ person }}</a></li>
-        {% endfor %}
-    </ul>
+
+    {% for person in people %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        {% if person.person_accepted_by %}
+        <a  class="btn btn-link align-self-center" href="{% url 'person-details' person.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ person }}</a>
+        {% endif %}
+    </div>
+    {% endfor %}
 
 
-
-</div>
 
 {% endblock %}

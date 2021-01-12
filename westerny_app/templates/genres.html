@@ -25,9 +25,16 @@
         {% endif %}
         {% endif %}
     </div>
+
+    {% if message %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h3 class="display-5 align-self-center header2">{{ message }}</h3>
+    </div>
+    {% endif %}
+
     <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h2 class="display-5 align-self-center header2"><i>Gatunki Westernu</i></h1>
+        <h2 class="display-5 align-self-center header2"><i>Gatunki Westernu</i></h2>
     </div>
 
     {% for genre in genres %}
