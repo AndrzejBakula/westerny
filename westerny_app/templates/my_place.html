@@ -16,6 +16,25 @@
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h3 class="display-5 align-self-center header2"><i>Ranga w pułku: {{ user.userrank_set.all.0.rank.name }}</i></h3>
     </div>
+    <div>
+        {% if user.userrank_set.all.0.rank.name == "kapral" %}
+        <img src="{% static 'images/kapral.png' %}" style="border-color: #ffffff; border-style: solid; width: 100px;">
+        {% elif user.userrank_set.all.0.rank.name == "sierżant" %}
+        <img src="{% static 'images/sierzant.png' %}" style="border-color: #ffffff; border-style: solid; width: 100px;">
+        {% elif user.userrank_set.all.0.rank.name == "porucznik" %}
+        <img src="{% static 'images/porucznik.png' %}" style="border-color: #ffffff; border-style: solid; width: 100px;">
+        {% elif user.userrank_set.all.0.rank.name == "kapitan" %}
+        <img src="{% static 'images/kapitan.png' %}" style="border-color: #ffffff; border-style: solid; width: 100px;">
+        {% elif user.userrank_set.all.0.rank.name == "major" %}
+        <img src="{% static 'images/major.png' %}" style="border-color: #ffffff; border-style: solid; width: 100px;">
+        {% elif user.userrank_set.all.0.rank.name == "pulkownik" %}
+        <img src="{% static 'images/pulkownik.png' %}" style="border-color: #ffffff; border-style: solid; width: 100px;">
+        {% elif user.userrank_set.all.0.rank.name == "generał" %}
+        <img src="{% static 'images/generał.png' %}" style="border-color: #ffffff; border-style: solid; width: 100px;">
+        {% elif user.userrank_set.all.0.rank.name == "gubernator" %}
+        <img src="{% static 'images/gubernator.png' %}" style="border-color: #ffffff; border-style: solid; width: 100px;">
+        {% endif %}
+    </div>
     <hr>
     <div class="d-flex flex-column justify-content-center align-items-center">
         <h3 class="display-5 align-self-center header">
