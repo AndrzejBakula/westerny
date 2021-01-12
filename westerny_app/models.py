@@ -3,20 +3,8 @@ from django.contrib.auth.models import User, AbstractUser
 from datetime import timezone, date, timedelta
 
 
-RANKS = (
-    (1, "Kawalerzysta"),
-    (2, "Kapral"),
-    (3, "Sierżant"),
-    (4, "Porucznik"),
-    (5, "Kapitan"),
-    (6, "Major"),
-    (7, "Pułkownik"),
-    (8, "Generał"),
-    (9, "Gubernator")
-)
-
 class Rank(models.Model):
-    name = models.CharField(max_length=32, unique=True, choices=RANKS)
+    name = models.CharField(max_length=32, unique=True)
 
 
 class UserRank(models.Model):
@@ -24,7 +12,24 @@ class UserRank(models.Model):
     rank = models.ForeignKey(Rank, null=False, default=1, on_delete=models.DO_NOTHING)
 
     def __str__(self):
-        return self.rank
+        if self.rank.name == "kawalerzysta":
+            return "kawalerzysto"
+        elif self.rank.name == "kapral":
+            return "kapralu"
+        elif self.rank.name == "sierżant":
+            return "sierżancie"
+        elif self.rank.name == "porucznik":
+            return "poruczniku"
+        elif self.rank.name == "kapitan":
+            return "kapitanie"
+        elif self.rank.name == "major":
+            return "majorze"
+        elif self.rank.name == "pułkownik":
+            return "pułkowniku"
+        elif self.rank.name == "generał":
+            return "generale"
+        elif self.rank.name == "gubernator":
+            return "gubernatorze"
 
 
 class Article(models.Model):

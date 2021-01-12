@@ -23,7 +23,7 @@
           <div class="d-flex flex-row justify-content-center flex-wrap">
           {% endif %}
           {% if user.is_authenticated %}
-          <h5 class="display-5 align-self-center header">Witaj, {{ user.userrank.all.0.name }} {{ user.username }}</h5>
+          <h5 class="display-5 align-self-center header">Witaj, {{ user.userrank_set.all.0 }} {{ user.username }}</h5>
       </div>
       <div class="d-flex flex-row justify-content-center flex-wrap">
           <a class="btn btn-danger btn-sm guzik4" href="{% url 'logout' %}">Wymelduj</a>
