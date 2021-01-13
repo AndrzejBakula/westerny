@@ -40,7 +40,7 @@ class Article(models.Model):
 
 
 class Rating(models.Model):
-    rating = models.IntegerField(max_length=2, unique=True)
+    rating = models.IntegerField(unique=True)
 
     def __str__(self):
         return self.rating
@@ -59,6 +59,12 @@ class Person(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+
+
+class PersonRating(models.Model):
+    rating = models.ForeignKey(Rating, null=False, on_delete=models.DO_NOTHING)
+    user = models.ForeignKey(User, null=False, on_delete=models.DO_NOTHING)
+    person = models.ForeignKey(Person, null=False, on_delete=models.DO_NOTHING)
 
 
 class Genre(models.Model):
@@ -93,6 +99,12 @@ class Movie(models.Model):
     movie_accepted_by = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="movie_accepted")
     movie_edited_by = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="movie_edited")
     movie_article = models.ManyToManyField(Article, default=None)
+
+
+class MovieRating(models.Model):
+    rating = models.ForeignKey(Rating, null=False, on_delete=models.DO_NOTHING)
+    user = models.ForeignKey(User, null=False, on_delete=models.DO_NOTHING)
+    movie = models.ForeignKey(Movie, null=False, on_delete=models.DO_NOTHING)
 
 
 class PersonMovie(models.Model):
