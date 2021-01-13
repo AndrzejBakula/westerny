@@ -40,6 +40,11 @@
     {% for genre in genres %}
     <div class="d-flex flex-row justify-content-center align-items-center">
         {% if genre.genre_accepted_by %}
+        {% if genre.genre_image %}
+        <div class="m-2">
+            <img src="{{ genre.genre_image.url }}" alt="obraz {{ genre }}" width="120" class="img-thumbnail border border-secondary rounded-0">
+        </div>
+        {% endif %}
         <a  class="btn btn-link align-self-center" href="{% url 'genre-details' genre.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ genre }}</a>
         {% endif %}
     </div>
