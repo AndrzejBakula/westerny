@@ -689,6 +689,9 @@ class DeletePersonView(StaffMemberCheck, View):
     
     def post(self, request, id):
         person = Person.objects.get(id=id)
+        person_ratings = PersonRating.objects.filter(person=id)
+        for i in person_ratings:
+            i.delete()
         person.delete()
         return redirect("/people")
 

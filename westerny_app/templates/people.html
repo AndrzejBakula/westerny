@@ -34,6 +34,9 @@
     {% for person in people %}
     <div class="d-flex flex-row justify-content-center align-items-center">
         {% if person.person_accepted_by %}
+        <div class="m-2">
+            <img src="{{ person.person_image.url }}" alt="obraz {{ person.name }}" width="60" class="img-thumbnail border border-secondary rounded-0">
+        </div>
         <a  class="btn btn-link align-self-center" href="{% url 'person-details' person.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ person }}</a>
         {% endif %}
     </div>
