@@ -4,7 +4,7 @@ from captcha.widgets import ReCaptchaV3
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.contrib.admin.widgets import AdminDateWidget
-from .models import Person, Genre
+from .models import Person, Genre, Rating, Movie
 
 
 class AddMovieForm(forms.Form):
@@ -71,3 +71,7 @@ class AddArticleForm(forms.Form):
     name = forms.CharField(label="", max_length=128, required=True, widget=forms.TextInput(attrs={"size": 40, "placeholder": "Nazwa artykułu"}))
     author = forms.CharField(label="", max_length=64, required=None, widget=forms.TextInput(attrs={"size": 34, "placeholder": "Autor lub nazwa witryny"}))
     url = forms.URLField(label="", required=True, widget=forms.TextInput(attrs={"size": 40, "placeholder": "tu skopiuj adres www"}))
+
+
+class RatingForm(forms.Form):
+    rating = forms.ModelMultipleChoiceField(label="Reżyser", queryset=Rating.objects.all())

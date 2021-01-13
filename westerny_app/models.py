@@ -39,6 +39,13 @@ class Article(models.Model):
     link = models.URLField(unique=True, null=False)
 
 
+class Rating(models.Model):
+    rating = models.IntegerField(max_length=2, unique=True)
+
+    def __str__(self):
+        return self.rating
+
+
 class Person(models.Model):
     first_name = models.CharField(max_length=64)
     last_name = models.CharField(max_length=64)
