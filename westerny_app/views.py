@@ -13,9 +13,9 @@ from .utils import token_generator
 from django.views import View
 from django.contrib.auth.models import User
 from westerny_project.settings import PROTOCOLE
-from westerny_app.models import Movie, Genre, Person, Article, Rank, UserRank
+from westerny_app.models import Movie, Genre, Person, Article, Rank, UserRank, PersonRating, Rating
 from westerny_app.forms import AddMovieForm, AddGenreForm, AddPersonForm, EditGenreForm, RegisterForm, LoginForm
-from westerny_app.forms import SearchMovieForm, SearchPersonForm, AddArticleForm, EditPersonForm
+from westerny_app.forms import SearchMovieForm, SearchPersonForm, AddArticleForm, EditPersonForm, RatingForm
 
 
 #RANK CHECKING METHOD:
@@ -411,7 +411,7 @@ class EditGenreView(StaffMemberCheck, View):
     
     def post(self, request, id):
         form = EditGenreForm(request.POST)
-        if form.is_valid:
+        if form.is_valid():
             genre = Genre.objects.get(id=id)
             genre_name = genre.name.title()
             genres = [i.name.title() for i in Genre.objects.all()]
@@ -504,14 +504,40 @@ class WaitingPeopleView(StaffMemberCheck, View):
 class PersonDetailsView(View):
     def get(self, request, id):
         person = Person.objects.get(id=id)
+        user = User.objects.get(pk=int(request.session.get("user_id")))
+        user_rating = None
+        personrating = PersonRating.objects.filter(person=id)
+        for i in personrating:
+            if i.user == user:
+                user_rating = i.rating
+        form = RatingForm()
         articles = [i for i in Article.objects.filter(person__id=id)]
         articles_check = len(articles)
         ctx = {
             "person": person,
+            "form": form,
+            "user_rating": user_rating,
+            "rating": person.person_rating,
             "articles": articles,
             "articles_check": articles_check
         }
         return render(request, "person_details.html", ctx)
+    
+    def post(self, request, id):
+        form = RatingForm(request.POST)
+        if form.is_valid():
+            person = Person.objects.get(id=id)
+            user = User.objects.get(pk=int(request.session.get("user_id")))
+            user_rating = int(request.POST.get("rating"))
+            rating = Rating.objects.get(id=user_rating)
+            personrating = PersonRating.objects.create(user=user, rating=rating, person=person)
+            person_rating = person.person_rating
+            new_rating = rating.rating
+            if person_rating != None:
+                new_rating = round((rating.rating+person_rating)/2, 2)
+            person.person_rating = new_rating
+            person.save()
+        return redirect(f"/person_details/{person.id}")
 
 
 class SearchPersonView(View):

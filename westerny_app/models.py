@@ -40,10 +40,10 @@ class Article(models.Model):
 
 
 class Rating(models.Model):
-    rating = models.IntegerField(unique=True)
+    rating = models.IntegerField(unique=True, null=False)
 
     def __str__(self):
-        return self.rating
+        return str(self.rating)
 
 
 class Person(models.Model):

@@ -74,4 +74,4 @@ class AddArticleForm(forms.Form):
 
 
 class RatingForm(forms.Form):
-    rating = forms.ModelMultipleChoiceField(label="Reżyser", queryset=Rating.objects.all())
+    rating = forms.ModelChoiceField(label="Dodaj ocenę", queryset=Rating.objects.all())

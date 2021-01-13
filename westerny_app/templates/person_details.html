@@ -27,9 +27,24 @@
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h2 class="display-5 align-self-center header2" style="margin-left: 3vh; margin-right: 3vh;"><i>{{ person }}</i></h2>
     </div>
+    {% if rating is not None %}
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h3 class="display-5 align-self-center header2" style="margin-left: 3vh; margin-right: 3vh;"><i>Ocena: {{ person }}/10</i></h3>
+        <h3 class="display-5 align-self-center header2" style="margin-left: 3vh; margin-right: 3vh;"><i>Ocena: {{ rating }}/10</i></h3>
     </div>
+    {% else %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h3 class="display-5 align-self-center header2" style="margin-left: 3vh; margin-right: 3vh;"><i>Brak ocen</i></h3>
+    </div>
+    {% endif %}
+    {% if user_rating is None %}
+    <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'person-details' person.id %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit" id="submit">Dodaj Ocenę</button>
+    </form>
+    {% endif %}
     
     {% if person.person_image %}
     <div class="m-2">
