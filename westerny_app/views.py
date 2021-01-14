@@ -59,13 +59,13 @@ def check_rank(user):
         return userrank.save()
     elif user.is_staff == True:
         userrank.rank = porucznik
-        if (30 <= sum_of_added < 50) or ( 15 <= sum_of_accepted < 40):
+        if (30 <= sum_of_added < 50) or ( 15 <= sum_of_accepted < 40) or ((20 <= sum_of_added < 40) and (5 <= sum_of_accepted < 15)):
             userrank.rank = kapitan
             return userrank.save()
-        elif (50 <= sum_of_added < 75) or (40 <= sum_of_accepted < 100):
+        elif (50 <= sum_of_added < 75) or (40 <= sum_of_accepted < 100) or ((40 <= sum_of_added < 60) and (15 <= sum_of_accepted < 30)):
             userrank.rank = major
             return userrank.save()
-        elif (75 <= sum_of_added < 100) or sum_of_accepted >= 100:
+        elif (75 <= sum_of_added < 100) or sum_of_accepted >= 100 or ((60 <= sum_of_added < 80) and ( sum_of_accepted >= 45)):
             userrank.rank = pulkownik
             return userrank.save()
         return userrank.save()
