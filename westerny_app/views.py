@@ -32,17 +32,17 @@ def check_rank(user):
     general = Rank.objects.get(name="generał")
     gubernator = Rank.objects.get(name="gubernator")
 
-    movies = Movie.objects.filter(movie_added_by=user.id)
+    movies = Movie.objects.filter(movie_added_by=user)
     added_movies = len([i for i in movies if i.movie_accepted_by])*2
-    people = Person.objects.filter(person_added_by=user.id)
+    people = Person.objects.filter(person_added_by=user)
     added_people = len([i for i in people if i.person_accepted_by])
-    genres = Genre.objects.filter(genre_added_by=user.id)
+    genres = Genre.objects.filter(genre_added_by=user)
     added_genre = len([i for i in genres if i.genre_accepted_by])*2
     sum_of_added = added_genre+added_movies+added_people
 
-    accpted_movies = len(Movie.objects.filter(movie_accepted_by=user.id))
-    accepted_people = len(Person.objects.filter(person_accepted_by=user.id))
-    accepted_genre = len(Genre.objects.filter(genre_accepted_by=user.id))
+    accpted_movies = len(Movie.objects.filter(movie_accepted_by=user))
+    accepted_people = len(Person.objects.filter(person_accepted_by=user))
+    accepted_genre = len(Genre.objects.filter(genre_accepted_by=user))
     sum_of_accepted = accepted_genre+accepted_people+accpted_movies
 
     if user.username == "Westerny":
@@ -59,13 +59,13 @@ def check_rank(user):
         return userrank.save()
     elif user.is_staff == True:
         userrank.rank = porucznik
-        if (30 <= sum_of_added < 50) or ( 10 <= sum_of_accepted < 30):
+        if (30 <= sum_of_added < 50) or ( 15 <= sum_of_accepted < 40):
             userrank.rank = kapitan
             return userrank.save()
-        elif (50 <= sum_of_added < 75) or (30 <= sum_of_accepted < 50):
+        elif (50 <= sum_of_added < 75) or (40 <= sum_of_accepted < 100):
             userrank.rank = major
             return userrank.save()
-        elif (75 <= sum_of_added < 100) or (50 <= sum_of_accepted < 75):
+        elif (75 <= sum_of_added < 100) or sum_of_accepted >= 100:
             userrank.rank = pulkownik
             return userrank.save()
         return userrank.save()
@@ -227,18 +227,19 @@ class LogoutView(ActivateUserCheck, View):
 class MyPlaceView(ActivateUserCheck, View):
     def get(self, request):
         user = User.objects.get(pk=request.session.get("user_id"))
-        westerns = Movie.objects.filter(movie_added_by=user.id)
+        check_rank(user)
+        westerns = Movie.objects.filter(movie_added_by=user)
         added_westerns = len([i for i in westerns if i.movie_accepted_by])
-        people = Person.objects.filter(person_added_by=user.id)
+        people = Person.objects.filter(person_added_by=user)
         added_people = len([i for i in people if i.person_accepted_by])
-        genres = Genre.objects.filter(genre_added_by=user.id)
+        genres = Genre.objects.filter(genre_added_by=user)
         added_genres = len([i for i in genres if i.genre_accepted_by])
-        links = len(Article.objects.filter(article_added_by=user.id))
+        links = len(Article.objects.filter(article_added_by=user))
         notes = added_westerns + added_people + added_genres + links
 
-        accepted_westerns = len(Movie.objects.filter(movie_accepted_by=user.id))
-        accepted_people = len(Person.objects.filter(person_accepted_by=user.id))
-        accepted_genres = len(Genre.objects.filter(genre_accepted_by=user.id))
+        accepted_westerns = len(Movie.objects.filter(movie_accepted_by=user))
+        accepted_people = len(Person.objects.filter(person_accepted_by=user))
+        accepted_genres = len(Genre.objects.filter(genre_accepted_by=user))
         accepted_notes = accepted_westerns + accepted_people + accepted_genres
 
         ctx = {
@@ -548,7 +549,7 @@ class SearchPersonView(View):
     def post(self, request):
         form = SearchPersonForm(request.POST)
         if form.is_valid():
-            text = form.cleaned_data["text"]
+            text = request.POST.get("text")
             persons = Person.objects.filter(last_name__icontains=text).order_by(
                 "last_name"
             )
@@ -558,7 +559,7 @@ class SearchPersonView(View):
                 "persons": persons,
                 "post": request.POST
                 }
-            return render(request, "search_movie.html", ctx)
+            return render(request, "search_person.html", ctx)
 
 
 class AddPersonView(ActivateUserCheck, View):

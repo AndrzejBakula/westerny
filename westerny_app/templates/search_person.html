@@ -31,17 +31,15 @@
 
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h2 class="display-5 align-self-center header">
-            Lista znalezionych Osób:
+            <i>Lista znalezionych Osób:</i>
         </h2>
     </div>
 
-    <ul>
-        {% for person in persons %}
-        <div class="d-flex flex-row justify-content-center align-items-center">
-            <a  class="btn btn-link align-self-center" href="{% url 'person-details' movie.id %}" style="font-size: x-large; color: white; text-shadow: 1px 1px 2px black">{{ movie.title }}</a>
-        </div>
-        {% endfor %}
-    </ul>
+    {% for person in persons %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <a  class="btn btn-link align-self-center" href="{% url 'person-details' person.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ person }}</a>
+    </div>
+    {% endfor %}
     
     {% endif %}
     {% if not persons and post %}
