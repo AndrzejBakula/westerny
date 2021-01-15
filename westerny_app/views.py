@@ -505,7 +505,9 @@ class WaitingPeopleView(StaffMemberCheck, View):
 class PersonDetailsView(View):
     def get(self, request, id):
         person = Person.objects.get(id=id)
-        user = User.objects.get(pk=int(request.session.get("user_id")))
+        user = None
+        if request.session.get("user_id"):
+            user = User.objects.get(pk=int(request.session.get("user_id")))
         user_rating = None
         personrating = PersonRating.objects.filter(person=id)
         for i in personrating:
