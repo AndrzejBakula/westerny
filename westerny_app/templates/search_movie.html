@@ -38,7 +38,7 @@
 
     {% for movie in movies %}
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <a  class="btn btn-link align-self-center" href="{% url 'movie-details' movie.id %}" style="font-size: x-large; color: white; text-shadow: 1px 1px 2px black">{{ movie.title }}</a>
+        <a  class="btn btn-link align-self-center" href="{% url 'movie-details' movie.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{movie.year}} - {{movie.title}}</a>
     </div>
     {% endfor %}
     

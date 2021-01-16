@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %} Usuń Western {% endblock %}
+{% block title %} Usuń Artykuł {% endblock %}
 
 {% block content %}
 
@@ -12,27 +12,32 @@
     <div class="d-flex flex-row justify-content-around flex-wrap">
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'movies' %}">WESTERNY</a>
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'people' %}">LUDZIE</a>
-        <a class="btn btn-warning btn-lg guzik2" href="{% url 'genres' %}">GATUNKI</a>
-        {% if user.is_staff %}
-        <a class="btn btn-success btn-lg guzik" href="{% url 'edit-movie' movie.id %}">Edytuj Western</a>
-        {% endif %}
+        <a class="btn btn-warning btn-lg guzik2" href="{% url 'genres' %}" class="btn btn-primary">GATUNKI</a>
     </div>
+    {% if not message %}
+    <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h2 class="display-5 align-self-center header2"><i>Usuń Western</i></h2>
+        <h2 class="display-5 align-self-center header2"><i>Usuń artykuł {{ article.article_name }} o {{ movie.title }}</i></h2>
     </div>
-
+    {% endif %}
+    
+    {% if message %}
+    <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h3 class="display-5 align-self-center header">
-            Czy na pewno skasować western: {{ western }}?
+            {{ message }}
         </h3>
     </div>
-
-    <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'delete-movie' movie.id %}" method="POST" enctype="multipart/form-data">
+    <hr>
+    {% endif %}
+    {% if not message %}
+    <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'delete-article-movie' movie.id article.id %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
-        <button type="submit" id="submit">Usuń</button>
+        <button type="submit" id="submit">Usuń Artykuł</button>
     </form>
-    <hr>
+    {% endif %}
+
 </div>
 
 {% endblock %}

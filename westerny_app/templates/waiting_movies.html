@@ -22,7 +22,7 @@
     {% for movie in movies %}
     <div class="d-flex flex-row justify-content-center align-items-center">
         {% if not movie.movie_accepted_by %}
-        <a class="menu_link" href="/movie-details/{{i.id}}">{{movie.year}} - {{movie.title}}</a>
+        <a  class="btn btn-link align-self-center" href="{% url 'movie-details' movie.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{movie.year}} - {{movie.title}}</a>
         {% endif %}
     </div>
     {% endfor %}

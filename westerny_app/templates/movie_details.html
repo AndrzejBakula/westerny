@@ -19,7 +19,7 @@
         {% if user.is_superuser %}
         <a class="btn btn-danger btn-lg guzik" href="{% url 'delete-movie' movie.id %}"> Usuń Western</a>
         {% endif %}
-        {% if user.is_staff and not person.person_accepted_by %}
+        {% if user.is_staff and not movie.movie_accepted_by %}
         <a class="btn btn-info btn-lg guzik" href="{% url 'accept-movie' movie.id %}"> Akceptuj</a>
         {% endif %}
     </div>
@@ -84,7 +84,7 @@
     {% if articles_check > 0 %}
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h3 class="display-5 align-self-center header" style="margin-left: 3vh; margin-right: 3vh;">
-            <i>Artykuły o {{ movie }}</i>
+            <i>Artykuły o {{ movie.title }}</i>
         </h3>
     </div>
 
@@ -111,9 +111,9 @@
 
     <hr>
     <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
-        <span>Dodane przez: {{ person.person_added_by }}</span>
-        {% if person.person_accepted_by %}<span>Zaakceptowane przez: {{ person.person_accepted_by }}</span>{% endif %}
-        {% if person.person_edited_by %}<span>Ostatnia edycja: {{ person.person_edited_by }}</span>{% endif %}
+        <span>Dodane przez: {{ movie.movie_added_by }}</span>
+        {% if movie.movie_accepted_by %}<span>Zaakceptowane przez: {{ movie.movie_accepted_by }}</span>{% endif %}
+        {% if movie.movie_edited_by %}<span>Ostatnia edycja: {{ movie.movie_edited_by }}</span>{% endif %}
     </div>
 
 </div>

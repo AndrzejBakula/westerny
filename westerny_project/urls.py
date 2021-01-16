@@ -28,7 +28,7 @@ from westerny_app.views import AcceptGenreView, AddArticleGenreView, DeleteArtic
 from westerny_app.views import WaitingPeopleView, PersonDetailsView, EditPersonView, AcceptPersonView
 from westerny_app.views import AddArticlePersonView, DeleteArticlePersonView, DeletePersonView, WaitingMoviesView
 from westerny_app.views import MovieDetailsView, DeleteMovieView, AcceptMovieView, AddArticleMovieView
-from westerny_app.views import EditMovieView
+from westerny_app.views import EditMovieView, DeleteArticleMovieView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -68,5 +68,6 @@ urlpatterns = [
     path('add_article_person/<int:id>', AddArticlePersonView.as_view(), name="add-article-person"),
     path('delete_article_person/<int:person_id>/<int:article_id>', DeleteArticlePersonView.as_view(), name="delete-article-person"),
     path('add_article_movie/<int:id>', AddArticleMovieView.as_view(), name="add-article-movie"),
+    path('delete_article_movie/<int:movie_id>/<int:article_id>', DeleteArticleMovieView.as_view(), name="delete-article-movie"),
     path('activate/<uidb64>/<token>', VerificationView.as_view(), name="activate")
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

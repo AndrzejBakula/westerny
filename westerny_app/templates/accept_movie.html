@@ -14,7 +14,7 @@
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'people' %}">LUDZIE</a>
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'genres' %}">GATUNKI</a>
         {% if user.is_staff %}
-        <a class="btn btn-success btn-lg guzik" href="{% url 'movies' %}">Edytuj Western</a>
+        <a class="btn btn-success btn-lg guzik" href="{% url 'edit-movie' movie.id %}">Edytuj Western</a>
         {% endif %}
     </div>
     <div class="d-flex flex-row justify-content-center align-items-center">
@@ -27,7 +27,7 @@
         </h3>
     </div>
 
-    <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'accept-western' western.id %}" method="POST" enctype="multipart/form-data">
+    <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'accept-movie' movie.id %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
         <button type="submit" id="submit">Zaakceptuj</button>

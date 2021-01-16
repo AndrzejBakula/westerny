@@ -1101,3 +1101,20 @@ class AddArticleMovieView(StaffMemberCheck, View):
             "message": message
         }
         return render(request, "add_article_movie.html", ctx)
+
+
+class DeleteArticleMovieView(StaffMemberCheck, View):
+    def get(self, request, movie_id, article_id):
+        movie = Movie.objects.get(id=movie_id)
+        article = Article.objects.get(id=article_id)
+        ctx = {
+            "movie": movie,
+            "article": article
+        }
+        return render(request, "delete_article_movie.html", ctx)
+    
+    def post(self, request, movie_id, article_id):
+        article = Article.objects.get(id=article_id)
+        article.delete()
+        message = "Artykuł został usunięty."
+        return redirect(f"/movie_details/{movie_id}")
