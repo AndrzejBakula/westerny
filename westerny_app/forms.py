@@ -8,24 +8,25 @@ from .models import Person, Genre, Rating, Movie
 
 
 class AddMovieForm(forms.Form):
-    title = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Tytuł westernu"}))
-    director = forms.ModelMultipleChoiceField(label="Reżyser", queryset=Person.objects.all())
-    screenplay = forms.ModelMultipleChoiceField(label="Scenariusz", queryset=Person.objects.all())
-    year = forms.CharField(label="", max_length=4, widget=forms.TextInput(attrs={"placeholder": "Rok produkcji"}))
+    title = forms.CharField(label="", required=True, max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Tytuł westernu"}))
+    year = forms.CharField(label="", required=True, max_length=4, widget=forms.TextInput(attrs={"placeholder": "Rok produkcji"}))
+    director = forms.ModelMultipleChoiceField(label="Reżyser", required=True, queryset=Person.objects.all())
+    screenplay = forms.ModelMultipleChoiceField(label="Scenariusz", required=None, queryset=Person.objects.all())
+    music = forms.ModelMultipleChoiceField(label="Muzyka", required=None, queryset=Person.objects.all())
     genre = forms.ModelMultipleChoiceField(label="Gatunek", queryset=Genre.objects.all())
+    description = forms.CharField(label="", max_length=1500, required=True, widget=forms.Textarea(attrs={"rows": 6, "cols": 40, "placeholder": "Krótki opis (do 1500 znaków)"}))
     image = forms.ImageField(label="Dodaj obraz", required=None)
-    description = forms.CharField(label="", max_length=1500, required=None, widget=forms.Textarea(attrs={"rows": 6, "cols": 40, "placeholder": "Krótki opis (do 1500 znaków)"}))
 
 
 class AddGenreForm(forms.Form):
     name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa gatunku"}))
-    description = forms.CharField(label="", max_length=1500, required=None, widget=forms.Textarea(attrs={"rows": 6, "cols": 40, "placeholder": "Krótki opis (do 1500 znaków)"}))
+    description = forms.CharField(label="", max_length=1500, required=True, widget=forms.Textarea(attrs={"rows": 6, "cols": 40, "placeholder": "Krótki opis (do 1500 znaków)"}))
     image = forms.ImageField(label="Dodaj obraz", required=None)
 
 
 class EditGenreForm(forms.Form):
     name = forms.CharField(label="Nazwa", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa gatunku"}))
-    description = forms.CharField(label="", max_length=1500, required=None, widget=forms.Textarea(attrs={"rows": 6, "cols": 40, "placeholder": "Krótki opis (do 1500 znaków"}))
+    description = forms.CharField(label="", max_length=1500, required=True, widget=forms.Textarea(attrs={"rows": 6, "cols": 40, "placeholder": "Krótki opis (do 1500 znaków"}))
     image = forms.ImageField(label="Dodaj obraz", required=None)
     delete_image = forms.BooleanField(label="Skasować istniejący obraz?", required=None)
 
@@ -33,14 +34,14 @@ class EditGenreForm(forms.Form):
 class AddPersonForm(forms.Form):
     first_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Imię"}))
     last_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwisko"}))
-    description = forms.CharField(label="", max_length=1500, required=None, widget=forms.Textarea(attrs={"rows": 6, "cols": 40, "placeholder": "Krótki opis (do 1500 znaków)"}))
+    description = forms.CharField(label="", max_length=1500, required=True, widget=forms.Textarea(attrs={"rows": 6, "cols": 40, "placeholder": "Krótki opis (do 1500 znaków)"}))
     image = forms.ImageField(label="Dodaj obraz", required=None)
 
 
 class EditPersonForm(forms.Form):
     first_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Imię"}))
     last_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwisko"}))
-    description = forms.CharField(label="", max_length=1500, required=None, widget=forms.Textarea(attrs={"rows": 6, "cols": 40, "placeholder": "Krótki opis (do 1500 znaków)"}))
+    description = forms.CharField(label="", max_length=1500, required=True, widget=forms.Textarea(attrs={"rows": 6, "cols": 40, "placeholder": "Krótki opis (do 1500 znaków)"}))
     image = forms.ImageField(label="Dodaj obraz", required=None)
     delete_image = forms.BooleanField(label="Skasować istniejący obraz?", required=None)
 
