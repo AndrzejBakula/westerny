@@ -13,7 +13,7 @@ from .utils import token_generator
 from django.views import View
 from django.contrib.auth.models import User
 from westerny_project.settings import PROTOCOLE
-from westerny_app.models import Movie, Genre, Person, Article, Rank, UserRank, PersonRating, Rating
+from westerny_app.models import Movie, Genre, Person, Article, Rank, UserRank, PersonRating, Rating, MovieRating
 from westerny_app.forms import AddMovieForm, AddGenreForm, AddPersonForm, EditGenreForm, RegisterForm, LoginForm
 from westerny_app.forms import SearchMovieForm, SearchPersonForm, AddArticleForm, EditPersonForm, RatingForm
 
@@ -434,6 +434,33 @@ class MovieDetailsView(View):
             movie.movie_rating = new_rating
             movie.save()
         return redirect(f"/movie_details/{movie.id}")
+
+
+class DeleteMovieView(StaffMemberCheck, View):
+    def get(self, request, id):
+        movie = Movie.objects.get(id=id)
+        return render(request, "delete_movie.html", {"movie": movie})
+    
+    def post(self, request, id):
+        movie = Movie.objects.get(id=id)
+        movie_ratings = MovieRating.objects.filter(movie=id)
+        for i in movie_ratings:
+            i.delete()
+        movie.delete()
+        return redirect("/movies")
+
+
+class AcceptMovieView(StaffMemberCheck, View):
+    def get(self, request, id):
+        movie = Movie.objects.get(id=id)
+        return render(request, "accept_movie.html", {"movie": movie})
+    
+    def post(self, request, id):
+        movie = Movie.objects.get(id=id)
+        user = User.objects.get(pk=int(request.session.get("user_id")))
+        movie.movie_accepted_by = user
+        movie.save()
+        return redirect("/waiting_movies")
 
 
 class GenresView(View):
@@ -953,3 +980,48 @@ class DeleteArticlePersonView(StaffMemberCheck, View):
         article.delete()
         message = "Artykuł został usunięty."
         return redirect(f"/person_details/{person_id}")
+
+
+class AddArticleMovieView(StaffMemberCheck, View):
+    def get(self, request, id):
+        movie = Movie.objects.get(id=id)
+        form = AddArticleForm()
+        ctx = {
+            "movie": movie,
+            "form": form
+        }
+        return render(request, "add_article_movie.html", ctx)
+    
+    def post(self, request, id):
+        form = AddArticleForm(request.POST)
+        movie = Movie.objects.get(id=id)
+        user = User.objects.get(pk=int(request.session.get("user_id")))
+        message = "Coś poszło nie tak"
+        if form.is_valid():
+            data = form.cleaned_data
+            links = [i.link for i in Article.objects.all()]
+            if data["url"] in links:
+                message = "Taki link jest już w naszym archiwum."
+                ctx = {
+                    "form": form,
+                    "movie": movie,
+                    "message": message
+                }
+                return render(request, "add_article_movie.html", ctx)
+            article = Article.objects.create(article_name=data["name"], author=data["author"], article_added_by=user, link=data["url"])
+            movie.movie_article.add(article)
+            movie.save()
+            message = "Artykuł dodany pomyślnie"
+            ctx = {
+                "form": form,
+                "movie": movie,
+                "article": article,
+                "message": message
+            }
+            return redirect(f"/movie_details/{movie.id}")
+        ctx = {
+            "form": form,
+            "movie": movie,
+            "message": message
+        }
+        return render(request, "add_article_movie.html", ctx)

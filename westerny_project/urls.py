@@ -27,7 +27,7 @@ from westerny_app.views import SearchPersonView, StatsView, VerificationView, Wa
 from westerny_app.views import AcceptGenreView, AddArticleGenreView, DeleteArticleGenreView
 from westerny_app.views import WaitingPeopleView, PersonDetailsView, EditPersonView, AcceptPersonView
 from westerny_app.views import AddArticlePersonView, DeleteArticlePersonView, DeletePersonView, WaitingMoviesView
-from westerny_app.views import MovieDetailsView
+from westerny_app.views import MovieDetailsView, DeleteMovieView, AcceptMovieView, AddArticleMovieView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -43,6 +43,8 @@ urlpatterns = [
     path('search_movie/', SearchMovieView.as_view(), name="search-movie"),
     path('add_movie/', AddMovieView.as_view(), name="add-movie"),
     path('movie_details/<int:id>', MovieDetailsView.as_view(), name="movie-details"),
+    path('delete_movie/<int:id>', DeleteMovieView.as_view(), name="delete-movie"),
+    path('accept_movie/<int:id>', AcceptMovieView.as_view(), name="accept-movie"),
     path('waiting_movies/', WaitingMoviesView.as_view(), name="waiting-movies"),
     path('genres/', GenresView.as_view(), name="genres"),
     path('add_genre/', AddGenreView.as_view(), name="add-genre"),
@@ -63,5 +65,6 @@ urlpatterns = [
     path('delete_article_genre/<int:genre_id>/<int:article_id>', DeleteArticleGenreView.as_view(), name="delete-article-genre"),
     path('add_article_person/<int:id>', AddArticlePersonView.as_view(), name="add-article-person"),
     path('delete_article_person/<int:person_id>/<int:article_id>', DeleteArticlePersonView.as_view(), name="delete-article-person"),
+    path('add_article_movie/<int:id>', AddArticleMovieView.as_view(), name="add-article-movie"),
     path('activate/<uidb64>/<token>', VerificationView.as_view(), name="activate")
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

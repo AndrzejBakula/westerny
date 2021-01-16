@@ -14,7 +14,7 @@
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'genres' %}">GATUNKI</a>
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'people' %}">LUDZIE</a>
         {% if person.person_added_by == user or user.is_staff %}
-        <a class="btn btn-success btn-lg guzik" href="{% url 'edit-movie' movie.id %}"> Edytuj Western</a>
+        <a class="btn btn-success btn-lg guzik" href="{% url 'movies' %}"> Edytuj Western</a>
         {% endif %}
         {% if user.is_superuser %}
         <a class="btn btn-danger btn-lg guzik" href="{% url 'delete-movie' movie.id %}"> Usuń Western</a>
@@ -25,7 +25,7 @@
     </div>
     <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h2 class="display-5 align-self-center header2" style="margin-left: 3vh; margin-right: 3vh;"><i>{{ movie }}</i></h2>
+        <h2 class="display-5 align-self-center header2" style="margin-left: 3vh; margin-right: 3vh;"><i>{{ movie.title }}</i></h2>
     </div>
     {% if rating is not None %}
     <div class="d-flex flex-row justify-content-center align-items-center">
