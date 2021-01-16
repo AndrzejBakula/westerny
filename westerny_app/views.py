@@ -16,6 +16,7 @@ from westerny_project.settings import PROTOCOLE
 from westerny_app.models import Movie, Genre, Person, Article, Rank, UserRank, PersonRating, Rating, MovieRating
 from westerny_app.forms import AddMovieForm, AddGenreForm, AddPersonForm, EditGenreForm, RegisterForm, LoginForm
 from westerny_app.forms import SearchMovieForm, SearchPersonForm, AddArticleForm, EditPersonForm, RatingForm
+from westerny_app.forms import EditMovieForm
 
 
 #RANK CHECKING METHOD:
@@ -434,6 +435,81 @@ class MovieDetailsView(View):
             movie.movie_rating = new_rating
             movie.save()
         return redirect(f"/movie_details/{movie.id}")
+
+
+class EditMovieView(StaffMemberCheck, View):
+    def get(self, request, id):
+        movie = Movie.objects.get(id=id)
+        initial_data = {
+            "title": movie.title,
+            "year": movie.year,
+            "description": movie.movie_description,
+            "director": [i for i in movie.director.all()],
+            "screenplay": [i for i in movie.screenplay.all()],
+            "music": [i for i in movie.music.all()]
+        }
+        form = EditMovieForm(initial=initial_data)
+        ctx = {
+            "movie": movie,
+            "form": form
+        }
+        return render(request, "edit_movie.html", ctx)
+    
+    def post(self, request, id):
+        form = EditMovieForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            movie = Movie.objects.get(id=id)
+            title = data["title"]
+            year = data["year"]
+            director = data["director"]
+            screenplay = data["screenplay"]
+            music = data["music"]
+            genre = data["genre"]
+            description = data["description"]
+            image = request.FILES.get("image")
+            titles = [i.title.title() for i in Movie.objects.all()]
+            title = movie.title.title()
+            if title in titles:
+                titles.remove(title)
+            movie_title = title.title()
+            if movie_title in titles:
+                initial_data = {
+                    "title": movie.title,
+                    "year": movie.year,
+                    "description": movie.movie_description,
+                    "director": [i for i in movie.director.all()],
+                    "screenplay": [i for i in movie.screenplay.all()],
+                    "music": [i for i in movie.music.all()]
+                }
+                form = EditMovieForm(initial=initial_data)
+                ctx = {
+                    "message": "Film o tym tytule jest już w bazie.",
+                    "movie": movie,
+                    "form": form,
+                    "data": request.POST
+                }
+                return render(request, "edit_movie.html", ctx)
+            user = User.objects.get(pk=int(request.session.get("user_id")))
+            movie.title = data["title"]
+            movie.year = data["year"]
+            movie.director.set(data["director"])
+            movie.screenplay.set(data["screenplay"])
+            movie.music.set(data["music"])
+            movie.genre.set(data["genre"])
+            movie.movie_description = data["description"]
+            movie.movie_edited_by = user
+            if request.FILES.get("image") != None or request.POST.get("delete_image"):
+                movie.movie_image = request.FILES.get("image")
+            if user.is_staff and not movie.movie_accepted_by:
+                movie.movie_accepted_by = user
+            movie.save()
+            message = "Edycja zakończona sukcesem"
+            ctx = {
+                "movie": movie,
+                "message": message
+            }
+            return redirect(f"/movie_details/{movie.id}")
 
 
 class DeleteMovieView(StaffMemberCheck, View):
