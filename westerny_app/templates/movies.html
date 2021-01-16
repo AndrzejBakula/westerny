@@ -12,16 +12,39 @@
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'people' %}">LUDZIE</a>
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'genres' %}">GATUNKI</a>
         <a class="btn btn-dark btn-lg guzik" href="{% url 'search-movie' %}"> Szukaj Westernu</a>
-        {% if user.is_authenticated %}
+        {% if user.is_staff %}
         <a class="btn btn-success btn-lg guzik" href="{% url 'add-movie' %}"> Dodaj Western</a>
         {% endif %}
+        {% if not user.is_staff and user.is_authenticated %}
+        <a class="btn btn-success btn-lg guzik" href="{% url 'add-movie' %}"> Zaproponuj Western</a>
+        {% endif %}
+        {% if user.is_staff %}
+        {% if waiting_movies > 0 %}
+        <a class="btn btn-info btn-lg guzik" href="{% url 'waiting-movies' %}">Oczekujące</a>
+        {% endif %}
+        {% endif %}
     </div>
+
+    {% if message %}
+    <hr>
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h3 class="display-5 align-self-center header">
+            {{ message }}
+        </h3>
+    </div>
+    {% endif %}
+
     <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h2 class="display-5 align-self-center header2"><i>Lista Westernów</i></h2>
     </div>
+
     {% for movie in movies %}
-        <a class="menu_link" href="/movie-details/{{i.id}}">{{movie.year}} - {{movie.title}}</a>
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        {% if movie.movie_accepted_by %}
+        <a  class="btn btn-link align-self-center" href="{% url 'movie-details' movie.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{movie.year}} - {{movie.title}}</a>
+        {% endif %}
+    </div>
     {% endfor %}
 
 

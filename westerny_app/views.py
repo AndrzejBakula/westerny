@@ -287,7 +287,18 @@ class StatsView(View):
 class MoviesView(View):
     def get(self, request):
         movies = Movie.objects.all().order_by("year")
-        return render(request, "movies.html", {"movies": movies})
+        waiting_movies = len([i for i in movies if i.movie_accepted_by == None])
+        ctx = {
+            "movies": movies,
+            "waiting_movies": waiting_movies
+        }
+        return render(request, "movies.html", ctx)
+    
+
+class WaitingMoviesView(StaffMemberCheck, View):
+    def get(self, request):
+        movies = Movie.objects.all().order_by("year")
+        return render(request, "waiting_movies.html", {"movies": movies})
 
 
 class SearchMovieView(View):
@@ -320,10 +331,15 @@ class AddMovieView(ActivateUserCheck, View):
         form = AddMovieForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            year = data["year"]
-
-            titles = [i.title.title() for i in Movie.objects.all()]
             title = data["title"].title()
+            year = data["year"]
+            director = data["director"]
+            screenplay = data["screenplay"]
+            music = data["music"]
+            genre = data["genre"]
+            description = data["description"]
+            image = request.FILES.get("image")
+            titles = [i.title.title() for i in Movie.objects.all()]
             if title in titles:
                 ctx = {
                     "error_message": "Taki western jest już w bazie.",
@@ -332,8 +348,92 @@ class AddMovieView(ActivateUserCheck, View):
                 }
                 return render(request, "add_movie.html", ctx)
             else:
-                pass
+                user = User.objects.get(pk=int(request.session.get("user_id")))
+                if user.is_staff == True:
+                    movie = Movie.objects.create(
+                        title=data["title"],
+                        year=year,
+                        movie_description=data["description"],
+                        movie_image=request.FILES.get("image"),
+                        movie_added_by=user,
+                        movie_accepted_by=user
+                    )
+                    for i in director:
+                        movie.director.add(i)
+                    for i in screenplay:
+                        movie.screenplay.add(i)
+                    for i in music:
+                        movie.music.add(i)
+                    for i in genre:
+                        movie.genre.add(i)
+                    movie.save()
+                    message = "Dodano nowy western"
+                    movies = Movie.objects.all().order_by("year")
+                    waiting_movies = len([i for i in Movie.objects.all() if i.movie_accepted_by == None])
+                    ctx = {
+                        "message": message,
+                        "movies": movies,
+                        "waiting_movies": waiting_movies
+                    }
+                    return render(request, "movies.html", ctx)
+                else:
+                    movie = Movie.objects.create(
+                        title=data["title"],
+                        year=year,
+                        movie_description=data["description"],
+                        movie_image=request.FILES.get("image"),
+                        movie_added_by=user
+                    )
+                    message = "Twoja propozycja czeka na akceptację"
+                    movies = Movie.objects.all().order_by("year")
+                    waiting_movies = len([i for i in Movie.objects.all() if i.movie_accepted_by == None])
+                    ctx = {
+                        "message": message,
+                        "movies": movies,
+                        "waiting_movies": waiting_movies
+                    }
+                    return render(request, "movies.html", ctx)
 
+
+class MovieDetailsView(View):
+    def get(self, request, id):
+        movie = Movie.objects.get(id=id)
+        user = None
+        if request.session.get("user_id"):
+            user = User.objects.get(pk=int(request.session.get("user_id")))
+        user_rating = None
+        movierating = MovieRating.objects.filter(movie=id)
+        for i in movierating:
+            if i.user == user:
+                user_rating = i.rating
+        form = RatingForm()
+        articles = [i for i in Article.objects.filter(movie__id=id)]
+        articles_check = len(articles)
+        ctx = {
+            "movie": movie,
+            "form": form,
+            "user_rating": user_rating,
+            "rating": movie.movie_rating,
+            "articles": articles,
+            "articles_check": articles_check
+        }
+        return render(request, "movie_details.html", ctx)
+    
+    def post(self, request, id):
+        form = RatingForm(request.POST)
+        if form.is_valid():
+            movie = Movie.objects.get(id=id)
+            user = User.objects.get(pk=int(request.session.get("user_id")))
+            user_rating = int(request.POST.get("rating"))
+            rating = Rating.objects.get(id=user_rating)
+            movierating = MovieRating.objects.create(user=user, rating=rating, movie=movie)
+            movie_rating = movie.movie_rating
+            new_rating = rating.rating
+            if movie_rating != None:
+                new_rating = round((rating.rating+movie_rating)/2, 2)
+            movie.movie_rating = new_rating
+            movie.save()
+        return redirect(f"/movie_details/{movie.id}")
 
 
 class GenresView(View):

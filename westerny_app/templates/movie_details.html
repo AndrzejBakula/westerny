@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} Szczegóły Westernu {% endblock %}
+
+{% block content %}
+
+<div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
+    <div class="d-flex flex-row justify-content-around flex-wrap">
+        <a class="btn btn-primary btn-lg guzik" href="{% url 'index' %}">STRONA GŁÓWNA</a>
+    </div>
+    <div class="d-flex flex-row justify-content-around flex-wrap">
+        <a class="btn btn-warning btn-lg guzik2" href="{% url 'movies' %}">WESTERNY</a>
+        <a class="btn btn-warning btn-lg guzik2" href="{% url 'genres' %}">GATUNKI</a>
+        <a class="btn btn-warning btn-lg guzik2" href="{% url 'people' %}">LUDZIE</a>
+        {% if person.person_added_by == user or user.is_staff %}
+        <a class="btn btn-success btn-lg guzik" href="{% url 'edit-movie' movie.id %}"> Edytuj Western</a>
+        {% endif %}
+        {% if user.is_superuser %}
+        <a class="btn btn-danger btn-lg guzik" href="{% url 'delete-movie' movie.id %}"> Usuń Western</a>
+        {% endif %}
+        {% if user.is_staff and not person.person_accepted_by %}
+        <a class="btn btn-info btn-lg guzik" href="{% url 'accept-movie' movie.id %}"> Akceptuj</a>
+        {% endif %}
+    </div>
+    <hr>
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h2 class="display-5 align-self-center header2" style="margin-left: 3vh; margin-right: 3vh;"><i>{{ movie }}</i></h2>
+    </div>
+    {% if rating is not None %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h3 class="display-5 align-self-center header2" style="margin-left: 3vh; margin-right: 3vh;"><i>Ocena: {{ rating }}/10</i></h3>
+    </div>
+    {% else %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h3 class="display-5 align-self-center header2" style="margin-left: 3vh; margin-right: 3vh;"><i>Brak ocen</i></h3>
+    </div>
+    {% endif %}
+    {% if user.is_authenticated and user_rating is None %}
+    <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'movie-details' movie.id %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit" id="submit">Dodaj Ocenę</button>
+    </form>
+    {% endif %}
+    
+    {% if movie.movie_image %}
+    <div class="m-2">
+      <img src="{{ movie.movie_image.url }}" alt="obraz {{ movie.title }}"
+        width="380" class="img-thumbnail border border-secondary rounded-0">
+    </div>
+    {% else %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h4 class="display-5 align-self-center header">
+            Brak zdjęcia.
+        </h4>
+    </div>
+    <hr>
+    {% endif %}
+
+    {% if movie.movie_description %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h3 class="display-5 align-self-center header">
+            <i>Opis Westernu</i>
+        </h3>
+    </div>
+    <div>
+        <h5 style="text-align: justify; margin-left: 3vh; margin-right: 3vh;" class="display-5 align-self-center header">
+            {{ movie.movie_description }}
+        </h5>
+    </div>
+    <hr>
+    {% else %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h4 class="display-5 align-self-center header">
+            Brak opisu.
+        </h4>
+    </div>
+    <hr>
+    {% endif %}
+
+    {% if articles_check > 0 %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h3 class="display-5 align-self-center header" style="margin-left: 3vh; margin-right: 3vh;">
+            <i>Artykuły o {{ movie }}</i>
+        </h3>
+    </div>
+
+    <div class="d-flex flex-column justify-content-center align-items-center">
+        {% for article in articles %}
+        <div class="d-flex flex-row justify-content-center align-items-center" style="margin-left: 3vh; margin-right: 3vh;">
+            <a class="display-5 align-self-center header" href="{{ article.link }}" target="_blank" style="color: white;">{{ article.article_name }} - Autor: {{ article.author }}</a>
+            {% if user.is_superuser or article.article_added_by == user %}
+            <span style="visibility: hidden;">..</span>
+            <a class="btn btn-danger btn-sm guzik4" href="{% url 'delete-article-movie' movie.id article.id %}">Usuń</a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% if user.is_staff and movie.movie_accepted_by %}
+    <div class="d-flex flex-row justify-content-center flex-wrap">
+        <a class="btn btn-success btn-sm guzik4" href="{% url 'add-article-movie' movie.id %}">Dodaj link do artykułu</a>
+    </div>
+    {% endif %}
+    <hr>
+
+
+
+    <hr>
+    <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
+        <span>Dodane przez: {{ person.person_added_by }}</span>
+        {% if person.person_accepted_by %}<span>Zaakceptowane przez: {{ person.person_accepted_by }}</span>{% endif %}
+        {% if person.person_edited_by %}<span>Ostatnia edycja: {{ person.person_edited_by }}</span>{% endif %}
+    </div>
+
+</div>
+
+{% endblock %}
