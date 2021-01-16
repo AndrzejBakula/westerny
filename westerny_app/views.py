@@ -315,6 +315,25 @@ class AddMovieView(ActivateUserCheck, View):
     def get(self, request):
         form = AddMovieForm()
         return render(request, "add_movie.html", {"form": form})
+    
+    def post(self, request):
+        form = AddMovieForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            year = data["year"]
+
+            titles = [i.title.title() for i in Movie.objects.all()]
+            title = data["title"].title()
+            if title in titles:
+                ctx = {
+                    "error_message": "Taki western jest już w bazie.",
+                    "form": form,
+                    "data": request.POST
+                }
+                return render(request, "add_movie.html", ctx)
+            else:
+                pass
+
 
 
 class GenresView(View):

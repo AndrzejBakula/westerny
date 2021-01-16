@@ -4,12 +4,12 @@ from captcha.widgets import ReCaptchaV3
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.contrib.admin.widgets import AdminDateWidget
-from .models import Person, Genre, Rating, Movie
+from .models import Person, Genre, Rating, Movie, Year
 
 
 class AddMovieForm(forms.Form):
     title = forms.CharField(label="", required=True, max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Tytuł westernu"}))
-    year = forms.CharField(label="", required=True, max_length=4, widget=forms.TextInput(attrs={"placeholder": "Rok produkcji"}))
+    year = forms.ModelChoiceField(label="Rok", required=True, queryset=Year.objects.all())
     director = forms.ModelMultipleChoiceField(label="Reżyser", required=True, queryset=Person.objects.all())
     screenplay = forms.ModelMultipleChoiceField(label="Scenariusz", required=None, queryset=Person.objects.all())
     music = forms.ModelMultipleChoiceField(label="Muzyka", required=None, queryset=Person.objects.all())

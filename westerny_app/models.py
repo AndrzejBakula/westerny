@@ -81,7 +81,10 @@ class Genre(models.Model):
 
 
 class Year(models.Model):
-    year = models.IntegerField(null=False, unique=True)
+    year = models.CharField(null=False, unique=True, max_length=4)
+
+    def __str__(self):
+        return self.year
 
 
 class Movie(models.Model):
