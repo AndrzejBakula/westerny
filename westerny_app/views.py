@@ -447,7 +447,8 @@ class EditMovieView(StaffMemberCheck, View):
             "description": movie.movie_description,
             "director": [i for i in movie.director.all()],
             "screenplay": [i for i in movie.screenplay.all()],
-            "music": [i for i in movie.music.all()]
+            "music": [i for i in movie.music.all()],
+            "genre": [i for i in movie.genre.all()]
         }
         form = EditMovieForm(initial=initial_data)
         ctx = {
