@@ -105,13 +105,20 @@
         <a class="btn btn-success btn-sm guzik4" href="{% url 'add-article-person' person.id %}">Dodaj link do artykułu</a>
     </div>
     {% endif %}
+
     <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h3 class="display-5 align-self-center header" style="margin-left: 3vh; margin-right: 3vh;">
+        <h2 class="display-5 align-self-center header" style="margin-left: 3vh; margin-right: 3vh;">
             <i>Westerny z {{ person }}</i>
-        </h3>
+        </h2>
     </div>
 
+    {% if person.movie_set.all.count > 0 %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h3 class="display-5 align-self-center header" style="margin-left: 3vh; margin-right: 3vh;">
+            <i>Aktor</i>
+        </h3>
+    </div>
     {% for movie in person.movie_set.all %}
     <div class="d-flex flex-row justify-content-center align-items-center">
         {% if movie.movie_accepted_by %}
@@ -119,6 +126,52 @@
         {% endif %}
     </div>
     {% endfor %}
+    {% endif %}
+
+    {% if person.director.all.count > 0 %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h3 class="display-5 align-self-center header" style="margin-left: 3vh; margin-right: 3vh;">
+            <i>Reżyser</i>
+        </h3>
+    </div>
+    {% for movie in person.director.all %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        {% if movie.movie_accepted_by %}
+        <a class="btn btn-link align-self-center" href="{% url 'movie-details' movie.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ movie.year }} - {{ movie.title }}</a>
+        {% endif %}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    {% if person.screenplay.all.count > 0 %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h3 class="display-5 align-self-center header" style="margin-left: 3vh; margin-right: 3vh;">
+            <i>Scenarzysta</i>
+        </h3>
+    </div>
+    {% for movie in person.screenplay.all %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        {% if movie.movie_accepted_by %}
+        <a class="btn btn-link align-self-center" href="{% url 'movie-details' movie.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ movie.year }} - {{ movie.title }}</a>
+        {% endif %}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    {% if person.music.all.count > 0 %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h3 class="display-5 align-self-center header" style="margin-left: 3vh; margin-right: 3vh;">
+            <i>Muzyka</i>
+        </h3>
+    </div>
+    {% for movie in person.music.all %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        {% if movie.movie_accepted_by %}
+        <a class="btn btn-link align-self-center" href="{% url 'movie-details' movie.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ movie.year }} - {{ movie.title }}</a>
+        {% endif %}
+    </div>
+    {% endfor %}
+    {% endif %}
 
     <hr>
     <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
