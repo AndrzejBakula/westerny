@@ -107,9 +107,9 @@
 
     <hr>
     <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
-        <span>Dodane przez: {{ genre.genre_added_by }}</span>
-        {% if genre.genre_accepted_by %}<span>Zaakceptowane przez: {{ genre.genre_accepted_by }}</span>{% endif %}
-        {% if genre.genre_edited_by %}<span>Ostatnia edycja: {{ genre.genre_edited_by }}</span>{% endif %}
+        <span>Dodane przez: <a href="{% url 'user-details' genre.genre_added_by.id %}">{{ genre.genre_added_by }}</a></span>
+        {% if genre.genre_accepted_by %}<span>Zaakceptowane przez: <a href="{% url 'user-details' genre.genre_accepted_by.id %}">{{ genre.genre_accepted_by }}</a></span>{% endif %}
+        {% if genre.genre_edited_by %}<span>Ostatnia edycja: <a href="{% url 'user-details' genre.genre_edited_by.id %}">{{ genre.genre_edited_by }}</a></span>{% endif %}
     </div>
 
 </div>

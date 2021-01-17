@@ -29,6 +29,7 @@ from westerny_app.views import WaitingPeopleView, PersonDetailsView, EditPersonV
 from westerny_app.views import AddArticlePersonView, DeleteArticlePersonView, DeletePersonView, WaitingMoviesView
 from westerny_app.views import MovieDetailsView, DeleteMovieView, AcceptMovieView, AddArticleMovieView
 from westerny_app.views import EditMovieView, DeleteArticleMovieView, AddActorMovieView, DeleteActorMovieView
+from westerny_app.views import UserDetailsView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -39,6 +40,7 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('my_place/', MyPlaceView.as_view(), name='my-place'),
+    path('user_details/<int:id>', UserDetailsView.as_view(), name="user-details"),
     path('stats/', StatsView.as_view(), name='stats'),
     path('movies/', MoviesView.as_view(), name="movies"),
     path('search_movie/', SearchMovieView.as_view(), name="search-movie"),

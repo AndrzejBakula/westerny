@@ -258,6 +258,39 @@ class MyPlaceView(ActivateUserCheck, View):
         return render(request, "my_place.html", ctx)
 
 
+class UserDetailsView(ActivateUserCheck, View):
+    def get(self, request, id):
+        soldier = User.objects.get(pk=id)
+        check_rank(soldier)
+        westerns = Movie.objects.filter(movie_added_by=soldier)
+        added_westerns = len([i for i in westerns if i.movie_accepted_by])
+        people = Person.objects.filter(person_added_by=soldier)
+        added_people = len([i for i in people if i.person_accepted_by])
+        genres = Genre.objects.filter(genre_added_by=soldier)
+        added_genres = len([i for i in genres if i.genre_accepted_by])
+        links = len(Article.objects.filter(article_added_by=soldier))
+        notes = added_westerns + added_people + added_genres + links
+
+        accepted_westerns = len(Movie.objects.filter(movie_accepted_by=soldier))
+        accepted_people = len(Person.objects.filter(person_accepted_by=soldier))
+        accepted_genres = len(Genre.objects.filter(genre_accepted_by=soldier))
+        accepted_notes = accepted_westerns + accepted_people + accepted_genres
+
+        ctx = {
+            "soldier": soldier,
+            "westerns": added_westerns,
+            "people": added_people,
+            "genres": added_genres,
+            "notes": notes,
+            "links": links,
+            "accepted_westerns": accepted_westerns,
+            "accepted_people": accepted_people,
+            "accepted_genres": accepted_genres,
+            "accepted_notes": accepted_notes
+        }
+        return render(request, "user_details.html", ctx)
+
+
 class StatsView(View):
     def get(self, request):
         users = len(User.objects.all())
