@@ -87,6 +87,8 @@
         <a class="btn btn-success btn-sm guzik4" href="{% url 'add-article-genre' genre.id %}">Dodaj link do artykułu</a>
     </div>
     {% endif %}
+
+    {% if genre.movie_set.all.count > 0 %}
     <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h3 class="display-5 align-self-center header" style="margin-left: 3vh; margin-right: 3vh;">
@@ -94,7 +96,14 @@
         </h3>
     </div>
 
-
+    {% for movie in genre.movie_set.all %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        {% if movie.movie_accepted_by %}
+        <a class="btn btn-link align-self-center" href="{% url 'movie-details' movie.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ movie.year }} - {{ movie.title }}</a>
+        {% endif %}
+    </div>
+    {% endfor %}
+    {% endif %}
 
     <hr>
     <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
