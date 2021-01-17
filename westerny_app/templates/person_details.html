@@ -175,9 +175,9 @@
 
     <hr>
     <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
-        <span>Dodane przez: <a style="color: white;" href="{% url 'user-details' person.person_added_by.id %}">{{ person.person_added_by }}</a></span>
-        {% if person.person_accepted_by %}<span>Zaakceptowane przez: <a style="color: white;" href="{% url 'user-details' person.person_accepted_by.id %}">{{ person.person_accepted_by }}</a></span>{% endif %}
-        {% if person.person_edited_by %}<span>Ostatnia edycja: <a style="color: white;" href="{% url 'user-details' person.person_edited_by.id %}">{{ person.person_edited_by }}</a></span>{% endif %}
+        <span>Dodane przez: <a style="color: #dcdcc6;" href="{% url 'user-details' person.person_added_by.id %}">{{ person.person_added_by }}</a></span>
+        {% if person.person_accepted_by %}<span>Zaakceptowane przez: <a style="color: #dcdcc6;" href="{% url 'user-details' person.person_accepted_by.id %}">{{ person.person_accepted_by }}</a></span>{% endif %}
+        {% if person.person_edited_by %}<span>Ostatnia edycja: <a style="color: #dcdcc6;" href="{% url 'user-details' person.person_edited_by.id %}">{{ person.person_edited_by }}</a></span>{% endif %}
     </div>
 
 </div>

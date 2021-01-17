@@ -419,6 +419,15 @@ class AddMovieView(ActivateUserCheck, View):
                         movie_image=request.FILES.get("image"),
                         movie_added_by=user
                     )
+                    for i in director:
+                        movie.director.add(i)
+                    for i in screenplay:
+                        movie.screenplay.add(i)
+                    for i in music:
+                        movie.music.add(i)
+                    for i in genre:
+                        movie.genre.add(i)
+                    movie.save()
                     message = "Twoja propozycja czeka na akceptację"
                     movies = Movie.objects.all().order_by("year")
                     waiting_movies = len([i for i in Movie.objects.all() if i.movie_accepted_by == None])

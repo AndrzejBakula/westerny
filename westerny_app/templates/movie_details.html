@@ -135,10 +135,10 @@
     <div class="d-flex flex-column justify-content-center align-items-center">
         {% for star in movie.starring.all %}
         <div class="d-flex flex-row justify-content-center align-items-center" style="margin-left: 3vh; margin-right: 3vh;">
-            <h5 class="display-5 align-self-center header"><a class="btn btn-link align-self-center" href="{% url 'person-details' star.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ star }}: </a>
-            {{ star.personmovie_set.all.0.role }}</h5>
+            <a class="btn btn-link align-self-center" href="{% url 'person-details' star.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ star }}: </a>
+            <h5 class="display-5 align-self-center header">Rola - {{ star.personmovie_set.all.0.role }}</h5>
             {% if user.is_superuser or star.personmovie_set.all.0.personmovie_added_by == user %}
-            <span style="visibility: hidden;">..</span>
+            <span style="visibility: hidden;">.</span>
             <a class="btn btn-danger btn-sm guzik4" href="{% url 'delete-actor-movie' movie.id star.id %}">Usuń</a>
             {% endif %}
         </div>
@@ -181,9 +181,9 @@
 
     <hr>
     <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
-        <span>Dodane przez: <a style="color: white;" href="{% url 'user-details' movie.movie_added_by.id %}">{{ movie.movie_added_by }}</a></span>
-        {% if movie.movie_accepted_by %}<span>Zaakceptowane przez: <a style="color: white;" href="{% url 'user-details' movie.movie_accepted_by.id %}">{{ movie.movie_accepted_by }}</a></span>{% endif %}
-        {% if movie.movie_edited_by %}<span>Ostatnia edycja: <a style="color: white;" href="{% url 'user-details' movie.movie_edited_by.id %}">{{ movie.movie_edited_by }}</a></span>{% endif %}
+        <span>Dodane przez: <a style="color: #dcdcc6;" href="{% url 'user-details' movie.movie_added_by.id %}">{{ movie.movie_added_by }}</a></span>
+        {% if movie.movie_accepted_by %}<span>Zaakceptowane przez: <a style="color: #dcdcc6;" href="{% url 'user-details' movie.movie_accepted_by.id %}">{{ movie.movie_accepted_by }}</a></span>{% endif %}
+        {% if movie.movie_edited_by %}<span>Ostatnia edycja: <a style="color: #dcdcc6;" href="{% url 'user-details' movie.movie_edited_by.id %}">{{ movie.movie_edited_by }}</a></span>{% endif %}
     </div>
 
 </div>
