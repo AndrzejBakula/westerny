@@ -60,6 +60,28 @@
     <hr>
     {% endif %}
 
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h4 class="display-5 align-self-center header">
+            Rok produkcji: <i>{{ movie.year }}</i>
+        </h4>
+    </div>
+
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h4 class="display-5 align-self-center header">
+            Reżyseria: {% for director in movie.director.all %}<i>{{ director }}, </i>{% endfor %}
+        </h4>
+    </div>
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h4 class="display-5 align-self-center header">
+            Scenariusz: {% for screenplay in movie.screenplay.all %}<i>{{ screenplay }}, </i>{% endfor %}
+        </h4>
+    </div>
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h4 class="display-5 align-self-center header">
+            Muzyka: {% for music in movie.music.all %}<i>{{ music }}, </i>{% endfor %}
+        </h4>
+    </div>
+
     {% if movie.movie_description %}
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h3 class="display-5 align-self-center header">
