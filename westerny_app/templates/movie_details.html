@@ -25,11 +25,18 @@
     </div>
     <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h2 class="display-5 align-self-center header2" style="margin-left: 3vh; margin-right: 3vh;"><i>{{ movie.title }}</i></h2>
+        <h2 class="display-5 align-self-center header2" style="margin-left: 3vh; margin-right: 3vh;">{{ movie.title }}</h2>
     </div>
+
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        {% for genre in movie.genre.all %}
+        <a  class="btn btn-link align-self-center" href="{% url 'genre-details' genre.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ genre }} </a>
+        {% endfor %}
+    </div>
+
     {% if rating is not None %}
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h3 class="display-5 align-self-center header2" style="margin-left: 3vh; margin-right: 3vh;"><i>Ocena: {{ rating }}/10</i></h3>
+        <h3 class="display-5 align-self-center header2" style="margin-left: 3vh; margin-right: 3vh;"><i>Ocena:</i> {{ rating }}/10</h3>
     </div>
     {% else %}
     <div class="d-flex flex-row justify-content-center align-items-center">
@@ -62,27 +69,43 @@
 
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h4 class="display-5 align-self-center header">
-            Rok produkcji: <i>{{ movie.year }}</i>
+            <i>Rok premiery:</i> {{ movie.year }}
         </h4>
     </div>
 
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h4 class="display-5 align-self-center header">
-            Reżyseria: {% for director in movie.director.all %}<i>{{ director }}, </i>{% endfor %}
+            <i>Reżyseria:</i>
         </h4>
+        {% for director in movie.director.all %}
+        <a  class="btn btn-link align-self-center" href="{% url 'person-details' director.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ director }} </a>
+        {% endfor %}
     </div>
+
+    {% if movie.screenplay %}
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h4 class="display-5 align-self-center header">
-            Scenariusz: {% for screenplay in movie.screenplay.all %}<i>{{ screenplay }}, </i>{% endfor %}
+            <i>Scenariusz:</i>
         </h4>
+        {% for screenplay in movie.screenplay.all %}
+        <a  class="btn btn-link align-self-center" href="{% url 'person-details' screenplay.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ screenplay }} </a>
+        {% endfor %}
     </div>
+    {% endif %}
+
+    {% if movie.music %}
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h4 class="display-5 align-self-center header">
-            Muzyka: {% for music in movie.music.all %}<i>{{ music }}, </i>{% endfor %}
+            <i>Muzyka:</i>
         </h4>
+        {% for music in movie.music.all %}
+        <a  class="btn btn-link align-self-center" href="{% url 'person-details' music.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ music }} </a>
+        {% endfor %}
     </div>
+    {% endif %}
 
     {% if movie.movie_description %}
+    <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h3 class="display-5 align-self-center header">
             <i>Opis Westernu</i>
@@ -100,10 +123,37 @@
             Brak opisu.
         </h4>
     </div>
-    <hr>
+    {% endif %}
+
+    {% if movie.starring.all.count > 0 %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h3 class="display-5 align-self-center header" style="margin-left: 3vh; margin-right: 3vh;">
+            <i>Wystąpili</i>
+        </h3>
+    </div>
+
+    <div class="d-flex flex-column justify-content-center align-items-center">
+        {% for star in movie.starring.all %}
+        <div class="d-flex flex-row justify-content-center align-items-center" style="margin-left: 3vh; margin-right: 3vh;">
+            <a class="btn btn-link align-self-center" href="{% url 'person-details' star.id %}" target="_blank" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ star }}</a>
+            <h5 class="display-5 align-self-center header">jako {{ star.personmovie_set.all.0.role }}</h5>
+            {% if user.is_superuser or star.personmovie_set.all.0.personmovie_added_by == user %}
+            <span style="visibility: hidden;">..</span>
+            <a class="btn btn-danger btn-sm guzik4" href="{% url 'delete-actor-movie' movie.id star.id %}">Usuń</a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if user.is_staff or movie.movie_added_by == user and movie.movie_accepted_by %}
+    <div class="d-flex flex-row justify-content-center flex-wrap">
+        <a class="btn btn-success btn-sm guzik4" href="{% url 'add-actor-movie' movie.id %}">Dodaj aktora</a>
+    </div>
     {% endif %}
 
     {% if articles_check > 0 %}
+    <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h3 class="display-5 align-self-center header" style="margin-left: 3vh; margin-right: 3vh;">
             <i>Artykuły o {{ movie.title }}</i>
@@ -122,14 +172,12 @@
         {% endfor %}
     </div>
     {% endif %}
+
     {% if user.is_staff and movie.movie_accepted_by %}
     <div class="d-flex flex-row justify-content-center flex-wrap">
         <a class="btn btn-success btn-sm guzik4" href="{% url 'add-article-movie' movie.id %}">Dodaj link do artykułu</a>
     </div>
     {% endif %}
-    <hr>
-
-
 
     <hr>
     <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">

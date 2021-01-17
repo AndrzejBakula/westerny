@@ -115,5 +115,6 @@ class PersonMovie(models.Model):
     role_rating = models.FloatField(null=True, max_length=4)
     persons = models.ForeignKey(Person, on_delete=models.DO_NOTHING)
     movies = models.ForeignKey(Movie, on_delete=models.DO_NOTHING)
+    personmovie_added_by = models.ForeignKey(User, null=False, default=1, on_delete=models.DO_NOTHING)
 
 

@@ -14,9 +14,10 @@ from django.views import View
 from django.contrib.auth.models import User
 from westerny_project.settings import PROTOCOLE
 from westerny_app.models import Movie, Genre, Person, Article, Rank, UserRank, PersonRating, Rating, MovieRating
+from westerny_app.models import PersonMovie
 from westerny_app.forms import AddMovieForm, AddGenreForm, AddPersonForm, EditGenreForm, RegisterForm, LoginForm
 from westerny_app.forms import SearchMovieForm, SearchPersonForm, AddArticleForm, EditPersonForm, RatingForm
-from westerny_app.forms import EditMovieForm
+from westerny_app.forms import EditMovieForm, AddActorForm
 
 
 #RANK CHECKING METHOD:
@@ -1117,4 +1118,66 @@ class DeleteArticleMovieView(StaffMemberCheck, View):
         article = Article.objects.get(id=article_id)
         article.delete()
         message = "Artykuł został usunięty."
+        return redirect(f"/movie_details/{movie_id}")
+
+
+class AddActorMovieView(StaffMemberCheck, View):
+    def get(self, request, id):
+        movie = Movie.objects.get(id=id)
+        form = AddActorForm()
+        ctx = {
+            "movie": movie,
+            "form": form
+        }
+        return render(request, "add_actor_movie.html", ctx)
+    
+    def post(self, request, id):
+        form = AddActorForm(request.POST)
+        movie = Movie.objects.get(id=id)
+        user = User.objects.get(pk=int(request.session.get("user_id")))
+        message = "Coś poszło nie tak"
+        if form.is_valid():
+            data = form.cleaned_data
+            starring = [i for i in movie.starring.all()]
+            if data["actor"] in starring:
+                message = "Taki aktor jest już przypisany do tego filmu."
+                ctx = {
+                    "form": form,
+                    "movie": movie,
+                    "message": message
+                }
+                return render(request, "add_actor_movie.html", ctx)
+            personmovie = PersonMovie.objects.create(role=data["role"], persons=data["actor"], movies=movie)
+            movie.starring.add(personmovie.persons)
+            movie.save()
+            message = "Aktor dodany pomyślnie"
+            ctx = {
+                "form": form,
+                "movie": movie,
+                "personmovie": personmovie,
+                "message": message
+            }
+            return redirect(f"/movie_details/{movie.id}")
+        ctx = {
+            "form": form,
+            "movie": movie,
+            "message": message
+        }
+        return render(request, "add_actor_movie.html", ctx)
+    
+
+class DeleteActorMovieView(StaffMemberCheck, View):
+    def get(self, request, movie_id, person_id):
+        movie = Movie.objects.get(id=movie_id)
+        person = Person.objects.get(id=person_id)
+        ctx = {
+            "movie": movie,
+            "person": person
+        }
+        return render(request, "delete_actor_movie.html", ctx)
+    
+    def post(self, request, movie_id, person_id):
+        personmovie = PersonMovie.objects.get(persons=person_id, movies=movie_id)
+        personmovie.delete()
+        message = "Aktor został usunięty z filmu."
         return redirect(f"/movie_details/{movie_id}")

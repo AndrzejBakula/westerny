@@ -30,6 +30,11 @@ class EditMovieForm(forms.Form):
     delete_image = forms.BooleanField(label="Skasować istniejący obraz?", required=None)
 
 
+class AddActorForm(forms.Form):
+    actor = forms.ModelChoiceField(label="Aktor", required=True, queryset=Person.objects.all())
+    role = forms.CharField(label="", required=True, max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Rola w filmie"}))
+
+
 class AddGenreForm(forms.Form):
     name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwa gatunku"}))
     description = forms.CharField(label="", max_length=1500, required=True, widget=forms.Textarea(attrs={"rows": 6, "cols": 40, "placeholder": "Krótki opis (do 1500 znaków)"}))

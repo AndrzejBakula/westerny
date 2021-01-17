@@ -28,7 +28,7 @@ from westerny_app.views import AcceptGenreView, AddArticleGenreView, DeleteArtic
 from westerny_app.views import WaitingPeopleView, PersonDetailsView, EditPersonView, AcceptPersonView
 from westerny_app.views import AddArticlePersonView, DeleteArticlePersonView, DeletePersonView, WaitingMoviesView
 from westerny_app.views import MovieDetailsView, DeleteMovieView, AcceptMovieView, AddArticleMovieView
-from westerny_app.views import EditMovieView, DeleteArticleMovieView
+from westerny_app.views import EditMovieView, DeleteArticleMovieView, AddActorMovieView, DeleteActorMovieView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -48,6 +48,8 @@ urlpatterns = [
     path('delete_movie/<int:id>', DeleteMovieView.as_view(), name="delete-movie"),
     path('accept_movie/<int:id>', AcceptMovieView.as_view(), name="accept-movie"),
     path('waiting_movies/', WaitingMoviesView.as_view(), name="waiting-movies"),
+    path('add_actor_movie/<int:id>', AddActorMovieView.as_view(), name="add-actor-movie"),
+    path('delete_actor_movie/<int:movie_id>/<int:person_id>', DeleteActorMovieView.as_view(), name="delete-actor-movie"),
     path('genres/', GenresView.as_view(), name="genres"),
     path('add_genre/', AddGenreView.as_view(), name="add-genre"),
     path('genre_details/<int:id>', GenreDetailsView.as_view(), name="genre-details"),
