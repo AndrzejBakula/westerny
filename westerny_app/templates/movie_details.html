@@ -82,7 +82,7 @@
         {% endfor %}
     </div>
 
-    {% if movie.screenplay %}
+    {% if movie.screenplay.all.count > 0 %}
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h4 class="display-5 align-self-center header">
             <i>Scenariusz:</i>
@@ -93,7 +93,7 @@
     </div>
     {% endif %}
 
-    {% if movie.music %}
+    {% if movie.music.all.count > 0 %}
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h4 class="display-5 align-self-center header">
             <i>Muzyka:</i>
