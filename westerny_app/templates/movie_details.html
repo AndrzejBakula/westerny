@@ -181,9 +181,9 @@
 
     <hr>
     <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
-        <span>Dodane przez: {{ movie.movie_added_by }}</span>
-        {% if movie.movie_accepted_by %}<span>Zaakceptowane przez: {{ movie.movie_accepted_by }}</span>{% endif %}
-        {% if movie.movie_edited_by %}<span>Ostatnia edycja: {{ movie.movie_edited_by }}</span>{% endif %}
+        <span>Dodane przez: <a style="color: white;" href="{% url 'user-details' movie.movie_added_by.id %}">{{ movie.movie_added_by }}</a></span>
+        {% if movie.movie_accepted_by %}<span>Zaakceptowane przez: <a style="color: white;" href="{% url 'user-details' movie.movie_accepted_by.id %}">{{ movie.movie_accepted_by }}</a></span>{% endif %}
+        {% if movie.movie_edited_by %}<span>Ostatnia edycja: <a style="color: white;" href="{% url 'user-details' movie.movie_edited_by.id %}">{{ movie.movie_edited_by }}</a></span>{% endif %}
     </div>
 
 </div>
