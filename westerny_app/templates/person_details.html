@@ -112,10 +112,10 @@
         </h3>
     </div>
 
-    {% for personmovie in person.personmovie_set.all %}
+    {% for movie in person.movie_set.all %}
     <div class="d-flex flex-row justify-content-center align-items-center">
-        {% if personmovie.movies.movie_accepted_by %}
-        <a class="btn btn-link align-self-center" href="{% url 'movie-details' personmovie.movies.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{personmovie.movies.year}} - {{personmovie.movies.title}}</a>
+        {% if movie.movie_accepted_by %}
+        <a class="btn btn-link align-self-center" href="{% url 'movie-details' movie.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ movie.year }} - {{ movie.title }}</a>
         {% endif %}
     </div>
     {% endfor %}
