@@ -258,7 +258,7 @@ class MyPlaceView(ActivateUserCheck, View):
         return render(request, "my_place.html", ctx)
 
 
-class UserDetailsView(ActivateUserCheck, View):
+class UserDetailsView(View):
     def get(self, request, id):
         soldier = User.objects.get(pk=id)
         check_rank(soldier)
