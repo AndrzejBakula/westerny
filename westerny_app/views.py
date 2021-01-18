@@ -294,7 +294,7 @@ class UserDetailsView(View):
 class StatsView(View):
     def get(self, request):
         users = len(User.objects.all())
-        officers = len(User.objects.filter(is_staff=True))
+        officers = len(User.objects.filter(is_staff=True, is_superuser=False))
         commanders = len(User.objects.filter(is_superuser=True))
         cavaliers = len(User.objects.filter(is_active=True, is_staff=False, is_superuser=False))
         civils = users - officers - commanders - cavaliers
