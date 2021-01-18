@@ -127,7 +127,7 @@
             <i>Aktor</i>
         </h3>
     </div>
-    {% for movie in person.movie_set.all %}
+    {% for movie in person.movie_set.all|dictsort:"year.year" %}
     <div class="d-flex flex-row justify-content-center align-items-center">
         {% if movie.movie_accepted_by %}
         <a class="btn btn-link align-self-center" href="{% url 'movie-details' movie.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ movie.year }} - {{ movie.title }}</a>
@@ -142,7 +142,7 @@
             <i>Reżyser</i>
         </h3>
     </div>
-    {% for movie in person.director.all %}
+    {% for movie in person.director.all|dictsort:"year.year" %}
     <div class="d-flex flex-row justify-content-center align-items-center">
         {% if movie.movie_accepted_by %}
         <a class="btn btn-link align-self-center" href="{% url 'movie-details' movie.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ movie.year }} - {{ movie.title }}</a>
@@ -157,7 +157,7 @@
             <i>Scenarzysta</i>
         </h3>
     </div>
-    {% for movie in person.screenplay.all %}
+    {% for movie in person.screenplay.all|dictsort:"year.year" %}
     <div class="d-flex flex-row justify-content-center align-items-center">
         {% if movie.movie_accepted_by %}
         <a class="btn btn-link align-self-center" href="{% url 'movie-details' movie.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ movie.year }} - {{ movie.title }}</a>
@@ -172,7 +172,7 @@
             <i>Muzyka</i>
         </h3>
     </div>
-    {% for movie in person.music.all %}
+    {% for movie in person.music.all|dictsort:"year.year" %}
     <div class="d-flex flex-row justify-content-center align-items-center">
         {% if movie.movie_accepted_by %}
         <a class="btn btn-link align-self-center" href="{% url 'movie-details' movie.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ movie.year }} - {{ movie.title }}</a>
@@ -187,7 +187,7 @@
             <i>Zdjęcia</i>
         </h3>
     </div>
-    {% for movie in person.cinema.all %}
+    {% for movie in person.cinema.all|dictsort:"year.year" %}
     <div class="d-flex flex-row justify-content-center align-items-center">
         {% if movie.movie_accepted_by %}
         <a class="btn btn-link align-self-center" href="{% url 'movie-details' movie.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ movie.year }} - {{ movie.title }}</a>
