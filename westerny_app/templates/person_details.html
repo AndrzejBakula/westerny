@@ -173,6 +173,21 @@
     {% endfor %}
     {% endif %}
 
+    {% if person.cinema.all.count > 0 %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h3 class="display-5 align-self-center header" style="margin-left: 3vh; margin-right: 3vh;">
+            <i>Zdjęcia</i>
+        </h3>
+    </div>
+    {% for movie in person.cinema.all %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        {% if movie.movie_accepted_by %}
+        <a class="btn btn-link align-self-center" href="{% url 'movie-details' movie.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ movie.year }} - {{ movie.title }}</a>
+        {% endif %}
+    </div>
+    {% endfor %}
+    {% endif %}
+
     <hr>
     <div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
         <span>Dodane przez: <a style="color: #dcdcc6;" href="{% url 'user-details' person.person_added_by.id %}">{{ person.person_added_by }}</a></span>

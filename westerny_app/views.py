@@ -371,6 +371,7 @@ class AddMovieView(ActivateUserCheck, View):
             director = data["director"]
             screenplay = data["screenplay"]
             music = data["music"]
+            cinema = data["cinema"]
             genre = data["genre"]
             description = data["description"]
             image = request.FILES.get("image")
@@ -399,6 +400,8 @@ class AddMovieView(ActivateUserCheck, View):
                         movie.screenplay.add(i)
                     for i in music:
                         movie.music.add(i)
+                    for i in cinema:
+                        movie.cinema.add(i)
                     for i in genre:
                         movie.genre.add(i)
                     movie.save()
@@ -425,6 +428,8 @@ class AddMovieView(ActivateUserCheck, View):
                         movie.screenplay.add(i)
                     for i in music:
                         movie.music.add(i)
+                    for i in cinema:
+                        movie.cinema.add(i)
                     for i in genre:
                         movie.genre.add(i)
                     movie.save()
@@ -490,6 +495,7 @@ class EditMovieView(StaffMemberCheck, View):
             "director": [i for i in movie.director.all()],
             "screenplay": [i for i in movie.screenplay.all()],
             "music": [i for i in movie.music.all()],
+            "cinema": [i for i in movie.cinema.all()],
             "genre": [i for i in movie.genre.all()]
         }
         form = EditMovieForm(initial=initial_data)
@@ -509,6 +515,7 @@ class EditMovieView(StaffMemberCheck, View):
             director = data["director"]
             screenplay = data["screenplay"]
             music = data["music"]
+            cinema = data["cinema"]
             genre = data["genre"]
             description = data["description"]
             image = request.FILES.get("image")
@@ -525,6 +532,7 @@ class EditMovieView(StaffMemberCheck, View):
                     "director": [i for i in movie.director.all()],
                     "screenplay": [i for i in movie.screenplay.all()],
                     "music": [i for i in movie.music.all()],
+                    "cinema": [i for i in movie.cinema.all()],
                     "genre": [i for i in movie.genre.all()]
                 }
                 form = EditMovieForm(initial=initial_data)
@@ -541,6 +549,7 @@ class EditMovieView(StaffMemberCheck, View):
             movie.director.set(data["director"])
             movie.screenplay.set(data["screenplay"])
             movie.music.set(data["music"])
+            movie.cinema.set(data["cinema"])
             movie.genre.set(data["genre"])
             movie.movie_description = data["description"]
             movie.movie_edited_by = user

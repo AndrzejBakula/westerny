@@ -104,6 +104,17 @@
     </div>
     {% endif %}
 
+    {% if movie.cinema.all.count > 0 %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h4 class="display-5 align-self-center header">
+            <i>Zdjęcia:</i>
+        </h4>
+        {% for cin in movie.cinema.all %}
+        <a  class="btn btn-link align-self-center" href="{% url 'person-details' cin.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ cin }}</a>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     {% if movie.movie_description %}
     <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
