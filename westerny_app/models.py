@@ -92,6 +92,7 @@ class Movie(models.Model):
     director = models.ManyToManyField(Person, related_name='director')
     screenplay = models.ManyToManyField(Person, related_name='screenplay')
     music = models.ManyToManyField(Person, related_name='music')
+    cinema = models.ManyToManyField(Person, related_name='cinema', default=None)
     starring = models.ManyToManyField(Person, through="PersonMovie")
     year = models.ForeignKey(Year, null=False, on_delete=models.DO_NOTHING)
     movie_rating = models.FloatField(null=True, max_length=4)
