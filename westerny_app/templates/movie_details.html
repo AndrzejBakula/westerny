@@ -154,7 +154,7 @@
         {% for personmovie in movie.personmovie_set.all %}
         <div class="d-flex flex-row justify-content-center align-items-center flex-wrap" style="margin-left: 3vh; margin-right: 3vh;">
             <a class="btn btn-link align-self-center" href="{% url 'person-details' personmovie.persons.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ personmovie.persons }}:</a>
-            <h5 class="display-5 align-self-center header">{{ personmovie.role }}</h5>
+            <h5 class="display-5 align-self-center header"><i>{{ personmovie.role }}</i></h5>
             {% if user.is_superuser or personmovie_added_by == user %}
             <span style="visibility: hidden;">.</span>
             <a class="btn btn-danger btn-sm guzik4" href="{% url 'delete-actor-movie' movie.id personmovie.persons.id %}">Usuń</a>
