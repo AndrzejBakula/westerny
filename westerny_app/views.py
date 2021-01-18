@@ -899,6 +899,8 @@ class AddPersonView(ActivateUserCheck, View):
                         last_name=request.POST.get("last_name"),
                         person_description=request.POST.get("description"),
                         person_image=request.FILES.get("image"),
+                        date_birth=data["date_birth"],
+                        date_death=data["date_death"],
                         person_added_by=user,
                         person_accepted_by=user
                     )
@@ -916,6 +918,8 @@ class AddPersonView(ActivateUserCheck, View):
                         first_name=request.POST.get("first_name"),
                         last_name=request.POST.get("last_name"),
                         person_description=request.POST.get("description"),
+                        date_birth=data["date_birth"],
+                        date_death=data["date_death"],
                         person_image=request.FILES.get("image"),
                         person_added_by=user
                     )
@@ -936,7 +940,9 @@ class EditPersonView(StaffMemberCheck, View):
         initial_data = {
             "first_name": person.first_name,
             "last_name": person.last_name,
-            "description": person.person_description
+            "description": person.person_description,
+            "date_birth": person.date_birth,
+            "date_death": person.date_death
         }
         form = EditPersonForm(initial=initial_data)
         ctx = {
@@ -959,7 +965,9 @@ class EditPersonView(StaffMemberCheck, View):
                 initial_data = {
                     "first_name": person.first_name,
                     "last_name": person.last_name,
-                    "description": person.person_description
+                    "description": person.person_description,
+                    "date_birth": person.date_birth,
+                    "date_death": person.date_death
                 }
                 form = EditPersonForm(initial=initial_data)
                 ctx = {
@@ -973,6 +981,8 @@ class EditPersonView(StaffMemberCheck, View):
             person.first_name = request.POST.get("first_name")
             person.last_name = request.POST.get("last_name")
             person.person_description = request.POST.get("description")
+            person.date_birth = request.POST.get("date_birth")
+            person.date_death = request.POST.get("date_death")
             person.person_edited_by = user
             if request.FILES.get("image") != None or request.POST.get("delete_image"):
                 person.person_image = request.FILES.get("image")
@@ -983,7 +993,9 @@ class EditPersonView(StaffMemberCheck, View):
             initial_data = {
                 "first_name": person.first_name,
                 "last_name": person.last_name,
-                "description": person.person_description
+                "description": person.person_description,
+                "date_birth": person.date_birth,
+                "date_death": person.date_death
             }
             form = EditPersonForm(initial=initial_data)
             ctx = {

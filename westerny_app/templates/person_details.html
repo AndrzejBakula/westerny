@@ -45,6 +45,14 @@
         <button type="submit" id="submit">Dodaj Ocenę</button>
     </form>
     {% endif %}
+
+    {% if person.date_birth %}
+    <div>
+        <h5 style="text-align: justify; margin-left: 3vh; margin-right: 3vh;" class="display-5 align-self-center header">
+            {{ person.date_birth }} - {{ person.date_death }}
+        </h5>
+    </div>
+    {% endif %}
     
     {% if person.person_image %}
     <div class="m-2">
