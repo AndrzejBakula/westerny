@@ -61,13 +61,13 @@ def check_rank(user):
         return userrank.save()
     elif user.is_staff == True:
         userrank.rank = porucznik
-        if (30 <= sum_of_added < 50) or ( 15 <= sum_of_accepted < 40):
+        if (50 <= sum_of_added < 75) or ( 15 <= sum_of_accepted < 50):
             userrank.rank = kapitan
             return userrank.save()
-        elif (50 <= sum_of_added < 75) or (40 <= sum_of_accepted < 100):
+        elif (75 <= sum_of_added < 150) or (50 <= sum_of_accepted < 100):
             userrank.rank = major
             return userrank.save()
-        elif (75 <= sum_of_added < 100) or sum_of_accepted >= 100:
+        elif (150 <= sum_of_added < 200) or sum_of_accepted >= 100:
             userrank.rank = pulkownik
             return userrank.save()
         return userrank.save()
@@ -244,6 +244,37 @@ class MyPlaceView(ActivateUserCheck, View):
         accepted_genres = len(Genre.objects.filter(genre_accepted_by=user))
         accepted_notes = accepted_westerns + accepted_people + accepted_genres
 
+        userrank = UserRank.objects.get(user=user.id).rank
+
+        kawalerzysta = Rank.objects.get(name="kawalerzysta")
+        kapral = Rank.objects.get(name="kapral")
+        sierzant = Rank.objects.get(name="sierżant")
+        porucznik = Rank.objects.get(name="porucznik")
+        kapitan = Rank.objects.get(name="kapitan")
+        major = Rank.objects.get(name="major")
+        pulkownik = Rank.objects.get(name="pułkownik")
+        general = Rank.objects.get(name="generał")
+        gubernator = Rank.objects.get(name="gubernator")
+
+        promotion_add = None
+        promotion_accept = None
+        added_points = added_westerns*2 + added_people + added_genres*2
+        accepted_points = accepted_westerns + accepted_people + accepted_genres
+        if userrank == kawalerzysta:
+            promotion_add = 10-added_points
+        elif userrank == kapral:
+            promotion_add = 30-added_points
+        elif userrank == porucznik:
+            promotion_add = 50-added_points
+            promotion_accept = 15-accepted_points
+        elif userrank == kapitan:
+            promotion_add = 75-added_points
+            promotion_accept = 50-accepted_points
+        elif userrank == major:
+            promotion_add = 150-added_points
+            promotion_accept = 100-accepted_points
+
+
         ctx = {
             "westerns": added_westerns,
             "people": added_people,
@@ -253,7 +284,9 @@ class MyPlaceView(ActivateUserCheck, View):
             "accepted_westerns": accepted_westerns,
             "accepted_people": accepted_people,
             "accepted_genres": accepted_genres,
-            "accepted_notes": accepted_notes
+            "accepted_notes": accepted_notes,
+            "promotion_add": promotion_add,
+            "promotion_accept": promotion_accept
         }
         return render(request, "my_place.html", ctx)
 
