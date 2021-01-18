@@ -72,46 +72,55 @@
             <i>Rok premiery:</i> {{ movie.year }}
         </h4>
     </div>
-
-    <div class="d-flex flex-row justify-content-center align-items-center">
+    <hr>
+    <div class="d-flex flex-column justify-content-center align-items-center">
         <h4 class="display-5 align-self-center header">
             <i>Reżyseria:</i>
         </h4>
+        <div class="d-flex flex-row justify-content-center align-items-center">
         {% for director in movie.director.all %}
         <a  class="btn btn-link align-self-center" href="{% url 'person-details' director.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ director }}</a>
         {% endfor %}
+        </div>
+
     </div>
 
     {% if movie.screenplay.all.count > 0 %}
-    <div class="d-flex flex-row justify-content-center align-items-center">
+    <div class="d-flex flex-column justify-content-center align-items-center">
         <h4 class="display-5 align-self-center header">
             <i>Scenariusz:</i>
         </h4>
+        <div class="d-flex flex-row justify-content-center align-items-center">
         {% for screenplay in movie.screenplay.all %}
         <a  class="btn btn-link align-self-center" href="{% url 'person-details' screenplay.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ screenplay }}</a>
         {% endfor %}
+        </div>
     </div>
     {% endif %}
 
     {% if movie.music.all.count > 0 %}
-    <div class="d-flex flex-row justify-content-center align-items-center">
+    <div class="d-flex flex-column justify-content-center align-items-center">
         <h4 class="display-5 align-self-center header">
             <i>Muzyka:</i>
         </h4>
+        <div class="d-flex flex-row justify-content-center align-items-center">
         {% for music in movie.music.all %}
         <a  class="btn btn-link align-self-center" href="{% url 'person-details' music.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ music }}</a>
         {% endfor %}
+        </div>
     </div>
     {% endif %}
 
     {% if movie.cinema.all.count > 0 %}
-    <div class="d-flex flex-row justify-content-center align-items-center">
+    <div class="d-flex flex-columnjustify-content-center align-items-center">
         <h4 class="display-5 align-self-center header">
             <i>Zdjęcia:</i>
         </h4>
+        <div class="d-flex flex-row justify-content-center align-items-center">
         {% for cin in movie.cinema.all %}
         <a  class="btn btn-link align-self-center" href="{% url 'person-details' cin.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ cin }}</a>
         {% endfor %}
+        </div>
     </div>
     {% endif %}
 
