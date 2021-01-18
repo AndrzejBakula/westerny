@@ -49,6 +49,8 @@ class Rating(models.Model):
 class Person(models.Model):
     first_name = models.CharField(max_length=64)
     last_name = models.CharField(max_length=64)
+    date_birth = models.DateField(null=True, default=None)
+    date_death = models.DateField(null=True, default=None)
     person_rating = models.FloatField(null=True, max_length=4)
     person_image = models.ImageField(blank=True, null=True, upload_to="person_images/")
     person_description = models.TextField(null=True, max_length=1500)
