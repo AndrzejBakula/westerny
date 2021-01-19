@@ -61,13 +61,13 @@ def check_rank(user):
         return userrank.save()
     elif user.is_staff == True:
         userrank.rank = porucznik
-        if (50 <= sum_of_added < 75) or ( 15 <= sum_of_accepted < 50):
+        if ( 20 <= sum_of_accepted < 50):
             userrank.rank = kapitan
             return userrank.save()
-        elif (75 <= sum_of_added < 150) or (50 <= sum_of_accepted < 100):
+        elif (50 <= sum_of_accepted < 125):
             userrank.rank = major
             return userrank.save()
-        elif (150 <= sum_of_added < 200) or sum_of_accepted >= 100:
+        elif sum_of_accepted >= 125:
             userrank.rank = pulkownik
             return userrank.save()
         return userrank.save()
@@ -258,21 +258,18 @@ class MyPlaceView(ActivateUserCheck, View):
 
         promotion_add = None
         promotion_accept = None
-        added_points = added_westerns*2 + added_people + added_genres*2
-        accepted_points = accepted_westerns + accepted_people + accepted_genres
+        added_points = added_westerns*2 + added_people
+        accepted_points = accepted_westerns + accepted_people + added_genres
         if userrank == kawalerzysta:
             promotion_add = 10-added_points
         elif userrank == kapral:
             promotion_add = 30-added_points
         elif userrank == porucznik:
-            promotion_add = 50-added_points
-            promotion_accept = 15-accepted_points
+            promotion_accept = 20-accepted_points
         elif userrank == kapitan:
-            promotion_add = 75-added_points
             promotion_accept = 50-accepted_points
         elif userrank == major:
-            promotion_add = 150-added_points
-            promotion_accept = 100-accepted_points
+            promotion_accept = 125-accepted_points
 
 
         ctx = {
