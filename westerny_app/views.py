@@ -323,11 +323,10 @@ class UserDetailsView(View):
 
 class StatsView(View):
     def get(self, request):
-        users = len(User.objects.all())
+        users = len(User.objects.filter(is_active=True))
         officers = len(User.objects.filter(is_staff=True, is_superuser=False))
         commanders = len(User.objects.filter(is_superuser=True))
         cavaliers = len(User.objects.filter(is_active=True, is_staff=False, is_superuser=False))
-        civils = users - officers - commanders - cavaliers
         westerns = len(Movie.objects.all())
         people = len(Person.objects.all())
         genres = len(Genre.objects.all())
@@ -339,7 +338,6 @@ class StatsView(View):
             "officers": officers,
             "commanders": commanders,
             "cavaliers": cavaliers,
-            "civils": civils,
             "westerns": westerns,
             "people": people,
             "genres": genres,
