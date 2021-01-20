@@ -10,6 +10,7 @@ class Rank(models.Model):
 class UserRank(models.Model):
     user = models.ForeignKey(User, null=False, on_delete=models.DO_NOTHING)
     rank = models.ForeignKey(Rank, null=False, default=1, on_delete=models.DO_NOTHING)
+    promotion_ask = models.BooleanField(default=False)
 
     def __str__(self):
         if self.rank.name == "kawalerzysta":

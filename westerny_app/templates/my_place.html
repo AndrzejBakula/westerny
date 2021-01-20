@@ -40,11 +40,21 @@
         <img src="{% static 'images/gubernator.png' %}" style="border-color: #ffffff; border-style: solid; border-radius: 5px; width: 100px;">
         {% endif %}
     </div>
+
     {% if promotion_add != None or promotion_accept != None %}
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h3 class="display-5 align-self-center header2" style="margin-left: 3vh; margin-right: 3vh;"><i>Do awansu pozostało: {% if not user.is_staff %} {{ promotion_add }} pkt {% endif %} {% if user.is_staff %} {{ promotion_accept }} pkt oficerskich {% endif %}</i></h3>
     </div>
     {% endif %}
+
+    {% if promotion_ask == True %}
+    <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'my-place' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <button type="submit" id="submit">Wystąp o awans</button>
+    </form>
+    {% endif %}
+
     <hr>
     <div class="d-flex flex-column justify-content-center align-items-center" style="margin-left: 3vh; margin-right: 3vh;">
         <h3 class="display-5 align-self-center header">

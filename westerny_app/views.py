@@ -61,7 +61,7 @@ def check_rank(user):
         return userrank.save()
     elif user.is_staff == True:
         userrank.rank = porucznik
-        if ( 20 <= sum_of_accepted < 50):
+        if ( 25 <= sum_of_accepted < 50):
             userrank.rank = kapitan
             return userrank.save()
         elif (50 <= sum_of_accepted < 125):
@@ -107,6 +107,11 @@ class IndexView(View):
         if request.session.get("user_id"):
             user = User.objects.get(pk=int(request.session.get("user_id")))
             check_rank(user)
+            promotion_asks = len(UserRank.objects.filter(promotion_ask=True))
+            ctx = {
+                "promotion_asks": promotion_asks
+            }
+            return render(request, "index.html", ctx)
         return render(request, "index.html")
 
 
@@ -258,20 +263,30 @@ class MyPlaceView(ActivateUserCheck, View):
 
         promotion_add = None
         promotion_accept = None
+        promotion_ask = False
+        if UserRank.objects.get(user=user).promotion_ask == True:
+            promotion_ask = None
         added_points = added_westerns*2 + added_people
         accepted_points = accepted_westerns + accepted_people + added_genres
         if userrank == kawalerzysta:
             promotion_add = 10-added_points
         elif userrank == kapral:
             promotion_add = 30-added_points
+        elif userrank == sierzant:
+            promotion_add = 50-added_points
+            if UserRank.objects.get(user=user).promotion_ask == False and added_points >= 50:
+                promotion_ask = True
         elif userrank == porucznik:
-            promotion_accept = 20-accepted_points
+            promotion_accept = 25-accepted_points
         elif userrank == kapitan:
             promotion_accept = 50-accepted_points
         elif userrank == major:
             promotion_accept = 125-accepted_points
-
-
+        elif userrank == pulkownik:
+            promotion_accept = 250-accepted_points
+            if accepted_points >= 250 and UserRank.objects.get(user=user).promotion_ask == False:
+                promotion_ask = True
+    
         ctx = {
             "westerns": added_westerns,
             "people": added_people,
@@ -283,9 +298,18 @@ class MyPlaceView(ActivateUserCheck, View):
             "accepted_genres": accepted_genres,
             "accepted_notes": accepted_notes,
             "promotion_add": promotion_add,
-            "promotion_accept": promotion_accept
+            "promotion_accept": promotion_accept,
+            "promotion_ask": promotion_ask,
+            "userrank": UserRank.objects.get(user=user)
         }
         return render(request, "my_place.html", ctx)
+    
+    def post(self, request):
+        user = User.objects.get(pk=request.session.get("user_id"))
+        userrank = UserRank.objects.get(user=user)
+        userrank.promotion_ask = True
+        userrank.save()
+        return redirect("/my_place")
 
 
 class UserDetailsView(View):
@@ -306,6 +330,8 @@ class UserDetailsView(View):
         accepted_genres = len(Genre.objects.filter(genre_accepted_by=soldier))
         accepted_notes = accepted_westerns + accepted_people + accepted_genres
 
+        userrank = UserRank.objects.get(user=soldier)
+
         ctx = {
             "soldier": soldier,
             "westerns": added_westerns,
@@ -316,9 +342,40 @@ class UserDetailsView(View):
             "accepted_westerns": accepted_westerns,
             "accepted_people": accepted_people,
             "accepted_genres": accepted_genres,
-            "accepted_notes": accepted_notes
+            "accepted_notes": accepted_notes,
+            "userrank": userrank
         }
         return render(request, "user_details.html", ctx)
+    
+
+
+class GivePromotionView(View):
+    def get(self, request, id):
+        soldier = User.objects.get(id=id)
+        userrank = UserRank.objects.get(user=soldier)
+        ctx = {
+            "userrank": userrank,
+            "soldier": soldier
+        }
+        return render(request, "give_promotion.html", ctx)
+    
+    def post(self, request, id):
+        soldier = User.objects.get(id=id)
+        userrank = UserRank.objects.get(user=soldier)
+        rank = Rank.objects.get(name="porucznik")
+        userrank.rank = rank
+        userrank.promotion_ask = False
+        soldier.is_staff = True
+        userrank.save()
+        soldier.save()
+        message = "Awans przyznany"
+        return render(request, "give_promotion.html", {"message": message})
+
+
+class PromotionAsksView(View):
+    def get(self, request):
+        promotion_asks = UserRank.objects.filter(promotion_ask=True)
+        return render(request, "promotion_asks.html", {"promotion_asks": promotion_asks})
 
 
 class StatsView(View):

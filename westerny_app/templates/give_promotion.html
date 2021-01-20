@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} Daj Awans {% endblock %}
+
+{% block content %}
+
+<div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
+    <div class="d-flex flex-row justify-content-around flex-wrap">
+        <a class="btn btn-primary btn-lg guzik" href="{% url 'index' %}">STRONA GŁÓWNA</a>
+    </div>
+    <div class="d-flex flex-row justify-content-around flex-wrap">
+        <a class="btn btn-warning btn-lg guzik2" href="{% url 'movies' %}">WESTERNY</a>
+        <a class="btn btn-warning btn-lg guzik2" href="{% url 'people' %}">LUDZIE</a>
+        <a class="btn btn-warning btn-lg guzik2" href="{% url 'genres' %}">GATUNKI</a>
+    </div>
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h2 class="display-5 align-self-center header2"><i>Daj Awans</i></h2>
+    </div>
+
+    {% if message %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h3 class="display-5 align-self-center header">
+            Awans przyznany.
+        </h3>
+    </div>
+    {% endif %}
+
+    {% if not message %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h3 class="display-5 align-self-center header">
+            Czy na pewno chcesz dać awans na oficera dla {{ soldier }}?
+        </h3>
+    </div>
+
+    <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'give-promotion' soldier.id %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <button type="submit" id="submit">Awansuj</button>
+    </form>
+    <hr>
+    {% endif %}
+
+</div>
+
+{% endblock %}
