@@ -29,7 +29,7 @@
     </div>
 
     <div class="d-flex flex-row justify-content-center align-items-center flex-wrap">
-        {% for genre in movie.genre.all %}
+        {% for genre in movie.genre.all|dictsort:"name" %}
         <a  class="btn btn-link align-self-center" href="{% url 'genre-details' genre.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ genre }} </a>
         {% endfor %}
     </div>
