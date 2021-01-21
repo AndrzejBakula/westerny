@@ -570,7 +570,7 @@ class MovieDetailsView(View):
         return redirect(f"/movie_details/{movie.id}")
 
 
-class EditMovieView(StaffMemberCheck, View):
+class EditMovieView(ActivateUserCheck, View):
     def get(self, request, id):
         movie = Movie.objects.get(id=id)
         initial_data = {
@@ -986,7 +986,7 @@ class AddPersonView(ActivateUserCheck, View):
                     return render(request, "people.html", ctx)
 
 
-class EditPersonView(StaffMemberCheck, View):
+class EditPersonView(ActivateUserCheck, View):
     def get(self, request, id):
         person = Person.objects.get(id=id)
         initial_data = {

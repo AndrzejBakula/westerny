@@ -13,7 +13,7 @@
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'movies' %}">WESTERNY</a>
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'genres' %}">GATUNKI</a>
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'people' %}">LUDZIE</a>
-        {% if person.person_added_by == user or user.is_staff %}
+        {% if user.is_staff or person.person_added_by == user and not person.person_edited_by.is_staff %}
         <a class="btn btn-success btn-lg guzik" href="{% url 'edit-person' person.id %}"> Edytuj Osobę</a>
         {% endif %}
         {% if user.is_superuser %}
