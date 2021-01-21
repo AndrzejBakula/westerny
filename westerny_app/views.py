@@ -573,22 +573,25 @@ class MovieDetailsView(View):
 class EditMovieView(ActivateUserCheck, View):
     def get(self, request, id):
         movie = Movie.objects.get(id=id)
-        initial_data = {
-            "title": movie.title,
-            "year": movie.year,
-            "description": movie.movie_description,
-            "director": [i for i in movie.director.all()],
-            "screenplay": [i for i in movie.screenplay.all()],
-            "music": [i for i in movie.music.all()],
-            "cinema": [i for i in movie.cinema.all()],
-            "genre": [i for i in movie.genre.all()]
-        }
-        form = EditMovieForm(initial=initial_data)
-        ctx = {
-            "movie": movie,
-            "form": form
-        }
-        return render(request, "edit_movie.html", ctx)
+        user = User.objects.get(pk=int(request.session.get("user_id")))
+        if user.is_staff or user.is_superuser or (movie.movie_added_by == user and not movie.movie_edited_by.is_staff):
+            initial_data = {
+                "title": movie.title,
+                "year": movie.year,
+                "description": movie.movie_description,
+                "director": [i for i in movie.director.all()],
+                "screenplay": [i for i in movie.screenplay.all()],
+                "music": [i for i in movie.music.all()],
+                "cinema": [i for i in movie.cinema.all()],
+                "genre": [i for i in movie.genre.all()]
+            }
+            form = EditMovieForm(initial=initial_data)
+            ctx = {
+                "movie": movie,
+                "form": form
+            }
+            return render(request, "edit_movie.html", ctx)
+        return redirect("/movies")
     
     def post(self, request, id):
         form = EditMovieForm(request.POST)
@@ -989,19 +992,22 @@ class AddPersonView(ActivateUserCheck, View):
 class EditPersonView(ActivateUserCheck, View):
     def get(self, request, id):
         person = Person.objects.get(id=id)
-        initial_data = {
-            "first_name": person.first_name,
-            "last_name": person.last_name,
-            "description": person.person_description,
-            "date_birth": person.date_birth,
-            "date_death": person.date_death
-        }
-        form = EditPersonForm(initial=initial_data)
-        ctx = {
-            "person": person,
-            "form": form
-        }
-        return render(request, "edit_person.html", ctx)
+        user = User.objects.get(pk=int(request.session.get("user_id")))
+        if user.is_staff or user.is_superuser or (person.person_added_by == user and not person.person_edited_by.is_staff):
+            initial_data = {
+                "first_name": person.first_name,
+                "last_name": person.last_name,
+                "description": person.person_description,
+                "date_birth": person.date_birth,
+                "date_death": person.date_death
+            }
+            form = EditPersonForm(initial=initial_data)
+            ctx = {
+                "person": person,
+                "form": form
+            }
+            return render(request, "edit_person.html", ctx)
+        return redirect("/people")
     
     def post(self, request, id):
         form = EditPersonForm(request.POST)
