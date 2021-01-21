@@ -165,7 +165,7 @@
     </div>
     {% endif %}
 
-    {% if user.is_staff or movie.movie_added_by == user and movie.movie_accepted_by %}
+    {% if user.is_staff or movie.movie_added_by == user and movie.movie_accepted_by and not movie.movie_edited_by.is_staff %}
     <div class="d-flex flex-row justify-content-center flex-wrap">
         <a class="btn btn-success btn-sm guzik4" href="{% url 'add-actor-movie' movie.id %}">Dodaj aktora</a>
     </div>

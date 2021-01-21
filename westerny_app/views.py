@@ -574,7 +574,7 @@ class EditMovieView(ActivateUserCheck, View):
     def get(self, request, id):
         movie = Movie.objects.get(id=id)
         user = User.objects.get(pk=int(request.session.get("user_id")))
-        if user.is_staff or user.is_superuser or (movie.movie_added_by == user and not movie.movie_edited_by.is_staff):
+        if (movie.movie_added_by == user and movie.movie_edited_by == None) or (movie.movie_added_by == user and not movie.movie_edited_by.is_staff) or user.is_superuser or user.is_staff:
             initial_data = {
                 "title": movie.title,
                 "year": movie.year,
@@ -993,7 +993,7 @@ class EditPersonView(ActivateUserCheck, View):
     def get(self, request, id):
         person = Person.objects.get(id=id)
         user = User.objects.get(pk=int(request.session.get("user_id")))
-        if user.is_staff or user.is_superuser or (person.person_added_by == user and not person.person_edited_by.is_staff):
+        if (person.person_added_by == user and person.person_edited_by == None) or (person.person_added_by == user and not person.person_edited_by.is_staff) or user.is_superuser or user.is_staff:
             initial_data = {
                 "first_name": person.first_name,
                 "last_name": person.last_name,
@@ -1277,15 +1277,18 @@ class DeleteArticleMovieView(StaffMemberCheck, View):
         return redirect(f"/movie_details/{movie_id}")
 
 
-class AddActorMovieView(StaffMemberCheck, View):
+class AddActorMovieView(ActivateUserCheck, View):
     def get(self, request, id):
         movie = Movie.objects.get(id=id)
-        form = AddActorForm()
-        ctx = {
-            "movie": movie,
-            "form": form
-        }
-        return render(request, "add_actor_movie.html", ctx)
+        user = User.objects.get(pk=int(request.session.get("user_id")))
+        if (movie.movie_added_by == user and movie.movie_edited_by == None) or (movie.movie_added_by == user and not movie.movie_edited_by.is_staff) or user.is_superuser or user.is_staff:
+            form = AddActorForm()
+            ctx = {
+                "movie": movie,
+                "form": form
+            }
+            return render(request, "add_actor_movie.html", ctx)
+        return redirect("/movies")
     
     def post(self, request, id):
         form = AddActorForm(request.POST)
