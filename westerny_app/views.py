@@ -422,6 +422,11 @@ class MoviesView(View):
     def get(self, request):
         movies = Movie.objects.all().order_by("year")
         waiting_movies = len([i for i in movies if i.movie_accepted_by == None])
+
+        paginator = Paginator(movies, 12)
+        page = request.GET.get("page")
+        movies = paginator.get_page(page)
+
         ctx = {
             "movies": movies,
             "waiting_movies": waiting_movies
