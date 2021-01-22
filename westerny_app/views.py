@@ -7,6 +7,7 @@ from django.utils.decorators import method_decorator
 from django.utils.encoding import force_bytes, force_text, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.paginator import Paginator
 from django.urls import reverse
 from datetime import timezone, date, timedelta
 from .utils import token_generator
@@ -124,7 +125,7 @@ class RegisterView(View):
 
     FORBIDDEN = ("westerny", "Westerny", "WESTERNY", "WeStErNy", "wEsTeRnY", "west", "West", "WEST",
                 "Westernowy", "WESTERNOWY", "westernowy", "Westernowo", "westernowo", "WESTERNOWO",
-                "western", "WESTERN", "Western")
+                "western", "WESTERN", "Western", "westerns", "Westerns", "WESTERNS")
 
     def get(self, request):
         form = RegisterForm()
@@ -866,6 +867,11 @@ class PeopleView(View):
     def get(self, request):
         people = Person.objects.all().order_by("last_name")
         waiting_people = len([i for i in people if i.person_accepted_by == None])
+
+        paginator = Paginator(people, 12)
+        page = request.GET.get("page")
+        people = paginator.get_page(page)
+
         ctx = {
             "people": people,
             "waiting_people": waiting_people

@@ -47,6 +47,26 @@
     </div>
     {% endfor %}
 
+    <!-- Pagination: -->
+    <hr>
+    <nav aria-label="Page navigation example">
+    <ul class="pagination">
+        {% if people.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page=1">Pierwsza strona</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{ people.previous_page_number }}">Poprzednia strona</a></li>
+        {% endif %}
+        {% for num in people.paginator.page_range %}
+        {% if people.number == num %}
+            <li class="page-item"><a class="page-link" href="?page={{ people.page_number }}"><strong>{{ num }}/{{ people.paginator.num_pages }}</strong></a></li>
+        {% endif %}
+        {% endfor %}
+        {% if people.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ people.next_page_number }}">Następna strona</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{ people.paginator.num_pages }}">Ostatnia strona</a></li>
+        {% endif %}
+    </ul>
+    </nav>
+
 
 
 {% endblock %}
