@@ -121,6 +121,11 @@ class RulesView(View):
 
 
 class RegisterView(View):
+
+    FORBIDDEN = ("westerny", "Westerny", "WESTERNY", "WeStErNy", "wEsTeRnY", "west", "West", "WEST",
+                "Westernowy", "WESTERNOWY", "westernowy", "Westernowo", "westernowo", "WESTERNOWO",
+                "western", "WESTERN", "Western")
+
     def get(self, request):
         form = RegisterForm()
         return render(request, "register.html", {"form": form})
@@ -167,6 +172,14 @@ class RegisterView(View):
             return render(request, "register.html", ctx)
         elif username in users:
             message = "Taki kawalerzysta widnieje już w rejestrze pułku."
+            ctx = {
+                "email": email,
+                "message": message,
+                "form": form
+            }
+            return render(request, "register.html", ctx)
+        elif username in self.FORBIDDEN:
+            message = "Taką nazwę nosi poszukiwany listem gończym bandyta."
             ctx = {
                 "email": email,
                 "message": message,
