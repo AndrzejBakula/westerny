@@ -152,7 +152,7 @@
     </div>
 
     <div class="d-flex flex-column justify-content-center align-items-center flex-wrap">
-        {% for personmovie in movie.personmovie_set.all %}
+        {% for personmovie in movie.personmovie_set.all|dictsortreversed:"persons.person_rating" %}
         <div class="d-flex flex-row justify-content-center align-items-center flex-wrap" style="margin-left: 3vh; margin-right: 3vh;">
             <a class="btn btn-link align-self-center" href="{% url 'person-details' personmovie.persons.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ personmovie.persons }}:</a>
             <h5 class="display-5 align-self-center header"><i>{{ personmovie.role }}</i></h5>
