@@ -62,13 +62,13 @@ def check_rank(user):
         return userrank.save()
     elif user.is_staff == True:
         userrank.rank = porucznik
-        if ( 25 <= sum_of_accepted < 50):
+        if ( 25 <= sum_of_accepted < 75):
             userrank.rank = kapitan
             return userrank.save()
-        elif (50 <= sum_of_accepted < 125):
+        elif (75 <= sum_of_accepted < 150):
             userrank.rank = major
             return userrank.save()
-        elif sum_of_accepted >= 125:
+        elif sum_of_accepted >= 150:
             userrank.rank = pulkownik
             return userrank.save()
         return userrank.save()
@@ -301,9 +301,9 @@ class MyPlaceView(ActivateUserCheck, View):
         elif userrank == porucznik:
             promotion_accept = 25-accepted_points
         elif userrank == kapitan:
-            promotion_accept = 50-accepted_points
+            promotion_accept = 75-accepted_points
         elif userrank == major:
-            promotion_accept = 125-accepted_points
+            promotion_accept = 150-accepted_points
         elif userrank == pulkownik:
             promotion_accept = 250-accepted_points
             if accepted_points >= 250 and UserRank.objects.get(user=user).promotion_ask == False:
