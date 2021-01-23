@@ -20,7 +20,7 @@
 
     <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h2 class="display-5 align-self-center header2"><i>Najnowsze Westerny</i></h2>
+        <h3 class="display-5 align-self-center header2"><i>Najnowsze Westerny</i></h3>
     </div>
 
     {% for movie in last_movies %}
@@ -33,7 +33,7 @@
 
     <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h2 class="display-5 align-self-center header2"><i>Najnowsi Ludzie</i></h2>
+        <h3 class="display-5 align-self-center header2"><i>Najnowsi Ludzie</i></h3>
     </div>
 
     {% for person in last_people %}
@@ -41,6 +41,17 @@
         {% if person.person_accepted_by %}
         <a  class="btn btn-link align-self-center" href="{% url 'person-details' person.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ person }}</a>
         {% endif %}
+    </div>
+    {% endfor %}
+
+    <hr>
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h3 class="display-5 align-self-center header2"><i>Najnowsze artykuły</i></h3>
+    </div>
+
+    {% for article in last_articles %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <a class="display-5 align-self-center header" href="{{ article.link }}" target="_blank" style="color: white;">{{ article.article_name }} - Autor: {{ article.author }}</a>
     </div>
     {% endfor %}
 
