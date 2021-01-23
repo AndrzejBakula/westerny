@@ -105,15 +105,23 @@ class ActivateUserCheck(UserPassesTestMixin, View):
 #MAIN VIEWS CLASSES:
 class IndexView(View):
     def get(self, request):
+        last_movies = Movie.objects.all().order_by("-id")[:5]
+        last_people = Person.objects.all().order_by("-id")[:5]
         if request.session.get("user_id"):
             user = User.objects.get(pk=int(request.session.get("user_id")))
             check_rank(user)
             promotion_asks = len(UserRank.objects.filter(promotion_ask=True))
             ctx = {
-                "promotion_asks": promotion_asks
+                "promotion_asks": promotion_asks,
+                "last_movies": last_movies,
+                "last_people": last_people
             }
             return render(request, "index.html", ctx)
-        return render(request, "index.html")
+        ctx = {
+            "last_movies": last_movies,
+            "last_people": last_people
+        }
+        return render(request, "index.html", ctx)
 
 
 class RulesView(View):

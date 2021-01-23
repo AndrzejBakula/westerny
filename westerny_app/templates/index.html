@@ -18,5 +18,31 @@
         <img src="{% static 'images/james-stewart.jpg' %}" style="border-color: black; border-style: solid; width: 95%; margin: 2.5%;">
     </div>
 
+    <hr>
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h2 class="display-5 align-self-center header2"><i>Najnowsze Westerny</i></h2>
+    </div>
+
+    {% for movie in last_movies %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        {% if movie.movie_accepted_by %}
+        <a  class="btn btn-link align-self-center" href="{% url 'movie-details' movie.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{movie.year}} - {{movie.title}}</a>
+        {% endif %}
+    </div>
+    {% endfor %}
+
+    <hr>
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h2 class="display-5 align-self-center header2"><i>Najnowsi Ludzie</i></h2>
+    </div>
+
+    {% for person in last_people %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        {% if person.person_accepted_by %}
+        <a  class="btn btn-link align-self-center" href="{% url 'person-details' person.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ person }}</a>
+        {% endif %}
+    </div>
+    {% endfor %}
+
 
 {% endblock %}
