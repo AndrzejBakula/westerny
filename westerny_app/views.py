@@ -40,13 +40,13 @@ def check_rank(user):
     people = Person.objects.filter(person_added_by=user)
     added_people = len([i for i in people if i.person_accepted_by])
     genres = Genre.objects.filter(genre_added_by=user)
-    added_genre = len([i for i in genres if i.genre_accepted_by])*2
+    added_genre = len([i for i in genres if i.genre_accepted_by])
     sum_of_added = added_genre+added_movies+added_people
 
     accpted_movies = len(Movie.objects.filter(movie_accepted_by=user))
     accepted_people = len(Person.objects.filter(person_accepted_by=user))
     accepted_genre = len(Genre.objects.filter(genre_accepted_by=user))
-    sum_of_accepted = accepted_genre+accepted_people+accpted_movies
+    sum_of_accepted = added_genre+accepted_people+accpted_movies
 
     if user.username == "Westerny":
         userrank.rank = gubernator
