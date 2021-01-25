@@ -56,7 +56,7 @@ class AddPersonForm(forms.Form):
     description = forms.CharField(label="", max_length=1500, required=True, widget=forms.Textarea(attrs={"rows": 6, "cols": 40, "placeholder": "Krótki opis (do 1500 znaków)"}))
     image = forms.ImageField(label="Dodaj obraz", required=None)
     date_birth = forms.CharField(label="Data urodzenia", widget=forms.TextInput(attrs={"type": "date"}))
-    date_death = forms.CharField(label="Data śmierci", widget=forms.TextInput(attrs={"type": "date"}))
+    date_death = forms.CharField(label="Data śmierci", required=None, widget=forms.TextInput(attrs={"type": "date"}))
 
 
 class EditPersonForm(forms.Form):
@@ -64,7 +64,7 @@ class EditPersonForm(forms.Form):
     last_name = forms.CharField(label="", max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Nazwisko"}))
     description = forms.CharField(label="", max_length=1500, required=True, widget=forms.Textarea(attrs={"rows": 6, "cols": 40, "placeholder": "Krótki opis (do 1500 znaków)"}))
     date_birth = forms.CharField(label="Data urodzenia", widget=forms.TextInput(attrs={"type": "date"}))
-    date_death = forms.CharField(label="Data śmierci", widget=forms.TextInput(attrs={"type": "date"}))
+    date_death = forms.CharField(label="Data śmierci", required=None, widget=forms.TextInput(attrs={"type": "date"}))
     image = forms.ImageField(label="Dodaj obraz", required=None)
     delete_image = forms.BooleanField(label="Skasować istniejący obraz?", required=None)
 

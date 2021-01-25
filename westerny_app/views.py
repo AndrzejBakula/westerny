@@ -308,7 +308,10 @@ class MyPlaceView(ActivateUserCheck, View):
             promotion_accept = 250-accepted_points
             if accepted_points >= 250 and UserRank.objects.get(user=user).promotion_ask == False:
                 promotion_ask = True
-    
+
+        waiting_people = Person.objects.filter(person_accepted_by=None, person_added_by=user)
+        waiting_movies = Movie.objects.filter(movie_accepted_by=None, movie_added_by=user)
+
         ctx = {
             "westerns": added_westerns,
             "people": added_people,
@@ -322,7 +325,9 @@ class MyPlaceView(ActivateUserCheck, View):
             "promotion_add": promotion_add,
             "promotion_accept": promotion_accept,
             "promotion_ask": promotion_ask,
-            "userrank": UserRank.objects.get(user=user)
+            "userrank": UserRank.objects.get(user=user),
+            "waiting_people": waiting_people,
+            "waiting_movies": waiting_movies
         }
         return render(request, "my_place.html", ctx)
     
@@ -987,10 +992,12 @@ class AddPersonView(ActivateUserCheck, View):
                         person_description=request.POST.get("description"),
                         person_image=request.FILES.get("image"),
                         date_birth=data["date_birth"],
-                        date_death=data["date_death"],
                         person_added_by=user,
                         person_accepted_by=user
                     )
+                    if data["date_death"] not in ("", None):
+                        person.date_death = data["date_death"]
+                    person.save()
                     message = "Dodano nową osobę"
                     people = Person.objects.all().order_by("last_name")
                     waiting_people = len([i for i in Person.objects.all() if i.person_accepted_by == None])
@@ -1006,10 +1013,12 @@ class AddPersonView(ActivateUserCheck, View):
                         last_name=request.POST.get("last_name"),
                         person_description=request.POST.get("description"),
                         date_birth=data["date_birth"],
-                        date_death=data["date_death"],
                         person_image=request.FILES.get("image"),
                         person_added_by=user
                     )
+                    if data["date_death"] not in ("", None):
+                        person.date_death = data["date_death"]
+                    person.save()
                     message = "Twoja propozycja czeka na akceptację"
                     people = Person.objects.all().order_by("last_name")
                     waiting_people = len([i for i in Person.objects.all() if i.person_accepted_by == None])
@@ -1072,7 +1081,8 @@ class EditPersonView(ActivateUserCheck, View):
             person.last_name = request.POST.get("last_name")
             person.person_description = request.POST.get("description")
             person.date_birth = request.POST.get("date_birth")
-            person.date_death = request.POST.get("date_death")
+            if request.POST.get("date_death") not in ("", None):
+                person.date_death = request.POST.get("date_death")
             person.person_edited_by = user
             if request.FILES.get("image") != None or request.POST.get("delete_image"):
                 person.person_image = request.FILES.get("image")
@@ -1185,7 +1195,7 @@ class DeleteArticleGenreView(StaffMemberCheck, View):
         return redirect(f"/genre_details/{genre_id}")
 
 
-class AddArticlePersonView(StaffMemberCheck, View):
+class AddArticlePersonView(ActivateUserCheck, View):
     def get(self, request, id):
         person = Person.objects.get(id=id)
         form = AddArticleForm()
@@ -1230,7 +1240,7 @@ class AddArticlePersonView(StaffMemberCheck, View):
         return render(request, "add_article_person.html", ctx)
 
 
-class DeleteArticlePersonView(StaffMemberCheck, View):
+class DeleteArticlePersonView(ActivateUserCheck, View):
     def get(self, request, person_id, article_id):
         person = Person.objects.get(id=person_id)
         article = Article.objects.get(id=article_id)
@@ -1247,7 +1257,7 @@ class DeleteArticlePersonView(StaffMemberCheck, View):
         return redirect(f"/person_details/{person_id}")
 
 
-class AddArticleMovieView(StaffMemberCheck, View):
+class AddArticleMovieView(ActivateUserCheck, View):
     def get(self, request, id):
         movie = Movie.objects.get(id=id)
         form = AddArticleForm()
@@ -1292,7 +1302,7 @@ class AddArticleMovieView(StaffMemberCheck, View):
         return render(request, "add_article_movie.html", ctx)
 
 
-class DeleteArticleMovieView(StaffMemberCheck, View):
+class DeleteArticleMovieView(ActivateUserCheck, View):
     def get(self, request, movie_id, article_id):
         movie = Movie.objects.get(id=movie_id)
         article = Article.objects.get(id=article_id)

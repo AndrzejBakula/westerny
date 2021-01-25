@@ -49,7 +49,7 @@
     {% if person.date_birth %}
     <div>
         <h5 style="text-align: justify; margin-left: 3vh; margin-right: 3vh;" class="display-5 align-self-center header">
-            {{ person.date_birth }} - {{ person.date_death }}
+            {{ person.date_birth }} - {% if person.date_death != None %} {{ person.date_death }} {% else %} Wciąż żyje {% endif %}
         </h5>
     </div>
     {% endif %}
@@ -100,7 +100,7 @@
         {% for article in articles %}
         <div class="d-flex flex-row justify-content-center align-items-center" style="margin-left: 3vh; margin-right: 3vh;">
             <a class="display-5 align-self-center header" href="{{ article.link }}" target="_blank" style="color: white;">{{ article.article_name }} - Autor: {{ article.author }}</a>
-            {% if user.is_superuser or article.article_added_by == user %}
+            {% if user.is_superuser or article.article_added_by == user and not person.person_edited_by or article.article_added_by == user and person.person_edited_by == user %}
             <span style="visibility: hidden;">..</span>
             <a class="btn btn-danger btn-sm guzik4" href="{% url 'delete-article-person' person.id article.id %}">Usuń</a>
             {% endif %}
@@ -108,7 +108,7 @@
         {% endfor %}
     </div>
     {% endif %}
-    {% if user.is_staff and person.person_accepted_by %}
+    {% if user.is_staff and person.person_accepted_by or person.person_added_by == user and not person.person_edited_by or person.person_added_by == user and person.person_edited_by == user %}
     <div class="d-flex flex-row justify-content-center flex-wrap">
         <a class="btn btn-success btn-sm guzik4" href="{% url 'add-article-person' person.id %}">Dodaj link do artykułu</a>
     </div>

@@ -91,6 +91,32 @@
     </div>
     {% endif %}
 
+    {% if waiting_people.count > 0 %}
+    <hr>
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h2 class="display-5 align-self-center header2"><i>Oczekujący ludzie</i></h2>
+    </div>
+
+    {% for person in waiting_people %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <a  class="btn btn-link align-self-center" href="{% url 'person-details' person.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ person }}</a>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    {% if waiting_movies.count > 0 %}
+    <hr>
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h2 class="display-5 align-self-center header2"><i>Oczekujące westerny</i></h2>
+    </div>
+
+    {% for movie in waiting_movies %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <a  class="btn btn-link align-self-center" href="{% url 'movie-details' movie.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{movie.year}} - {{movie.title}}</a>
+    </div>
+    {% endfor %}
+    {% endif %}
+
 
 </div>
 
