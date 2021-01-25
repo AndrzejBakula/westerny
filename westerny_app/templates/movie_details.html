@@ -28,6 +28,11 @@
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h2 class="display-5 align-self-center header2" style="margin-left: 3vh; margin-right: 3vh;">{{ movie.title }}</h2>
     </div>
+    {% if movie.org_title %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h4 class="display-5 align-self-center header2" style="margin-left: 3vh; margin-right: 3vh;">({{ movie.org_title }})</h2>
+    </div>
+    {% endif %}
 
     <div class="d-flex flex-row justify-content-center align-items-center flex-wrap">
         {% for genre in movie.genre.all|dictsort:"name" %}

@@ -91,7 +91,8 @@ class Year(models.Model):
 
 
 class Movie(models.Model):
-    title = models.CharField(max_length=128)
+    title = models.CharField(max_length=128, null=True)
+    org_title = models.CharField(max_length=128, default=None, null=True)
     director = models.ManyToManyField(Person, related_name='director')
     screenplay = models.ManyToManyField(Person, related_name='screenplay')
     music = models.ManyToManyField(Person, related_name='music')

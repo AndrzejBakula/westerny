@@ -484,6 +484,7 @@ class AddMovieView(ActivateUserCheck, View):
         if form.is_valid():
             data = form.cleaned_data
             title = data["title"].title()
+            org_title = data["org_title"].title()
             year = data["year"]
             director = data["director"]
             screenplay = data["screenplay"]
@@ -521,6 +522,8 @@ class AddMovieView(ActivateUserCheck, View):
                         movie.cinema.add(i)
                     for i in genre:
                         movie.genre.add(i)
+                    if data["org_title"] not in ("", None):
+                        movie.org_title = data["org_title"]
                     movie.save()
                     message = "Dodano nowy western"
                     movies = Movie.objects.all().order_by("year")
@@ -549,6 +552,8 @@ class AddMovieView(ActivateUserCheck, View):
                         movie.cinema.add(i)
                     for i in genre:
                         movie.genre.add(i)
+                    if data["org_title"] not in ("", None):
+                        movie.org_title = data["org_title"]
                     movie.save()
                     message = "Twoja propozycja czeka na akceptację"
                     movies = Movie.objects.all().order_by("year")
@@ -609,6 +614,7 @@ class EditMovieView(ActivateUserCheck, View):
         if (movie.movie_added_by == user and movie.movie_edited_by == None) or (movie.movie_added_by == user and not movie.movie_edited_by.is_staff) or user.is_superuser or user.is_staff:
             initial_data = {
                 "title": movie.title,
+                "org_title": movie.org_title,
                 "year": movie.year,
                 "description": movie.movie_description,
                 "director": [i for i in movie.director.all()],
@@ -631,6 +637,7 @@ class EditMovieView(ActivateUserCheck, View):
             data = form.cleaned_data
             movie = Movie.objects.get(id=id)
             title = data["title"]
+            org_title = data["org_title"]
             year = data["year"]
             director = data["director"]
             screenplay = data["screenplay"]
@@ -647,6 +654,7 @@ class EditMovieView(ActivateUserCheck, View):
             if movie_title in titles:
                 initial_data = {
                     "title": movie.title,
+                    "org_title": org_title,
                     "year": movie.year,
                     "description": movie.movie_description,
                     "director": [i for i in movie.director.all()],
@@ -665,6 +673,8 @@ class EditMovieView(ActivateUserCheck, View):
                 return render(request, "edit_movie.html", ctx)
             user = User.objects.get(pk=int(request.session.get("user_id")))
             movie.title = data["title"]
+            if data["org_title"] not in ("", None):
+                movie.org_title = data["org_title"]
             movie.year = data["year"]
             movie.director.set(data["director"])
             movie.screenplay.set(data["screenplay"])

@@ -8,7 +8,8 @@ from .models import Person, Genre, Rating, Movie, Year
 
 
 class AddMovieForm(forms.Form):
-    title = forms.CharField(label="", required=True, max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Tytuł westernu"}))
+    title = forms.CharField(label="", required=True, max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Tytuł nr 1"}))
+    org_title = forms.CharField(label="", required=None, max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Ew. tytuł nr 2 (np. oryginalny)"}))
     year = forms.ModelChoiceField(label="Rok", required=True, queryset=Year.objects.all())
     director = forms.ModelMultipleChoiceField(label="Reżyser", required=True, queryset=Person.objects.all().order_by("last_name"))
     screenplay = forms.ModelMultipleChoiceField(label="Scenariusz", required=None, queryset=Person.objects.all().order_by("last_name"))
@@ -21,6 +22,7 @@ class AddMovieForm(forms.Form):
 
 class EditMovieForm(forms.Form):
     title = forms.CharField(label="", required=True, max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Tytuł westernu"}))
+    org_title = forms.CharField(label="", required=None, max_length=128, widget=forms.TextInput(attrs={"size": 38, "placeholder": "Ew. tytuł nr 2 (np. oryginalny)"}))
     year = forms.ModelChoiceField(label="Rok", required=True, queryset=Year.objects.all())
     director = forms.ModelMultipleChoiceField(label="Reżyser", required=True, queryset=Person.objects.all().order_by("last_name"))
     screenplay = forms.ModelMultipleChoiceField(label="Scenariusz", required=None, queryset=Person.objects.all().order_by("last_name"))
