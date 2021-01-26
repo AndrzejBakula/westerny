@@ -105,8 +105,8 @@ class ActivateUserCheck(UserPassesTestMixin, View):
 #MAIN VIEWS CLASSES:
 class IndexView(View):
     def get(self, request):
-        last_movies = Movie.objects.all().order_by("-id")[:3]
-        last_people = Person.objects.all().order_by("-id")[:3]
+        last_movies = [i for i in Movie.objects.all().order_by("-id") if i.movie_accepted_by != None][:4]
+        last_people = [i for i in Person.objects.all().order_by("-id") if i.person_accepted_by != None][:4]
         if request.session.get("user_id"):
             user = User.objects.get(pk=int(request.session.get("user_id")))
             check_rank(user)
