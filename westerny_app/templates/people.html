@@ -34,6 +34,7 @@
     </div>
     {% endif %}
     
+    {% if not message %}
     <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h2 class="display-5 align-self-center header2"><i>Ludzie Westernu</i></h2>
@@ -66,7 +67,7 @@
         {% endif %}
     </ul>
     </nav>
-
+    {% endif %}
 
 </div>
 {% endblock %}
