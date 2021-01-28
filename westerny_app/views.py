@@ -580,6 +580,7 @@ class MovieDetailsView(View):
             user = User.objects.get(pk=int(request.session.get("user_id")))
         user_rating = None
         movierating = MovieRating.objects.filter(movie=id)
+        sum_movierating = sum([i.rating.rating for i in movierating])
         for i in movierating:
             if i.user == user:
                 user_rating = i.rating
@@ -590,7 +591,7 @@ class MovieDetailsView(View):
             "movie": movie,
             "form": form,
             "user_rating": user_rating,
-            "rating": round(movie.movie_rating, 2),
+            "rating": round(sum_movierating/len(movierating), 2),
             "articles": articles,
             "articles_check": articles_check,
             "len_movierating": len(movierating)
@@ -605,12 +606,6 @@ class MovieDetailsView(View):
             user_rating = int(request.POST.get("rating"))
             rating = Rating.objects.get(id=user_rating)
             movierating = MovieRating.objects.create(user=user, rating=rating, movie=movie)
-            movie_rating = movie.movie_rating
-            new_rating = rating.rating
-            if movie_rating != None:
-                new_rating = round((rating.rating+movie_rating)/2, 2)
-            movie.movie_rating = new_rating
-            movie.save()
         return redirect(f"/movie_details/{movie.id}")
 
 
