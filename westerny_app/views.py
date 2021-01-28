@@ -234,6 +234,7 @@ class LoginView(View):
         return render(request, "login.html", {"form": form})
     
     def post(self, request):
+
         username = request.POST["username"]
         password = request.POST["password"]
         user = authenticate(username=username, password=password)
@@ -242,7 +243,12 @@ class LoginView(View):
             request.session["logged"] = True
             request.session["user_id"] = user.pk
             return redirect("/")
-        return redirect("/register")
+        message = "Niepoprawne dane logowania."
+        ctx = {
+            "message": message,
+            "form": LoginForm(request.POST)
+        }
+        return render(request, "login.html", ctx)
 
 
 class LogoutView(ActivateUserCheck, View):
