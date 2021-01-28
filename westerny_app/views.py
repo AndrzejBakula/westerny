@@ -579,8 +579,11 @@ class MovieDetailsView(View):
         if request.session.get("user_id"):
             user = User.objects.get(pk=int(request.session.get("user_id")))
         user_rating = None
+        rating = None
         movierating = MovieRating.objects.filter(movie=id)
-        sum_movierating = sum([i.rating.rating for i in movierating])
+        sum_movierating = round(sum([i.rating.rating for i in movierating]), 2)
+        if len(movierating) > 0:
+            rating = round(sum_movierating/len(movierating), 2)
         for i in movierating:
             if i.user == user:
                 user_rating = i.rating
@@ -591,7 +594,7 @@ class MovieDetailsView(View):
             "movie": movie,
             "form": form,
             "user_rating": user_rating,
-            "rating": round(sum_movierating/len(movierating), 2),
+            "rating": rating,
             "articles": articles,
             "articles_check": articles_check,
             "len_movierating": len(movierating)
@@ -922,7 +925,11 @@ class PersonDetailsView(View):
         if request.session.get("user_id"):
             user = User.objects.get(pk=int(request.session.get("user_id")))
         user_rating = None
+        rating = None
         personrating = PersonRating.objects.filter(person=id)
+        sum_personrating = round(sum([i.rating.rating for i in personrating]), 2)
+        if len(personrating) > 0:
+            rating = round(sum_personrating/len(personrating), 2)
         for i in personrating:
             if i.user == user:
                 user_rating = i.rating
@@ -933,7 +940,7 @@ class PersonDetailsView(View):
             "person": person,
             "form": form,
             "user_rating": user_rating,
-            "rating": person.person_rating,
+            "rating": rating,
             "articles": articles,
             "articles_check": articles_check,
             "len_personrating": len(personrating)
@@ -948,12 +955,6 @@ class PersonDetailsView(View):
             user_rating = int(request.POST.get("rating"))
             rating = Rating.objects.get(id=user_rating)
             personrating = PersonRating.objects.create(user=user, rating=rating, person=person)
-            person_rating = person.person_rating
-            new_rating = rating.rating
-            if person_rating != None:
-                new_rating = round((rating.rating+person_rating)/2, 2)
-            person.person_rating = new_rating
-            person.save()
         return redirect(f"/person_details/{person.id}")
 
 
