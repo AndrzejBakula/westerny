@@ -42,7 +42,7 @@
 
     {% if rating is not None %}
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h3 class="display-5 align-self-center header2" style="margin-left: 3vh; margin-right: 3vh;"><i>Ocena:</i> {{ rating }}/10</h3>
+        <h3 class="display-5 align-self-center header2" style="margin-left: 3vh; margin-right: 3vh;"><i>Ocena:</i> {{ rating }}/10 ({{len_movierating}} {% if len_movierating == 1 %}głos{% elif len_movierating > 1 and  4 >= len_movierating %}głosy{% else %}głosów{% endif %})</h3>
     </div>
     {% else %}
     <div class="d-flex flex-row justify-content-center align-items-center">

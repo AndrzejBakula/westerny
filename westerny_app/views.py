@@ -592,7 +592,8 @@ class MovieDetailsView(View):
             "user_rating": user_rating,
             "rating": movie.movie_rating,
             "articles": articles,
-            "articles_check": articles_check
+            "articles_check": articles_check,
+            "len_movierating": len(movierating)
         }
         return render(request, "movie_details.html", ctx)
     
