@@ -243,7 +243,7 @@ class LoginView(View):
             request.session["logged"] = True
             request.session["user_id"] = user.pk
             return redirect("/")
-        message = "Niepoprawne dane logowania."
+        message = 'Niepoprawne dane logowania. Rejestracja dostępna w sekcji "nabór".'
         ctx = {
             "message": message,
             "form": LoginForm(request.POST)
