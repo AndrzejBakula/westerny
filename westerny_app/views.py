@@ -590,7 +590,7 @@ class MovieDetailsView(View):
             "movie": movie,
             "form": form,
             "user_rating": user_rating,
-            "rating": movie.movie_rating,
+            "rating": round(movie.movie_rating, 2),
             "articles": articles,
             "articles_check": articles_check,
             "len_movierating": len(movierating)
