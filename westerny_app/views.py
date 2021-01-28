@@ -939,7 +939,8 @@ class PersonDetailsView(View):
             "user_rating": user_rating,
             "rating": person.person_rating,
             "articles": articles,
-            "articles_check": articles_check
+            "articles_check": articles_check,
+            "len_personrating": len(personrating)
         }
         return render(request, "person_details.html", ctx)
     
