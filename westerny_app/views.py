@@ -955,6 +955,13 @@ class PersonDetailsView(View):
             user_rating = int(request.POST.get("rating"))
             rating = Rating.objects.get(id=user_rating)
             personrating = PersonRating.objects.create(user=user, rating=rating, person=person)
+            rating = None
+            personrating = PersonRating.objects.filter(person=id)
+            sum_personrating = round(sum([i.rating.rating for i in personrating]), 2)
+            if len(personrating) > 0:
+                rating = round(sum_personrating/len(personrating), 2)
+            person.person_rating = rating
+            person.save()
         return redirect(f"/person_details/{person.id}")
 
 
