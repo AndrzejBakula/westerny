@@ -96,7 +96,7 @@
         </h3>
     </div>
 
-    {% for movie in genre.movie_set.all %}
+    {% for movie in genre.movie_set.all|dictsort:"year.year" %}
     <div class="d-flex flex-row justify-content-center align-items-center">
         {% if movie.movie_accepted_by %}
         <a class="btn btn-link align-self-center" href="{% url 'movie-details' movie.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ movie.year }} - {{ movie.title }}</a>
