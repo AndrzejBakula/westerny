@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth import views as auth_views
 from django.urls import path
 from django.conf.urls.static import static
 from django.conf import settings
@@ -75,5 +76,9 @@ urlpatterns = [
     path('delete_article_person/<int:person_id>/<int:article_id>', DeleteArticlePersonView.as_view(), name="delete-article-person"),
     path('add_article_movie/<int:id>', AddArticleMovieView.as_view(), name="add-article-movie"),
     path('delete_article_movie/<int:movie_id>/<int:article_id>', DeleteArticleMovieView.as_view(), name="delete-article-movie"),
-    path('activate/<uidb64>/<token>', VerificationView.as_view(), name="activate")
+    path('activate/<uidb64>/<token>', VerificationView.as_view(), name="activate"),
+    path('reset_password/', auth_views.PasswordResetView.as_view(template_name = "reset_password.html"), name ='reset_password'),
+    path('reset_password_sent/', auth_views.PasswordResetDoneView.as_view(template_name = "password_reset_sent.html"), name ='password_reset_done'),
+    path('reset/<uidb64>/<token>', auth_views.PasswordResetConfirmView.as_view(template_name = "password_reset_form.html"), name ='password_reset_confirm'),
+    path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(template_name = "password_reset_done.html"), name ='password_reset_complete')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
