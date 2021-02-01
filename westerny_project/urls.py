@@ -39,6 +39,7 @@ urlpatterns = [
     path('rules/', RulesView.as_view(), name="rules"),
     path('register/', RegisterView.as_view(), name='register'),
     path('login/', LoginView.as_view(), name='login'),
+    path('accounts/login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('my_place/', MyPlaceView.as_view(), name='my-place'),
     path('user_details/<int:id>', UserDetailsView.as_view(), name="user-details"),
@@ -77,5 +78,10 @@ urlpatterns = [
     path('add_article_movie/<int:id>', AddArticleMovieView.as_view(), name="add-article-movie"),
     path('delete_article_movie/<int:movie_id>/<int:article_id>', DeleteArticleMovieView.as_view(), name="delete-article-movie"),
     path('activate/<uidb64>/<token>', VerificationView.as_view(), name="activate"),
-    url('^', include('django.contrib.auth.urls'))
+
+    path('password_reset/', auth_views.PasswordResetView.as_view(template_name='registration/password_reset_form.html'), name='password_reset'),
+    path('password_reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='registration/password_reset_done.html'), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='registration/password_reset_complete.html'), name='password_reset_complete'),
+    
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
