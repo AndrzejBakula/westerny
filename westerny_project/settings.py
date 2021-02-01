@@ -146,7 +146,7 @@ RECAPTCHA_PUBLIC_KEY = config("RECAPTCHA_PUBLIC_KEY", default="")
 RECAPTCHA_PRIVATE_KEY = config("RECAPTCHA_PRIVATE_KEY", default="")
 
 #Email
-EMAIL_BACKEND = config("EMAIL_BACKEND", default="")
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 EMAIL_HOST = config("EMAIL_HOST", default="")
 EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
