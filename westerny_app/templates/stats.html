@@ -17,6 +17,12 @@
         <img src="{% static 'images/FortLaramie_resized.jpg' %}" style="border-color: black; border-style: solid; width: 95%; margin: 2.5%;">
     </div>
     <hr>
+    {% if user.is_staff %}
+    <h4 class="display-5 align-self-center header">
+        Liczba odwiedzin fortu: {{ counter.counter }}
+    </h4>
+    <hr>
+    {% endif %}
 
     <div class="d-flex flex-column justify-content-center align-items-center">
         <h3 class="display-5 align-self-center header">

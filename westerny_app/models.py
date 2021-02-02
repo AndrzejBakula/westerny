@@ -3,6 +3,10 @@ from django.contrib.auth.models import User, AbstractUser
 from datetime import timezone, date, timedelta
 
 
+class Counter(models.Model):
+    counter = models.IntegerField()
+
+
 class Rank(models.Model):
     name = models.CharField(max_length=32, unique=True)
 

@@ -16,7 +16,7 @@ from django.views import View
 from django.contrib.auth.models import User
 from westerny_project.settings import PROTOCOLE
 from westerny_app.models import Movie, Genre, Person, Article, Rank, UserRank, PersonRating, Rating, MovieRating
-from westerny_app.models import PersonMovie
+from westerny_app.models import PersonMovie, Counter
 from westerny_app.forms import AddMovieForm, AddGenreForm, AddPersonForm, EditGenreForm, RegisterForm, LoginForm
 from westerny_app.forms import SearchMovieForm, SearchPersonForm, AddArticleForm, EditPersonForm, RatingForm
 from westerny_app.forms import EditMovieForm, AddActorForm, ResetForm
@@ -113,6 +113,9 @@ class ActivateUserCheck(UserPassesTestMixin, View):
 #MAIN VIEWS CLASSES:
 class IndexView(View):
     def get(self, request):
+        counter = Counter.objects.all()[0]
+        counter.counter += 1
+        counter.save()
         last_movies = [i for i in Movie.objects.all().order_by("-id") if i.movie_accepted_by != None][:4]
         last_people = [i for i in Person.objects.all().order_by("-id") if i.person_accepted_by != None][:4]
         if request.session.get("user_id"):
@@ -530,6 +533,7 @@ class PromotionAsksView(View):
 
 class StatsView(View):
     def get(self, request):
+        counter = Counter.objects.all()[0]
         users = len(User.objects.filter(is_active=True))
         officers = len(User.objects.filter(is_staff=True, is_superuser=False))
         commanders = len(User.objects.filter(is_superuser=True))
@@ -549,7 +553,8 @@ class StatsView(View):
             "people": people,
             "genres": genres,
             "notes": notes,
-            "links": links
+            "links": links,
+            "counter": counter
         }
         return render(request, "stats.html", ctx)
 
