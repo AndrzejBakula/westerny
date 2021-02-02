@@ -556,8 +556,12 @@ class StatsView(View):
 
 class MoviesView(View):
     def get(self, request):
+        user = None
+        if request.session.get("user_id"):
+            user = User.objects.get(pk=int(request.session.get("user_id")))
         movies = Movie.objects.all().order_by("year")
         waiting_movies = len([i for i in movies if i.movie_accepted_by == None])
+        waiting_movies_user = len([i for i in movies if i.movie_accepted_by == None and i.movie_added_by == user])
 
         paginator = Paginator(movies, 12)
         page = request.GET.get("page")
@@ -565,7 +569,8 @@ class MoviesView(View):
 
         ctx = {
             "movies": movies,
-            "waiting_movies": waiting_movies
+            "waiting_movies": waiting_movies,
+            "waiting_movies_user": waiting_movies_user
         }
         return render(request, "movies.html", ctx)
     
@@ -573,6 +578,11 @@ class MoviesView(View):
 class WaitingMoviesView(StaffMemberCheck, View):
     def get(self, request):
         movies = Movie.objects.all().order_by("year")
+
+        paginator = Paginator(movies, 12)
+        page = request.GET.get("page")
+        movies = paginator.get_page(page)
+
         return render(request, "waiting_movies.html", {"movies": movies})
 
 
@@ -1023,8 +1033,12 @@ class AcceptGenreView(SuperUserCheck, View):
 
 class PeopleView(View):
     def get(self, request):
+        user = None
+        if request.session.get("user_id"):
+            user = User.objects.get(pk=int(request.session.get("user_id")))
         people = Person.objects.all().order_by("last_name")
         waiting_people = len([i for i in people if i.person_accepted_by == None])
+        waiting_people_user = len([i for i in people if i.person_accepted_by == None and i.person_added_by == user])
 
         paginator = Paginator(people, 12)
         page = request.GET.get("page")
@@ -1032,7 +1046,8 @@ class PeopleView(View):
 
         ctx = {
             "people": people,
-            "waiting_people": waiting_people
+            "waiting_people": waiting_people,
+            "waiting_people_user": waiting_people_user
         }
         return render(request, "people.html", ctx)
 

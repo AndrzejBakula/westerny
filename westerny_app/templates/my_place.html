@@ -94,7 +94,7 @@
     {% if waiting_people.count > 0 %}
     <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h2 class="display-5 align-self-center header2"><i>Oczekujący ludzie</i></h2>
+        <h2 class="display-5 align-self-center header2"><i>Oczekujący ludzie {% if waiting_people.count > 4 %}(max oczekujących){% endif %}</i></h2>
     </div>
 
     {% for person in waiting_people %}
@@ -107,7 +107,7 @@
     {% if waiting_movies.count > 0 %}
     <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h2 class="display-5 align-self-center header2"><i>Oczekujące westerny</i></h2>
+        <h2 class="display-5 align-self-center header2"><i>Oczekujące westerny {% if waiting_movies.count > 4 %}(max oczekujących){% endif %}</i></h2>
     </div>
 
     {% for movie in waiting_movies %}

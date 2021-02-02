@@ -15,7 +15,7 @@
         {% if user.is_staff %}
         <a class="btn btn-success btn-lg guzik" href="{% url 'add-movie' %}"> Dodaj Western</a>
         {% endif %}
-        {% if not user.is_staff and user.is_authenticated %}
+        {% if not user.is_staff and user.is_authenticated and 5 > waiting_movies_user %}
         <a class="btn btn-success btn-lg guzik" href="{% url 'add-movie' %}"> Zaproponuj Western</a>
         {% endif %}
         {% if user.is_staff %}
