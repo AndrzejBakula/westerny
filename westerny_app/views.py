@@ -828,7 +828,12 @@ class DeleteMovieView(StaffMemberCheck, View):
         movie_ratings = MovieRating.objects.filter(movie=id)
         for i in movie_ratings:
             i.delete()
-        movie.delete()
+        person_movie = PersonMovie.objects.filter(movies=id)
+        for i in person_movie:
+            i.delete()
+        articles = Article.objects.filter(movie=movie)
+        for i in articles:
+            i.delete()
         return redirect("/movies")
 
 
@@ -990,6 +995,9 @@ class DeleteGenreView(SuperUserCheck, View):
     
     def post(self, request, id):
         genre = Genre.objects.get(id=id)
+        articles = Article.objects.filter(genre=genre)
+        for i in articles:
+            i.delete()
         genre.delete()
         return redirect("/genres")
 
@@ -1253,6 +1261,9 @@ class DeletePersonView(StaffMemberCheck, View):
         person = Person.objects.get(id=id)
         person_ratings = PersonRating.objects.filter(person=id)
         for i in person_ratings:
+            i.delete()
+        articles = Article.objects.filter(person=person)
+        for i in articles:
             i.delete()
         person.delete()
         return redirect("/people")
