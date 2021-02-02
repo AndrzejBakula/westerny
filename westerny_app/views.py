@@ -301,7 +301,7 @@ class RequestPasswordResetEmail(View):
             [user[0].email],
         )
         email.send(fail_silently=False)  
-        message = "Generalicja wysłała do ciebie list."
+        message = "Generalicja wysłała do ciebie list intencyjny."
         ctx = {
             "message": message
         }
@@ -311,10 +311,20 @@ class RequestPasswordResetEmail(View):
 class CompletePasswordReset(View):
     def get(self, request, uidb64, token):
         form = ResetForm()
+
+        try:
+            user_id = urlsafe_base64_decode(uidb64)
+            user = User.objects.get(pk=user_id)
+            if not PasswordResetTokenGenerator().check_token(user, token):
+                message = "Użyto niewłaściwego listu intencyjnego. Wystąp o nowy."
+                return render(request, "registration/set_new_password.html", {"message": message})
+        except Exception as identifier:
+            pass
+
         ctx = {
             "uidb64": uidb64,
             "token": token,
-            "form": form
+            "form": form,
         }
         return render(request, "registration/set_new_password.html", ctx)
     
