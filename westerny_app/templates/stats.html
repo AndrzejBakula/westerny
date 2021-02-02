@@ -26,37 +26,37 @@
 
     <div class="d-flex flex-column justify-content-center align-items-center">
         <h3 class="display-5 align-self-center header">
-            <i>Liczebność fortu: {{ users }}</i>
+            {% if not user.is_staff %}<i>Liczebność fortu: {{ users.count }}{% elif user.is_staff %}<i>Liczebność fortu: {{ fort }}</i>{% endif %}
         </h3>
-        <!-- {% if civils > 0 %}
+        {% if civils.count > 0 and user.is_staff %}
         <h4 class="display-5 align-self-center header">
-            Liczba cywilów: {{ civils }}
+            Liczba cywilów: {{ civils.count }}
         </h4>
-        {% endif %} -->
+        {% endif %}
         <h4 class="display-5 align-self-center header">
-            Liczba kawalerzystów: {{ cavaliers }}
-        </h4>
-        <h4 class="display-5 align-self-center header">
-            Liczba oficerów: {{ officers }}
+            Liczba kawalerzystów: {{ cavaliers.count }}
         </h4>
         <h4 class="display-5 align-self-center header">
-            Liczba dowódców: {{ commanders }}
+            Liczba oficerów: {{ officers.count }}
+        </h4>
+        <h4 class="display-5 align-self-center header">
+            Liczba dowódców: {{ commanders.count }}
         </h4>
         <hr>
         <h3 class="display-5 align-self-center header">
             <i>Wielkość archiwów: {{ notes }}</i>
         </h3>
         <h4 class="display-5 align-self-center header">
-            Liczba westernów: {{ westerns }}
+            Liczba westernów: {{ westerns.count }}
         </h4>
         <h4 class="display-5 align-self-center header">
-            Liczba ludzi: {{ people }}
+            Liczba ludzi: {{ people.count }}
         </h4>
         <h4 class="display-5 align-self-center header">
-            Liczba gatunków: {{ genres }}
+            Liczba gatunków: {{ genres.count }}
         </h4>
         <h4 class="display-5 align-self-center header">
-            Liczba linków: {{ links }}
+            Liczba linków: {{ links.count }}
         </h4>
     </div>
 

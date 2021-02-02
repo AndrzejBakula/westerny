@@ -534,18 +534,22 @@ class PromotionAsksView(View):
 class StatsView(View):
     def get(self, request):
         counter = Counter.objects.all()[0]
-        users = len(User.objects.filter(is_active=True))
-        officers = len(User.objects.filter(is_staff=True, is_superuser=False))
-        commanders = len(User.objects.filter(is_superuser=True))
-        cavaliers = len(User.objects.filter(is_active=True, is_staff=False, is_superuser=False))
-        westerns = len(Movie.objects.all())
-        people = len(Person.objects.all())
-        genres = len(Genre.objects.all())
-        notes = westerns + people + genres
-        links = len(Article.objects.all())
+        civils = User.objects.filter(is_active=False)
+        users = User.objects.filter(is_active=True)
+        fort = len(civils) + len(users)
+        officers = User.objects.filter(is_staff=True, is_superuser=False)
+        commanders = User.objects.filter(is_superuser=True)
+        cavaliers = User.objects.filter(is_active=True, is_staff=False, is_superuser=False)
+        westerns = Movie.objects.all()
+        people = Person.objects.all()
+        genres = Genre.objects.all()
+        notes = len(westerns) + len(people) + len(genres)
+        links = Article.objects.all()
 
         ctx = {
+            "civils": civils,
             "users": users,
+            "fort": fort,
             "officers": officers,
             "commanders": commanders,
             "cavaliers": cavaliers,
