@@ -31,6 +31,7 @@ from westerny_app.views import AddArticlePersonView, DeleteArticlePersonView, De
 from westerny_app.views import MovieDetailsView, DeleteMovieView, AcceptMovieView, AddArticleMovieView
 from westerny_app.views import EditMovieView, DeleteArticleMovieView, AddActorMovieView, DeleteActorMovieView
 from westerny_app.views import UserDetailsView, GivePromotionView, PromotionAsksView
+from westerny_app.views import RequestPasswordResetEmail, CompletePasswordReset
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -79,9 +80,7 @@ urlpatterns = [
     path('delete_article_movie/<int:movie_id>/<int:article_id>', DeleteArticleMovieView.as_view(), name="delete-article-movie"),
     path('activate/<uidb64>/<token>', VerificationView.as_view(), name="activate"),
 
-    path('password_reset/', auth_views.PasswordResetView.as_view(template_name='registration/password_reset_form.html'), name='password_reset'),
-    path('password_reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='registration/password_reset_done.html'), name='password_reset_done'),
-    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
-    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='registration/password_reset_complete.html'), name='password_reset_complete'),
+    path('reset_password/', RequestPasswordResetEmail.as_view(), name='reset-password'),
+    path('set_new_password/<uidb64>/<token>', CompletePasswordReset.as_view(), name="set-new-password"),
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

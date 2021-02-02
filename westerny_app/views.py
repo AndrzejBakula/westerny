@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.mail import EmailMessage
 from django.utils.decorators import method_decorator
@@ -18,7 +19,7 @@ from westerny_app.models import Movie, Genre, Person, Article, Rank, UserRank, P
 from westerny_app.models import PersonMovie
 from westerny_app.forms import AddMovieForm, AddGenreForm, AddPersonForm, EditGenreForm, RegisterForm, LoginForm
 from westerny_app.forms import SearchMovieForm, SearchPersonForm, AddArticleForm, EditPersonForm, RatingForm
-from westerny_app.forms import EditMovieForm, AddActorForm
+from westerny_app.forms import EditMovieForm, AddActorForm, ResetForm
 
 
 #RANK CHECKING METHOD:
@@ -75,6 +76,13 @@ def check_rank(user):
     elif user.is_superuser == True:
         userrank.rank = general
         return userrank.save()       
+
+
+def validate_email(email):
+    for i in User.objects.all():
+        if i.email == email:
+            return True
+    return False
 
 
 #USER CHECK CLASSES:
@@ -141,7 +149,6 @@ class RegisterView(View):
     
     def post(self, request):
         users = [i.username for i in User.objects.all()]
-        # emails = [i.email for i in User.objeects.all()]
         username = request.POST["username"]
         email = request.POST["email"]
         password = request.POST["password"]
@@ -257,6 +264,98 @@ class LogoutView(ActivateUserCheck, View):
             logout(request)
             request.session["logged"] = False
         return redirect("/index")
+
+
+class RequestPasswordResetEmail(View):
+    def get(self, request):        
+        return render(request, 'registration/reset_password.html')
+    
+    def post(self, request):
+        email = request.POST['email']
+        
+        if not validate_email(email):
+            message = "Podaj właściwą skrzynkę pocztową."
+            ctx = {
+            "values": request.POST,
+            "message": message
+        }
+            return render(request, 'registration/reset_password.html', ctx)
+        
+        current_site = get_current_site(request)
+        user = User.objects.filter(email=email)
+        if user.exists():
+            email_contents = {
+                'user': user[0],
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(user[0].pk)),
+                'token': PasswordResetTokenGenerator().make_token(user[0]),
+            }
+        link = reverse('set-new-password', kwargs={
+            'uidb64': email_contents['uid'], 'token': email_contents['token']})
+        email_subject = "Resetowanie hasła"
+        reset_url = PROTOCOLE+current_site.domain+link
+        email = EmailMessage(
+            email_subject,
+            "Baczność! Należy kliknąć w poniższy link \n" + reset_url,
+            "noreply@semycolon.com",
+            [user[0].email],
+        )
+        email.send(fail_silently=False)  
+        message = "Generalicja wysłała do ciebie list."
+        ctx = {
+            "message": message
+        }
+        return render(request, 'registration/reset_password.html', ctx)
+
+
+class CompletePasswordReset(View):
+    def get(self, request, uidb64, token):
+        form = ResetForm()
+        ctx = {
+            "uidb64": uidb64,
+            "token": token,
+            "form": form
+        }
+        return render(request, "registration/set_new_password.html", ctx)
+    
+    def post(self, request, uidb64, token):
+        form = ResetForm(request.POST)
+        password = request.POST.get("password")
+        password2 = request.POST.get("password2")
+        if password != password2:
+            error_message = "Proszę podać dwa takie same hasła."
+            ctx = {
+                "uidb64": uidb64,
+                "token": token,
+                "error_message": error_message,
+                "form": form
+            }
+            return render(request, "registration/set_new_password.html", ctx)
+        elif len(password) < 6:
+            error_message = "Hasło powinno mieć przynajmniej 6 znaków."
+            ctx = {
+                "uidb64": uidb64,
+                "token": token,
+                "error_message": error_message,
+                "form": form
+            }
+            return render(request, "registration/set_new_password.html", ctx)
+        try:
+            user_id = urlsafe_base64_decode(uidb64)
+            user = User.objects.get(id=user_id)
+            user.set_password(password)
+            user.save()
+            message = "Hasło zostało ustawione."
+            ctx = {
+                "message": message
+            }
+            return render(request, "registration/set_new_password.html", ctx)
+        except Exception as identifier:
+            message = "Coś poszło nie tak, spróbuj ponownie."
+            ctx = {
+                "message": message
+            }
+            return render(request, "registration/set_new_password.html", ctx)
 
 
 class MyPlaceView(ActivateUserCheck, View):
