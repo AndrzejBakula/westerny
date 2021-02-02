@@ -202,6 +202,14 @@ class RegisterView(View):
                 "form": form
             }
             return render(request, "register.html", ctx)
+        elif validate_email(email):
+            message = "Ta skrzynka na listy jest już zajęta."
+            ctx = {
+                "username": username,
+                "message": message,
+                "form": form
+            }
+            return render(request, "register.html", ctx)
         else:
             user = User.objects.create(username=username, email=email)
             user.set_password(password)
