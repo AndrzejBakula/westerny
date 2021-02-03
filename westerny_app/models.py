@@ -42,6 +42,7 @@ class Article(models.Model):
     author = models.CharField(max_length=64)
     article_added_by = models.ForeignKey(User, null=False, on_delete=models.DO_NOTHING)
     link = models.URLField(unique=True, null=False)
+    is_accepted = models.BooleanField(default=False)
 
 
 class Rating(models.Model):
