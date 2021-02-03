@@ -101,7 +101,7 @@
         {% if user.is_staff or article.is_accepted %}
         <div class="d-flex flex-row justify-content-center align-items-center" style="margin-left: 3vh; margin-right: 3vh;">
             <a class="display-5 align-self-center header" href="{{ article.link }}" target="_blank" style="color: white;">{{ article.article_name }} - Autor: {{ article.author }}</a>
-            {% if user.is_superuser or article.article_added_by == user and not person.person_edited_by or article.article_added_by == user and person.person_edited_by == user %}
+            {% if user.is_superuser or user.is_staff and not article.accepted_by or article.article_added_by == user and not person.person_edited_by or article.article_added_by == user and person.person_edited_by == user %}
             <span style="visibility: hidden;">..</span>
             <a class="btn btn-danger btn-sm guzik4" href="{% url 'delete-article-person' person.id article.id %}">Usuń</a>
             {% endif %}
