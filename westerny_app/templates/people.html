@@ -15,11 +15,11 @@
         {% if user.is_staff %}
         <a class="btn btn-success btn-lg guzik" href="{% url 'add-person' %}"> Dodaj Osobę</a>
         {% endif %}
-        {% if not user.is_staff and user.is_authenticated and 5 > waiting_people_user %}
+        {% if not user.is_staff and user.is_authenticated and 5 > waiting_people_user.count %}
         <a class="btn btn-success btn-lg guzik" href="{% url 'add-person' %}">Zaproponuj Osobę</a>
         {% endif %}
         {% if user.is_staff %}
-        {% if waiting_people > 0 %}
+        {% if waiting_people.count > 0 or waiting_articles > 0 %}
         <a class="btn btn-info btn-lg guzik" href="{% url 'waiting-people' %}">Oczekujące</a>
         {% endif %}
         {% endif %}

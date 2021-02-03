@@ -89,7 +89,7 @@
     <hr>
     {% endif %}
 
-    {% if articles_check > 0 %}
+    {% if articles.count > 0 %}
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h3 class="display-5 align-self-center header" style="margin-left: 3vh; margin-right: 3vh;">
             <i>Artykuły o {{ person }}</i>
@@ -98,23 +98,30 @@
 
     <div class="d-flex flex-column justify-content-center align-items-center">
         {% for article in articles %}
+        {% if user.is_staff or article.is_accepted %}
         <div class="d-flex flex-row justify-content-center align-items-center" style="margin-left: 3vh; margin-right: 3vh;">
             <a class="display-5 align-self-center header" href="{{ article.link }}" target="_blank" style="color: white;">{{ article.article_name }} - Autor: {{ article.author }}</a>
             {% if user.is_superuser or article.article_added_by == user and not person.person_edited_by or article.article_added_by == user and person.person_edited_by == user %}
             <span style="visibility: hidden;">..</span>
             <a class="btn btn-danger btn-sm guzik4" href="{% url 'delete-article-person' person.id article.id %}">Usuń</a>
             {% endif %}
+            {% if user.is_staff and not article.is_accepted %}
+            <span style="visibility: hidden;">..</span>
+            <a class="btn btn-info btn-sm guzik4" href="{% url 'accept-article-person' person.id article.id %}">Akceptuj</a>
+            {% endif %}
         </div>
+        {% endif %}
         {% endfor %}
     </div>
+    <hr>
     {% endif %}
-    {% if user.is_staff and person.person_accepted_by or person.person_added_by == user and not person.person_edited_by or person.person_added_by == user and person.person_edited_by == user %}
+
+    {% if user.is_staff or 3 > user_waiting_articles.count %}
     <div class="d-flex flex-row justify-content-center flex-wrap">
         <a class="btn btn-success btn-sm guzik4" href="{% url 'add-article-person' person.id %}">Dodaj link do artykułu</a>
     </div>
     {% endif %}
 
-    <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h2 class="display-5 align-self-center header" style="margin-left: 3vh; margin-right: 3vh;">
             <i>Westerny z {{ person }}</i>

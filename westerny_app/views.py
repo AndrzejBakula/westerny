@@ -1046,8 +1046,9 @@ class PeopleView(View):
         if request.session.get("user_id"):
             user = User.objects.get(pk=int(request.session.get("user_id")))
         people = Person.objects.all().order_by("last_name")
-        waiting_people = len([i for i in people if i.person_accepted_by == None])
-        waiting_people_user = len([i for i in people if i.person_accepted_by == None and i.person_added_by == user])
+        waiting_people = Person.objects.filter(person_accepted_by=None)
+        waiting_people_user = Person.objects.filter(person_added_by=user, person_accepted_by=None)
+        waiting_articles = len([i for i in Article.objects.filter(is_accepted=False) if len(i.person_set.all()) > 0])
 
         paginator = Paginator(people, 12)
         page = request.GET.get("page")
@@ -1056,15 +1057,23 @@ class PeopleView(View):
         ctx = {
             "people": people,
             "waiting_people": waiting_people,
-            "waiting_people_user": waiting_people_user
+            "waiting_people_user": waiting_people_user,
+            "waiting_articles": waiting_articles
         }
         return render(request, "people.html", ctx)
 
 
 class WaitingPeopleView(StaffMemberCheck, View):
     def get(self, request):
-        people = Person.objects.all().order_by("last_name")
-        return render(request, "waiting_people.html", {"people": people})
+        people = Person.objects.filter(person_accepted_by=None).order_by("last_name")
+        person_waiting_articles = set([i.person_set.all()[0] for i in Article.objects.filter(is_accepted=False) if len(i.person_set.all()) > 0])
+        waiting_articles = len(person_waiting_articles)
+        ctx = {
+            "people": people,
+            "person_waiting_articles": person_waiting_articles,
+            "waiting_articles": waiting_articles
+        }
+        return render(request, "waiting_people.html", ctx)
 
 
 class PersonDetailsView(View):
@@ -1083,16 +1092,16 @@ class PersonDetailsView(View):
             if i.user == user:
                 user_rating = i.rating
         form = RatingForm()
-        articles = [i for i in Article.objects.filter(person__id=id)]
-        articles_check = len(articles)
+        articles = Article.objects.filter(person__id=id)
+        user_waiting_articles = Article.objects.filter(article_added_by=user, is_accepted=False)
         ctx = {
             "person": person,
             "form": form,
             "user_rating": user_rating,
             "rating": rating,
             "articles": articles,
-            "articles_check": articles_check,
-            "len_personrating": len(personrating)
+            "len_personrating": len(personrating),
+            "user_waiting_articles": user_waiting_articles
         }
         return render(request, "person_details.html", ctx)
     
@@ -1144,7 +1153,7 @@ class AddPersonView(ActivateUserCheck, View):
         form = AddPersonForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            names = [f"{i.first_name} {i.last_name}" for i in Person.objects.all()]
+            names = [f"{i.first_name.title()} {i.last_name.title()}" for i in Person.objects.all()]
             name = f"{data['first_name'].title()} {data['last_name'].title()}"
             if name in names:
                 ctx = {
@@ -1225,7 +1234,7 @@ class EditPersonView(ActivateUserCheck, View):
         if form.is_valid():
             data = form.cleaned_data
             person = Person.objects.get(id=id)
-            names = [f"{i.first_name} {i.last_name}" for i in Person.objects.all()]
+            names = [f"{i.first_name.title()} {i.last_name.title()}" for i in Person.objects.all()]
             name = f"{person.first_name.title()} {person.last_name.title()}"
             if name in names:
                 names.remove(name)
@@ -1288,6 +1297,9 @@ class DeletePersonView(StaffMemberCheck, View):
             i.delete()
         articles = Article.objects.filter(person=person)
         for i in articles:
+            i.delete()
+        personmovies = PersonMovie.objects.filter(persons=id)
+        for i in personmovies:
             i.delete()
         person.delete()
         return redirect("/people")
@@ -1382,33 +1394,40 @@ class AddArticlePersonView(ActivateUserCheck, View):
         form = AddArticleForm(request.POST)
         person = Person.objects.get(id=id)
         user = User.objects.get(pk=int(request.session.get("user_id")))
-        message = "Coś poszło nie tak"
+        error_message = "Coś poszło nie tak"
+        message = None
         if form.is_valid():
             data = form.cleaned_data
             links = [i.link for i in Article.objects.all()]
             if data["url"] in links:
-                message = "Taki link jest już w naszym archiwum."
+                error_message = "Taki link jest już w naszym archiwum."
                 ctx = {
                     "form": form,
                     "person": person,
-                    "message": message
+                    "error_message": error_message
                 }
                 return render(request, "add_article_person.html", ctx)
-            article = Article.objects.create(article_name=data["name"], author=data["author"], article_added_by=user, link=data["url"])
-            person.person_article.add(article)
-            person.save()
-            message = "Artykuł dodany pomyślnie"
+            if user.is_staff:
+                article = Article.objects.create(article_name=data["name"], author=data["author"], article_added_by=user, link=data["url"], is_accepted=True)
+                person.person_article.add(article)
+                person.save()
+                message = "Artykuł dodany pomyślnie."
+            else:
+                article = Article.objects.create(article_name=data["name"], author=data["author"], article_added_by=user, link=data["url"])
+                person.person_article.add(article)
+                person.save()
+                message = "Artykuł czeka na akceptację."
             ctx = {
                 "form": form,
                 "person": person,
                 "article": article,
                 "message": message
             }
-            return redirect(f"/person_details/{person.id}")
+            return render(request, "add_article_person.html", ctx)
         ctx = {
             "form": form,
             "person": person,
-            "message": message
+            "error_message": error_message
         }
         return render(request, "add_article_person.html", ctx)
 
@@ -1427,6 +1446,24 @@ class DeleteArticlePersonView(ActivateUserCheck, View):
         article = Article.objects.get(id=article_id)
         article.delete()
         message = "Artykuł został usunięty."
+        return redirect(f"/person_details/{person_id}")
+
+
+class AcceptArticlePersonView(ActivateUserCheck, View):
+    def get(self, request, person_id, article_id):
+        person = Person.objects.get(id=person_id)
+        article = Article.objects.get(id=article_id)
+        ctx = {
+            "person": person,
+            "article": article
+        }
+        return render(request, "accept_article_person.html", ctx)
+    
+    def post(self, request, person_id, article_id):
+        article = Article.objects.get(id=article_id)
+        article.is_accepted = True
+        article.save()
+        message = "Artykuł został zaakceptowany."
         return redirect(f"/person_details/{person_id}")
 
 
