@@ -113,13 +113,13 @@
         {% endif %}
         {% endfor %}
     </div>
-    <hr>
     {% endif %}
 
     {% if user.is_staff or 3 > user_waiting_articles.count %}
     <div class="d-flex flex-row justify-content-center flex-wrap">
         <a class="btn btn-success btn-sm guzik4" href="{% url 'add-article-person' person.id %}">Dodaj link do artykułu</a>
     </div>
+    <hr>
     {% endif %}
 
     <div class="d-flex flex-row justify-content-center align-items-center">

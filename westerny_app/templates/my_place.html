@@ -117,6 +117,13 @@
     {% endfor %}
     {% endif %}
 
+    {% if waiting_articles.count > 0 %}
+    <hr>
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h2 class="display-5 align-self-center header2"><i>Oczekujące artykuły: {{ waiting_articles.count }} {% if waiting_articles.count > 2 %}(max oczekujących){% endif %}</i></h2>
+    </div>
+    {% endif %}
+
 
 </div>
 

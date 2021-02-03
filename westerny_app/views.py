@@ -437,6 +437,7 @@ class MyPlaceView(ActivateUserCheck, View):
 
         waiting_people = Person.objects.filter(person_accepted_by=None, person_added_by=user)
         waiting_movies = Movie.objects.filter(movie_accepted_by=None, movie_added_by=user)
+        waiting_articles = Article.objects.filter(article_added_by=user, is_accepted=False)
 
         ctx = {
             "westerns": added_westerns,
@@ -453,7 +454,8 @@ class MyPlaceView(ActivateUserCheck, View):
             "promotion_ask": promotion_ask,
             "userrank": UserRank.objects.get(user=user),
             "waiting_people": waiting_people,
-            "waiting_movies": waiting_movies
+            "waiting_movies": waiting_movies,
+            "waiting_articles": waiting_articles
         }
         return render(request, "my_place.html", ctx)
     
