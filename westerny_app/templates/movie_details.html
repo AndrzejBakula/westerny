@@ -147,6 +147,7 @@
             Brak opisu.
         </h4>
     </div>
+    <hr>
     {% endif %}
 
     {% if movie.personmovie_set.all.count > 0 %}
@@ -168,6 +169,7 @@
         </div>
         {% endfor %}
     </div>
+    <hr>
     {% endif %}
 
     {% if user.is_staff or movie.movie_added_by == user and not movie.movie_edited_by.is_staff %}
@@ -176,8 +178,7 @@
     </div>
     {% endif %}
 
-    {% if articles_check > 0 %}
-    <hr>
+    {% if articles.count > 0 %}
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h3 class="display-5 align-self-center header" style="margin-left: 3vh; margin-right: 3vh;">
             <i>Artykuły o {{ movie.title }}</i>
@@ -186,18 +187,24 @@
 
     <div class="d-flex flex-column justify-content-center align-items-center">
         {% for article in articles %}
+        {% if user.is_staff or article.is_accepted %}
         <div class="d-flex flex-row justify-content-center align-items-center" style="margin-left: 3vh; margin-right: 3vh;">
             <a class="display-5 align-self-center header" href="{{ article.link }}" target="_blank" style="color: white;">{{ article.article_name }} - Autor: {{ article.author }}</a>
-            {% if user.is_superuser or article.article_added_by == user and not movie.movie_edited_by or article.article_added_by == user and movie.movie_edited_by == user %}
+            {% if user.is_superuser or user.is_staff and not article.is_accepted or article.article_added_by == user and not movie.movie_edited_by or article.article_added_by == user and movie.movie_edited_by == user %}
             <span style="visibility: hidden;">..</span>
             <a class="btn btn-danger btn-sm guzik4" href="{% url 'delete-article-movie' movie.id article.id %}">Usuń</a>
             {% endif %}
+            {% if user.is_staff and not article.is_accepted %}
+            <span style="visibility: hidden;">..</span>
+            <a class="btn btn-info btn-sm guzik4" href="{% url 'accept-article-movie' movie.id article.id %}">Akceptuj</a>
+            {% endif %}
         </div>
+        {% endif %}
         {% endfor %}
     </div>
     {% endif %}
 
-    {% if user.is_staff and movie.movie_accepted_by or movie.movie_added_by == user and not movie.movie_edited_by or movie.movie_added_by == user and movie.movie_edited_by == user %}
+    {% if user.is_staff or 3 > user_waiting_articles.count %}
     <div class="d-flex flex-row justify-content-center flex-wrap">
         <a class="btn btn-success btn-sm guzik4" href="{% url 'add-article-movie' movie.id %}">Dodaj link do artykułu</a>
     </div>

@@ -19,7 +19,7 @@
         <a class="btn btn-success btn-lg guzik" href="{% url 'add-movie' %}"> Zaproponuj Western</a>
         {% endif %}
         {% if user.is_staff %}
-        {% if waiting_movies > 0 %}
+        {% if waiting_movies > 0 or waiting_articles > 0 %}
         <a class="btn btn-info btn-lg guzik" href="{% url 'waiting-movies' %}">Oczekujące</a>
         {% endif %}
         {% endif %}

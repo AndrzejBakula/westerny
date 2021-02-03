@@ -31,7 +31,7 @@ from westerny_app.views import AddArticlePersonView, DeleteArticlePersonView, De
 from westerny_app.views import MovieDetailsView, DeleteMovieView, AcceptMovieView, AddArticleMovieView
 from westerny_app.views import EditMovieView, DeleteArticleMovieView, AddActorMovieView, DeleteActorMovieView
 from westerny_app.views import UserDetailsView, GivePromotionView, PromotionAsksView
-from westerny_app.views import RequestPasswordResetEmail, CompletePasswordReset, AcceptArticlePersonView
+from westerny_app.views import RequestPasswordResetEmail, CompletePasswordReset, AcceptArticlePersonView, AcceptArticleMovieView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -79,6 +79,7 @@ urlpatterns = [
     path('accept_article_person/<int:person_id>/<int:article_id>', AcceptArticlePersonView.as_view(), name="accept-article-person"),
     path('add_article_movie/<int:id>', AddArticleMovieView.as_view(), name="add-article-movie"),
     path('delete_article_movie/<int:movie_id>/<int:article_id>', DeleteArticleMovieView.as_view(), name="delete-article-movie"),
+    path('accept_article_movie/<int:movie_id>/<int:article_id>', AcceptArticleMovieView.as_view(), name="accept-article-movie"),
     path('activate/<uidb64>/<token>', VerificationView.as_view(), name="activate"),
 
     path('reset_password/', RequestPasswordResetEmail.as_view(), name='reset-password'),
