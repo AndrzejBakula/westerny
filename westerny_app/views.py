@@ -1327,6 +1327,24 @@ class AcceptPersonView(StaffMemberCheck, View):
         return redirect("/waiting_people")
 
 
+class GiveEditPersonView(StaffMemberCheck, View):
+    def get(self, request, person_id, soldier_id):
+        person = Person.objects.get(id=person_id)
+        soldier = User.objects.get(id=soldier_id)
+        ctx = {
+            "person": person,
+            "soldier": soldier
+        }
+        return render(request, "give_edit_person.html", ctx)
+    
+    def post(self, request, person_id, soldier_id):
+        person = Person.objects.get(id=person_id)
+        soldier = User.objects.get(id=soldier_id)
+        person.person_edited_by = soldier
+        person.save()
+        return redirect(f"/person_details/{person_id}")
+
+
 class AddArticleGenreView(StaffMemberCheck, View):
     def get(self, request, id):
         genre = Genre.objects.get(id=id)

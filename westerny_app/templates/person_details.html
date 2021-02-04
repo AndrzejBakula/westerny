@@ -22,6 +22,9 @@
         {% if user.is_staff and not person.person_accepted_by %}
         <a class="btn btn-info btn-lg guzik" href="{% url 'accept-person' person.id %}"> Akceptuj</a>
         {% endif %}
+        {% if user.is_staff and person.person_edited_by == user %}
+        <a class="btn btn-info btn-lg guzik" href="{% url 'give-edit-person' person.id person.person_added_by.id %}"> Daj edycję</a>
+        {% endif %}
     </div>
     <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
