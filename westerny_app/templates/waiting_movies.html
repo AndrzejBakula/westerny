@@ -21,23 +21,9 @@
 
     {% for movie in movies %}
     <div class="d-flex flex-row justify-content-center align-items-center">
-        {% if not movie.movie_accepted_by %}
         <a  class="btn btn-link align-self-center" href="{% url 'movie-details' movie.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{movie.year}} - {{movie.title}}</a>
-        {% endif %}
     </div>
     {% endfor %}
-
-    {% if waiting_articles > 0 %}
-    <div class="d-flex flex-row justify-content-center align-items-center">
-        <h2 class="display-5 align-self-center header2"><i>Westerny z oczekującymi artykułami</i></h1>
-    </div>
-
-    {% for movie in movie_waiting_articles %}
-    <div class="d-flex flex-row justify-content-center align-items-center">
-        <a  class="btn btn-link align-self-center" href="{% url 'movie-details' movie.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ movie.year }} - {{ movie.title }}</a>
-    </div>
-    {% endfor %}
-    {% endif %}
 
     <!-- Pagination: -->
     <hr>
@@ -58,6 +44,18 @@
         {% endif %}
     </ul>
     </nav>
+
+    {% if waiting_articles > 0 %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h2 class="display-5 align-self-center header2"><i>Westerny z oczekującymi artykułami</i></h1>
+    </div>
+
+    {% for movie in movie_waiting_articles %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <a  class="btn btn-link align-self-center" href="{% url 'movie-details' movie.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ movie.year }} - {{ movie.title }}</a>
+    </div>
+    {% endfor %}
+    {% endif %}
 
 
 

@@ -587,11 +587,11 @@ class MoviesView(View):
 
 class WaitingMoviesView(StaffMemberCheck, View):
     def get(self, request):
-        movies = Movie.objects.all().order_by("year")
+        movies = Movie.objects.filter(movie_accepted_by=None).order_by("year")
         movie_waiting_articles = set([i.movie_set.all()[0] for i in Article.objects.filter(is_accepted=False) if len(i.movie_set.all()) > 0])
         waiting_articles = len(movie_waiting_articles)
 
-        paginator = Paginator(movies, 12)
+        paginator = Paginator(movies, 6)
         page = request.GET.get("page")
         movies = paginator.get_page(page)
 
