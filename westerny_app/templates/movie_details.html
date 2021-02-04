@@ -23,6 +23,9 @@
         {% if user.is_staff and not movie.movie_accepted_by %}
         <a class="btn btn-info btn-lg guzik" href="{% url 'accept-movie' movie.id %}"> Akceptuj</a>
         {% endif %}
+        {% if user.is_staff and movie.movie_edited_by == user %}
+        <a class="btn btn-info btn-lg guzik" href="{% url 'give-edit-movie' movie.id movie.movie_added_by.id %}"> Daj edycję</a>
+        {% endif %}
     </div>
     <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">

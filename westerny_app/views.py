@@ -878,6 +878,24 @@ class AcceptMovieView(StaffMemberCheck, View):
         return redirect("/waiting_movies")
 
 
+class GiveEditMovieView(StaffMemberCheck, View):
+    def get(self, request, movie_id, soldier_id):
+        movie = Movie.objects.get(id=movie_id)
+        soldier = User.objects.get(id=soldier_id)
+        ctx = {
+            "movie": movie,
+            "soldier": soldier
+        }
+        return render(request, "give_edit_movie.html", ctx)
+    
+    def post(self, request, movie_id, soldier_id):
+        movie = Movie.objects.get(id=movie_id)
+        soldier = User.objects.get(id=soldier_id)
+        movie.movie_edited_by = soldier
+        movie.save()
+        return redirect(f"/movie_details/{movie_id}")
+
+
 class GenresView(View):
     def get(self, request):
         genres = Genre.objects.all().order_by("name")
