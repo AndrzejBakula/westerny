@@ -116,8 +116,8 @@ class IndexView(View):
         counter = Counter.objects.all()[0]
         counter.counter += 1
         counter.save()
-        last_movies = [i for i in Movie.objects.all().order_by("-id") if i.movie_accepted_by != None][:4]
-        last_people = [i for i in Person.objects.all().order_by("-id") if i.person_accepted_by != None][:4]
+        last_movies = [i for i in Movie.objects.all().order_by("-id") if i.movie_accepted_by != None][:5]
+        last_people = [i for i in Person.objects.all().order_by("-id") if i.person_accepted_by != None][:5]
         if request.session.get("user_id"):
             user = User.objects.get(pk=int(request.session.get("user_id")))
             check_rank(user)
