@@ -591,10 +591,6 @@ class WaitingMoviesView(StaffMemberCheck, View):
         movie_waiting_articles = set([i.movie_set.all()[0] for i in Article.objects.filter(is_accepted=False) if len(i.movie_set.all()) > 0])
         waiting_articles = len(movie_waiting_articles)
 
-        paginator = Paginator(movies, 6)
-        page = request.GET.get("page")
-        movies = paginator.get_page(page)
-
         ctx = {
             "movies": movies,
             "movie_waiting_articles": movie_waiting_articles,
