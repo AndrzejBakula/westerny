@@ -118,6 +118,9 @@ class IndexView(View):
         counter.save()
         last_movies = [i for i in Movie.objects.all().order_by("-id") if i.movie_accepted_by != None][:5]
         last_people = [i for i in Person.objects.all().order_by("-id") if i.person_accepted_by != None][:5]
+        waiting_movies = Movie.objects.filter(movie_accepted_by=None)
+        waiting_people = Person.objects.filter(person_accepted_by=None)
+        waiting_articles = Article.objects.filter(is_accepted=False)
         if request.session.get("user_id"):
             user = User.objects.get(pk=int(request.session.get("user_id")))
             check_rank(user)
@@ -125,7 +128,10 @@ class IndexView(View):
             ctx = {
                 "promotion_asks": promotion_asks,
                 "last_movies": last_movies,
-                "last_people": last_people
+                "last_people": last_people,
+                "waiting_movies": waiting_movies,
+                "waiting_people": waiting_people,
+                "waiting_articles": waiting_articles
             }
             return render(request, "index.html", ctx)
         ctx = {
@@ -544,6 +550,9 @@ class StatsView(View):
         genres = Genre.objects.all()
         notes = len(westerns) + len(people) + len(genres)
         links = Article.objects.all()
+        waiting_movies = Movie.objects.filter(movie_accepted_by=None)
+        waiting_people = Person.objects.filter(person_accepted_by=None)
+        waiting_articles = Article.objects.filter(is_accepted=False)
 
         ctx = {
             "civils": civils,
@@ -557,7 +566,10 @@ class StatsView(View):
             "genres": genres,
             "notes": notes,
             "links": links,
-            "counter": counter
+            "counter": counter,
+            "waiting_movies": waiting_movies,
+            "waiting_people": waiting_people,
+            "waiting_articles": waiting_articles
         }
         return render(request, "stats.html", ctx)
 

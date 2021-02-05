@@ -22,6 +22,12 @@
         Liczba odwiedzin fortu: {{ counter.counter }}
     </h4>
     <hr>
+    {% if waiting_movies.count > 0 or waiting_people.count > 0 or waiting_articles.count > 0 %}
+    <h4 class="display-5 align-self-center header">
+        SĄ OCZEKUJĄCE WPISY!!!
+    </h4>
+    <hr>
+    {% endif %}
     {% endif %}
 
     <div class="d-flex flex-column justify-content-center align-items-center">
