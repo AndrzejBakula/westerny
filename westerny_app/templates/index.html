@@ -13,12 +13,10 @@
         <a class="btn btn-info btn-lg guzik2" href="{% url 'promotion-asks' %}">Wnioski o awans</a>
         {% endif %}
     </div>
-
     <div>
         <img src="{% static 'images/james-stewart.jpg' %}" style="border-color: black; border-style: solid; width: 95%; margin: 2.5%;">
     </div>
     <hr>
-
     {% if user.is_staff %}
     {% if waiting_movies.count > 0 or waiting_people.count > 0 or waiting_articles.count > 0 %}
     <h4 class="display-5 align-self-center header">
@@ -29,7 +27,7 @@
     {% endif %}
 
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h3 class="display-5 align-self-center header2"><i>Najnowsze Westerny</i></h3>
+        <h3 class="display-5 align-self-center header2"><i><u>Najnowsze Westerny</u></i></h3>
     </div>
 
     {% for movie in last_movies %}
@@ -39,10 +37,9 @@
         {% endif %}
     </div>
     {% endfor %}
-
     <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h3 class="display-5 align-self-center header2"><i>Najnowsi Ludzie</i></h3>
+        <h3 class="display-5 align-self-center header2"><i><u>Najnowsi Ludzie</u></i></h3>
     </div>
 
     {% for person in last_people %}
