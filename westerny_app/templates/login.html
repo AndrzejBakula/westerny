@@ -11,7 +11,7 @@
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h2 class="display-5 align-self-center header2"><i>Meldunek u kwatermistrza</i></h2>
     </div>
-
+    <hr>
     {% if message %}
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h3 class="display-5 align-self-center header">
@@ -30,5 +30,6 @@
     </form>
     <span><a class="btn btn-link align-self-center" style="color: white;" href="{% url 'reset-password' %}">Resetuj hasło</a></span>
     <hr>
+
 
 {% endblock %}
