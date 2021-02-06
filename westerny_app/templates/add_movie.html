@@ -20,7 +20,7 @@
     </div>
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h5 class="display-5 align-self-center header" style="text-align: justify; margin-left: 3vh; margin-right: 3vh;">
-            Przed dodaniem filmu upewnij się, że przypisywane osoby są w bazie "LUDZIE", a gatunek w bazie "GATUNKI". Tytuł, rok, reżyser, gatunek i opis są obowiązkowe.<br>
+            Przed dodaniem filmu upewnij się, że przypisywane osoby są w bazie "LUDZIE", a gatunek w bazie "GATUNKI". Tytuł, rok, reżyser, gatunek i opis są obowiązkowe. 
             Możliwość wyboru kilku osób i gatunków dostępna z wciśniętym klawiszem CTRL.
         </h5>
     </div>
@@ -34,7 +34,6 @@
     </div>
     {% endif %}
 
-    <hr>
     <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'add-movie' %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
