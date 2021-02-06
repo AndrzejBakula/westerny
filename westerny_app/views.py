@@ -579,12 +579,12 @@ class MoviesView(View):
         user = None
         if request.session.get("user_id"):
             user = User.objects.get(pk=int(request.session.get("user_id")))
-        movies = Movie.objects.all().order_by("year")
-        waiting_movies = len([i for i in movies if i.movie_accepted_by == None])
-        waiting_movies_user = len([i for i in movies if i.movie_accepted_by == None and i.movie_added_by == user])
+        movies = Movie.objects.filter(movie_accepted_by__isnull=False).order_by("year")
+        waiting_movies = len([i for i in Movie.objects.filter(movie_accepted_by=None)])
+        waiting_movies_user = len([i for i in Movie.objects.filter(movie_accepted_by=None) if i.movie_added_by == user])
         waiting_articles = len([i for i in Article.objects.filter(is_accepted=False) if len(i.movie_set.all()) > 0])
 
-        paginator = Paginator(movies, 11)
+        paginator = Paginator(movies, 10)
         page = request.GET.get("page")
         movies = paginator.get_page(page)
 
@@ -625,7 +625,7 @@ class SearchMovieView(View):
                 "title"
             )
 
-            paginator = Paginator(movies, 11)
+            paginator = Paginator(movies, 10)
             page = request.GET.get("page")
             movies = paginator.get_page(page)
 
@@ -910,10 +910,10 @@ class GiveEditMovieView(StaffMemberCheck, View):
 
 class GenresView(View):
     def get(self, request):
-        genres = Genre.objects.all().order_by("name")
-        waiting_genres = len([i for i in Genre.objects.all() if i.genre_accepted_by == None])
+        genres = Genre.objects.filter(genre_accepted_by__isnull=False).order_by("name")
+        waiting_genres = len([i for i in Genre.objects.filter(genre_accepted_by=None)])
 
-        paginator = Paginator(genres, 11)
+        paginator = Paginator(genres, 10)
         page = request.GET.get("page")
         genres = paginator.get_page(page)
 
@@ -1094,7 +1094,7 @@ class PeopleView(View):
         waiting_people_user = Person.objects.filter(person_added_by=user, person_accepted_by=None)
         waiting_articles = len([i for i in Article.objects.filter(is_accepted=False) if len(i.person_set.all()) > 0])
 
-        paginator = Paginator(people, 11)
+        paginator = Paginator(people, 10)
         page = request.GET.get("page")
         people = paginator.get_page(page)
 
@@ -1180,7 +1180,7 @@ class SearchPersonView(View):
                 "last_name"
             )
 
-            paginator = Paginator(people, 11)
+            paginator = Paginator(people, 10)
             page = request.GET.get("page")
             people = paginator.get_page(page)        
 

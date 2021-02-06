@@ -14,7 +14,7 @@
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'people' %}">LUDZIE</a>
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'genres' %}" class="btn btn-primary">GATUNKI</a>
     </div>
-    <hr>
+
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h2 class="display-5 align-self-center header2"><i>Szukaj Westernu</i></h2>
     </div>
@@ -26,13 +26,12 @@
 
         <button type="submit" id="submit">Szukaj</button>
     </form>
-    <hr>
 
     {% if movies %}
 
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h2 class="display-5 align-self-center header">
-            Lista znalezionych Westernów:
+            <i><u>Lista znalezionych Westernów:</u></i>
         </h2>
     </div>
 
@@ -46,18 +45,18 @@
     <hr>
     <nav aria-label="Page navigation example">
     <ul class="pagination">
-        {% if people.has_previous %}
+        {% if movies.has_previous %}
         <li class="page-item"><a class="page-link" href="?page=1">pierwsza</a></li>
-        <li class="page-item"><a class="page-link" href="?page={{ people.previous_page_number }}">poprzednia</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{ movies.previous_page_number }}">poprzednia</a></li>
         {% endif %}
-        {% for num in people.paginator.page_range %}
-        {% if people.number == num %}
-            <li class="page-item"><a class="page-link" href="?page={{ people.page_number }}"><strong>{{ num }}/{{ people.paginator.num_pages }}</strong></a></li>
+        {% for num in movies.paginator.page_range %}
+        {% if movies.number == num %}
+            <li class="page-item"><a class="page-link" href="?page={{ movies.page_number }}"><strong>{{ num }}/{{ movies.paginator.num_pages }}</strong></a></li>
         {% endif %}
         {% endfor %}
-        {% if people.has_next %}
-        <li class="page-item"><a class="page-link" href="?page={{ people.next_page_number }}">następna</a></li>
-        <li class="page-item"><a class="page-link" href="?page={{ people.paginator.num_pages }}">ostatnia</a></li>
+        {% if movies.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ movies.next_page_number }}">następna</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{ movies.paginator.num_pages }}">ostatnia</a></li>
         {% endif %}
     </ul>
     </nav>
@@ -68,7 +67,7 @@
 
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h2 class="display-5 align-self-center header">
-            Brak wyników.
+            <i>Brak wyników.</i>
         </h2>
     </div>
 
