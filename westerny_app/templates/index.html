@@ -16,7 +16,7 @@
     <div>
         <img src="{% static 'images/james-stewart.jpg' %}" style="border-color: black; border-style: solid; width: 95%; margin: 2.5%;">
     </div>
-    <hr>
+
     {% if user.is_staff %}
     {% if waiting_movies.count > 0 or waiting_people.count > 0 or waiting_articles.count > 0 %}
     <h4 class="display-5 align-self-center header">
