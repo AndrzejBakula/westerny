@@ -13,10 +13,10 @@
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'movies' %}">WESTERNY</a>
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'people' %}">LUDZIE</a>
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'genres' %}">GATUNKI</a>
-        {% if user.is_staff %}
+        {% if user.is_superuser or user.is_staff and not genre.genre_added_by.is_superuser %}
         <a class="btn btn-success btn-lg guzik" href="{% url 'edit-genre' genre.id %}"> Edytuj Gatunek</a>
         {% endif %}
-        {% if user.is_superuser %}
+        {% if user.is_superuser and user.username == "Westerny" %}
         <a class="btn btn-danger btn-lg guzik" href="{% url 'delete-genre' genre.id %}"> Usuń Gatunek</a>
         {% if not genre.genre_accepted_by %}
         <a class="btn btn-info btn-lg guzik" href="{% url 'accept-genre' genre.id %}"> Akceptuj</a>
