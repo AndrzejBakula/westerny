@@ -18,7 +18,7 @@
         {% endif %}
         {% if user.is_superuser and user.username == "Westerny" %}
         <a class="btn btn-danger btn-lg guzik" href="{% url 'delete-genre' genre.id %}"> Usuń Gatunek</a>
-        {% if not genre.genre_accepted_by %}
+        {% if user.is_superuser and not genre.genre_accepted_by %}
         <a class="btn btn-info btn-lg guzik" href="{% url 'accept-genre' genre.id %}"> Akceptuj</a>
         {% endif %}
         {% endif %}
