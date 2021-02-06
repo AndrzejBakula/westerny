@@ -32,7 +32,7 @@
 
     <div class="d-flex flex-column justify-content-center align-items-center">
         <h3 class="display-5 align-self-center header">
-            {% if not user.is_staff %}<i>Liczebność fortu: {{ users.count }}{% elif user.is_staff %}<i>Liczebność fortu: {{ fort }}</i>{% endif %}
+            {% if not user.is_staff %}<i><u>Liczebność fortu: {{ users.count }}</u></i>{% elif user.is_staff %}<i><u>Liczebność fortu: {{ fort }}</u></i>{% endif %}
         </h3>
         {% if civils.count > 0 and user.is_staff %}
         <h4 class="display-5 align-self-center header">
@@ -50,7 +50,7 @@
         </h4>
         <hr>
         <h3 class="display-5 align-self-center header">
-            <i>Wielkość archiwów: {{ notes }}</i>
+            <i><u>Wielkość archiwów: {{ notes }}</u></i>
         </h3>
         <h4 class="display-5 align-self-center header">
             Liczba westernów: {{ westerns.count }}

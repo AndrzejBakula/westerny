@@ -18,7 +18,7 @@
 
     {% if people.count > 0 %}
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h2 class="display-5 align-self-center header2"><i>Oczekujące Osoby</i></h1>
+        <h2 class="display-5 align-self-center header2"><i><u>Oczekujące Osoby</u></i></h1>
     </div>
 
     {% for person in people %}
@@ -29,6 +29,7 @@
     {% endif %}
 
     {% if waiting_articles > 0 %}
+    <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h2 class="display-5 align-self-center header2"><i>Osoby z oczekującymi artykułami</i></h1>
     </div>
