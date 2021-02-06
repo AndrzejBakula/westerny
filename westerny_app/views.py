@@ -584,7 +584,7 @@ class MoviesView(View):
         waiting_movies_user = len([i for i in movies if i.movie_accepted_by == None and i.movie_added_by == user])
         waiting_articles = len([i for i in Article.objects.filter(is_accepted=False) if len(i.movie_set.all()) > 0])
 
-        paginator = Paginator(movies, 12)
+        paginator = Paginator(movies, 11)
         page = request.GET.get("page")
         movies = paginator.get_page(page)
 
@@ -624,6 +624,10 @@ class SearchMovieView(View):
             movies = Movie.objects.filter(title__icontains=text).order_by(
                 "title"
             )
+
+            paginator = Paginator(movies, 11)
+            page = request.GET.get("page")
+            movies = paginator.get_page(page)
 
             ctx = {
                 "form": form,
@@ -908,6 +912,11 @@ class GenresView(View):
     def get(self, request):
         genres = Genre.objects.all().order_by("name")
         waiting_genres = len([i for i in Genre.objects.all() if i.genre_accepted_by == None])
+
+        paginator = Paginator(genres, 11)
+        page = request.GET.get("page")
+        genres = paginator.get_page(page)
+
         ctx = {
             "genres": genres,
             "waiting_genres": waiting_genres
@@ -1085,7 +1094,7 @@ class PeopleView(View):
         waiting_people_user = Person.objects.filter(person_added_by=user, person_accepted_by=None)
         waiting_articles = len([i for i in Article.objects.filter(is_accepted=False) if len(i.person_set.all()) > 0])
 
-        paginator = Paginator(people, 12)
+        paginator = Paginator(people, 11)
         page = request.GET.get("page")
         people = paginator.get_page(page)
 
@@ -1167,13 +1176,17 @@ class SearchPersonView(View):
         form = SearchPersonForm(request.POST)
         if form.is_valid():
             text = request.POST.get("text")
-            persons = Person.objects.filter(last_name__icontains=text).order_by(
+            people = Person.objects.filter(last_name__icontains=text).order_by(
                 "last_name"
             )
 
+            paginator = Paginator(people, 11)
+            page = request.GET.get("page")
+            people = paginator.get_page(page)        
+
             ctx = {
                 "form": form,
-                "persons": persons,
+                "people": people,
                 "post": request.POST
                 }
             return render(request, "search_person.html", ctx)

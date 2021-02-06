@@ -41,8 +41,29 @@
         <a  class="btn btn-link align-self-center" href="{% url 'movie-details' movie.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{movie.year}} - {{movie.title}}</a>
     </div>
     {% endfor %}
+
+    <!-- Pagination: -->
+    <hr>
+    <nav aria-label="Page navigation example">
+    <ul class="pagination">
+        {% if people.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page=1">pierwsza</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{ people.previous_page_number }}">poprzednia</a></li>
+        {% endif %}
+        {% for num in people.paginator.page_range %}
+        {% if people.number == num %}
+            <li class="page-item"><a class="page-link" href="?page={{ people.page_number }}"><strong>{{ num }}/{{ people.paginator.num_pages }}</strong></a></li>
+        {% endif %}
+        {% endfor %}
+        {% if people.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ people.next_page_number }}">następna</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{ people.paginator.num_pages }}">ostatnia</a></li>
+        {% endif %}
+    </ul>
+    </nav>
     
     {% endif %}
+    
     {% if not movies and post %}
 
     <div class="d-flex flex-row justify-content-center align-items-center">
