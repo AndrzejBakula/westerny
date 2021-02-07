@@ -475,23 +475,6 @@ class MyPlaceView(ActivateUserCheck, View):
         return redirect("/my_place")
 
 
-class MyMoviesView(ActivateUserCheck, View):
-    def get(self, request):
-        user = None
-        if request.session.get("user_id"):
-            user = User.objects.get(pk=int(request.session.get("user_id")))
-        movies = Movie.objects.filter(movie_accepted_by__isnull=False, movie_added_by=user).order_by("year")
-
-        paginator = Paginator(movies, 10)
-        page = request.GET.get("page")
-        movies = paginator.get_page(page)
-
-        ctx = {
-            "movies": movies
-        }
-        return render(request, "my_movies.html", ctx)
-
-
 class UserDetailsView(View):
     def get(self, request, id):
         soldier = User.objects.get(pk=id)
@@ -617,6 +600,25 @@ class MoviesView(View):
             "waiting_articles": waiting_articles
         }
         return render(request, "movies.html", ctx)
+
+
+class MyMoviesView(ActivateUserCheck, View):
+    def get(self, request):
+        user = None
+        if request.session.get("user_id"):
+            user = User.objects.get(pk=int(request.session.get("user_id")))
+        movies = Movie.objects.filter(movie_accepted_by__isnull=False, movie_added_by=user).order_by("year")
+        my_people = Person.objects.filter(person_added_by=user, person_accepted_by__isnull=False)
+
+        paginator = Paginator(movies, 10)
+        page = request.GET.get("page")
+        movies = paginator.get_page(page)
+
+        ctx = {
+            "movies": movies,
+            "my_people": my_people
+        }
+        return render(request, "my_movies.html", ctx)
     
 
 class WaitingMoviesView(StaffMemberCheck, View):
@@ -1161,6 +1163,7 @@ class MyPeopleView(ActivateUserCheck, View):
         if request.session.get("user_id"):
             user = User.objects.get(pk=int(request.session.get("user_id")))
         people = Person.objects.filter(person_added_by=user).order_by("last_name")
+        my_movies = Movie.objects.filter(movie_added_by=user, movie_accepted_by__isnull=False)
 
         paginator = Paginator(people, 10)
         page = request.GET.get("page")
@@ -1168,6 +1171,7 @@ class MyPeopleView(ActivateUserCheck, View):
 
         ctx = {
             "people": people,
+            "my_movies": my_movies
         }
         return render(request, "my_people.html", ctx)
 
