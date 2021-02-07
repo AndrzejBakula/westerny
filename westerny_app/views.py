@@ -1750,7 +1750,7 @@ class AddActorMovieView(ActivateUserCheck, View):
                     "message": message
                 }
                 return render(request, "add_actor_movie.html", ctx)
-            personmovie = PersonMovie.objects.create(role=data["role"], persons=data["actor"], movies=movie)
+            personmovie = PersonMovie.objects.create(role=data["role"], persons=data["actor"], movies=movie, personmovie_added_by=user)
             movie.starring.add(personmovie.persons)
             movie.save()
             message = "Aktor dodany pomyślnie"
