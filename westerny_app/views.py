@@ -512,7 +512,7 @@ class UserDetailsView(View):
     
 
 
-class GivePromotionView(View):
+class GivePromotionView(SuperUserCheck, View):
     def get(self, request, id):
         soldier = User.objects.get(id=id)
         userrank = UserRank.objects.get(user=soldier)
@@ -535,7 +535,7 @@ class GivePromotionView(View):
         return render(request, "give_promotion.html", {"message": message})
 
 
-class PromotionAsksView(View):
+class PromotionAsksView(ActivateUserCheck, View):
     def get(self, request):
         promotion_asks = UserRank.objects.filter(promotion_ask=True)
         return render(request, "promotion_asks.html", {"promotion_asks": promotion_asks})
