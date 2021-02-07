@@ -1032,12 +1032,19 @@ class AddGenreView(StaffMemberCheck, View):
 class GenreDetailsView(View):
     def get(self, request, id):
         genre = Genre.objects.get(id=id)
+        movies = Movie.objects.filter(genre=genre, movie_accepted_by__isnull=False)
         articles = [i for i in Article.objects.filter(genre__id=id)]
         articles_check = len(articles)
+
+        paginator = Paginator(movies, 10)
+        page = request.GET.get("page")
+        movies = paginator.get_page(page)
+
         ctx = {
             "genre": genre,
             "articles": articles,
-            "articles_check": articles_check
+            "articles_check": articles_check,
+            "movies": movies
         }
         return render(request, "genre_details.html", ctx)
 
