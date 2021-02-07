@@ -442,6 +442,9 @@ class MyPlaceView(ActivateUserCheck, View):
         waiting_movies = Movie.objects.filter(movie_accepted_by=None, movie_added_by=user)
         waiting_articles = Article.objects.filter(article_added_by=user, is_accepted=False)
 
+        my_movies = Movie.objects.filter(movie_added_by=user, movie_accepted_by__isnull=False)
+        my_people = Person.objects.filter(person_added_by=user, person_accepted_by__isnull=False)
+
         ctx = {
             "westerns": added_westerns,
             "people": added_people,
@@ -458,7 +461,9 @@ class MyPlaceView(ActivateUserCheck, View):
             "userrank": UserRank.objects.get(user=user),
             "waiting_people": waiting_people,
             "waiting_movies": waiting_movies,
-            "waiting_articles": waiting_articles
+            "waiting_articles": waiting_articles,
+            "my_movies": my_movies,
+            "my_people": my_people
         }
         return render(request, "my_place.html", ctx)
     
@@ -468,6 +473,23 @@ class MyPlaceView(ActivateUserCheck, View):
         userrank.promotion_ask = True
         userrank.save()
         return redirect("/my_place")
+
+
+class MyMoviesView(ActivateUserCheck, View):
+    def get(self, request):
+        user = None
+        if request.session.get("user_id"):
+            user = User.objects.get(pk=int(request.session.get("user_id")))
+        movies = Movie.objects.filter(movie_accepted_by__isnull=False, movie_added_by=user).order_by("year")
+
+        paginator = Paginator(movies, 10)
+        page = request.GET.get("page")
+        movies = paginator.get_page(page)
+
+        ctx = {
+            "movies": movies
+        }
+        return render(request, "my_movies.html", ctx)
 
 
 class UserDetailsView(View):
@@ -635,6 +657,32 @@ class SearchMovieView(View):
                 "post": request.POST
                 }
             return render(request, "search_movie.html", ctx)
+
+
+class SearchMyMovieView(ActivateUserCheck, View):
+    def get(self, request):
+        form = SearchMovieForm()
+        return render(request, "search_my_movie.html", {"form": form})
+
+    def post(self, request):
+        form = SearchMovieForm(request.POST)
+        user = User.objects.get(pk=int(request.session.get("user_id")))
+        if form.is_valid():
+            text = form.cleaned_data["text"]
+            movies = Movie.objects.filter(title__icontains=text, movie_added_by=user).order_by(
+                "title"
+            )
+
+            paginator = Paginator(movies, 10)
+            page = request.GET.get("page")
+            movies = paginator.get_page(page)
+
+            ctx = {
+                "form": form,
+                "movies": movies,
+                "post": request.POST
+                }
+            return render(request, "search_my_movie.html", ctx)
 
 
 class AddMovieView(ActivateUserCheck, View):
@@ -1107,6 +1155,23 @@ class PeopleView(View):
         return render(request, "people.html", ctx)
 
 
+class MyPeopleView(ActivateUserCheck, View):
+    def get(self, request):
+        user = None
+        if request.session.get("user_id"):
+            user = User.objects.get(pk=int(request.session.get("user_id")))
+        people = Person.objects.filter(person_added_by=user).order_by("last_name")
+
+        paginator = Paginator(people, 10)
+        page = request.GET.get("page")
+        people = paginator.get_page(page)
+
+        ctx = {
+            "people": people,
+        }
+        return render(request, "my_people.html", ctx)
+
+
 class WaitingPeopleView(StaffMemberCheck, View):
     def get(self, request):
         people = Person.objects.filter(person_accepted_by=None).order_by("last_name")
@@ -1190,6 +1255,32 @@ class SearchPersonView(View):
                 "post": request.POST
                 }
             return render(request, "search_person.html", ctx)
+
+
+class SearchMyPersonView(ActivateUserCheck, View):
+    def get(self, request):
+        form = SearchPersonForm()
+        return render(request, "search_my_person.html", {"form": form})
+
+    def post(self, request):
+        form = SearchPersonForm(request.POST)
+        user = User.objects.get(pk=int(request.session.get("user_id")))
+        if form.is_valid():
+            text = request.POST.get("text")
+            people = Person.objects.filter(last_name__icontains=text, person_added_by=user).order_by(
+                "last_name"
+            )
+
+            paginator = Paginator(people, 10)
+            page = request.GET.get("page")
+            people = paginator.get_page(page)        
+
+            ctx = {
+                "form": form,
+                "people": people,
+                "post": request.POST
+                }
+            return render(request, "search_my_person.html", ctx)
 
 
 class AddPersonView(ActivateUserCheck, View):

@@ -8,13 +8,21 @@
     <div class="d-flex flex-row justify-content-around flex-wrap">
         <a class="btn btn-primary btn-lg guzik" href="{% url 'index' %}">STRONA GŁÓWNA</a>
     </div>
+    <div class="d-flex flex-row justify-content-around flex-wrap">
+        {% if my_movies.count > 0 %}
+        <a class="btn btn-link btn-sm guzik" href="{% url 'my-movies' %}">Dodane Westerny</a>
+        {% endif %}
+        {% if my_people.count > 0 %}
+        <a class="btn btn-link btn-sm guzik" href="{% url 'my-people' %}">Dodani Ludzie</a>
+        {% endif %}
+    </div>
+
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h2 class="display-5 align-self-center header2"><i>Kwatera w forcie</i></h2>
     </div>
     <div>
         <img src="{% static 'images/bravo4.jpg' %}" style="border-color: black; border-style: solid; width: 95%; margin: 2.5%;">
     </div>
-    <hr>
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h2 class="display-5 align-self-center header2"><i>{{ user.username }}</i></h2>
     </div>

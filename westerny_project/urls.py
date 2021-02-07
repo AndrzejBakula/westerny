@@ -32,7 +32,8 @@ from westerny_app.views import MovieDetailsView, DeleteMovieView, AcceptMovieVie
 from westerny_app.views import EditMovieView, DeleteArticleMovieView, AddActorMovieView, DeleteActorMovieView
 from westerny_app.views import UserDetailsView, GivePromotionView, PromotionAsksView
 from westerny_app.views import RequestPasswordResetEmail, CompletePasswordReset, AcceptArticlePersonView, AcceptArticleMovieView
-from westerny_app.views import GiveEditPersonView, GiveEditMovieView
+from westerny_app.views import GiveEditPersonView, GiveEditMovieView, MyMoviesView, SearchMyMovieView, MyPeopleView
+from westerny_app.views import SearchMyPersonView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -44,12 +45,15 @@ urlpatterns = [
     path('accounts/login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('my_place/', MyPlaceView.as_view(), name='my-place'),
+    path('my_movies/', MyMoviesView.as_view(), name='my-movies'),
+    path('my_people/', MyPeopleView.as_view(), name='my-people'),
     path('user_details/<int:id>', UserDetailsView.as_view(), name="user-details"),
     path('give_promotion/<int:id>', GivePromotionView.as_view(), name="give-promotion"),
     path('promotion_asks/', PromotionAsksView.as_view(), name="promotion-asks"),
     path('stats/', StatsView.as_view(), name='stats'),
     path('movies/', MoviesView.as_view(), name="movies"),
     path('search_movie/', SearchMovieView.as_view(), name="search-movie"),
+    path('search_my_movie/', SearchMyMovieView.as_view(), name="search-my-movie"),
     path('add_movie/', AddMovieView.as_view(), name="add-movie"),
     path('movie_details/<int:id>', MovieDetailsView.as_view(), name="movie-details"),
     path('edit_movie/<int:id>', EditMovieView.as_view(), name="edit-movie"),
@@ -74,6 +78,7 @@ urlpatterns = [
     path('waiting_people/', WaitingPeopleView.as_view(), name="waiting-people"),
     path('accept_person/<int:id>', AcceptPersonView.as_view(), name="accept-person"),
     path('search_person/', SearchPersonView.as_view(), name="search-person"),
+    path('search_my_person/', SearchMyPersonView.as_view(), name="search-my-person"),
     path('give_edit_person/<int:person_id>/<int:soldier_id>', GiveEditPersonView.as_view(), name="give-edit-person"),
     path('add_article_genre/<int:id>', AddArticleGenreView.as_view(), name="add-article-genre"),
     path('delete_article_genre/<int:genre_id>/<int:article_id>', DeleteArticleGenreView.as_view(), name="delete-article-genre"),
