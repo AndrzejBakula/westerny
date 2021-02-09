@@ -33,7 +33,7 @@ from westerny_app.views import EditMovieView, DeleteArticleMovieView, AddActorMo
 from westerny_app.views import UserDetailsView, GivePromotionView, PromotionAsksView
 from westerny_app.views import RequestPasswordResetEmail, CompletePasswordReset, AcceptArticlePersonView, AcceptArticleMovieView
 from westerny_app.views import GiveEditPersonView, GiveEditMovieView, MyMoviesView, SearchMyMovieView, MyPeopleView
-from westerny_app.views import SearchMyPersonView
+from westerny_app.views import SearchMyPersonView, MyGenresView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -47,6 +47,7 @@ urlpatterns = [
     path('my_place/', MyPlaceView.as_view(), name='my-place'),
     path('my_movies/', MyMoviesView.as_view(), name='my-movies'),
     path('my_people/', MyPeopleView.as_view(), name='my-people'),
+    path('my_genres/', MyGenresView.as_view(), name='my-genres'),
     path('user_details/<int:id>', UserDetailsView.as_view(), name="user-details"),
     path('give_promotion/<int:id>', GivePromotionView.as_view(), name="give-promotion"),
     path('promotion_asks/', PromotionAsksView.as_view(), name="promotion-asks"),

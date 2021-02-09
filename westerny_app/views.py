@@ -444,6 +444,7 @@ class MyPlaceView(ActivateUserCheck, View):
 
         my_movies = Movie.objects.filter(movie_added_by=user, movie_accepted_by__isnull=False)
         my_people = Person.objects.filter(person_added_by=user, person_accepted_by__isnull=False)
+        my_genres = Genre.objects.filter(genre_added_by=user, genre_accepted_by__isnull=False)
 
         ctx = {
             "westerns": added_westerns,
@@ -463,7 +464,8 @@ class MyPlaceView(ActivateUserCheck, View):
             "waiting_movies": waiting_movies,
             "waiting_articles": waiting_articles,
             "my_movies": my_movies,
-            "my_people": my_people
+            "my_people": my_people,
+            "my_genres": my_genres
         }
         return render(request, "my_place.html", ctx)
     
@@ -609,6 +611,7 @@ class MyMoviesView(ActivateUserCheck, View):
             user = User.objects.get(pk=int(request.session.get("user_id")))
         movies = Movie.objects.filter(movie_accepted_by__isnull=False, movie_added_by=user).order_by("year")
         my_people = Person.objects.filter(person_added_by=user, person_accepted_by__isnull=False)
+        my_genres = Genre.objects.filter(genre_added_by=user, genre_accepted_by__isnull=False)
 
         paginator = Paginator(movies, 10)
         page = request.GET.get("page")
@@ -972,6 +975,27 @@ class GenresView(View):
             "waiting_genres": waiting_genres
         }
         return render(request, "genres.html", ctx)
+
+
+class MyGenresView(StaffMemberCheck, View):
+    def get(self, request):
+        user = None
+        if request.session.get("user_id"):
+            user = User.objects.get(pk=int(request.session.get("user_id")))
+        my_movies = Movie.objects.filter(movie_accepted_by__isnull=False, movie_added_by=user).order_by("year")
+        my_people = Person.objects.filter(person_added_by=user, person_accepted_by__isnull=False)
+        genres = Genre.objects.filter(genre_added_by=user, genre_accepted_by__isnull=False)
+
+        paginator = Paginator(genres, 10)
+        page = request.GET.get("page")
+        genres = paginator.get_page(page)
+
+        ctx = {
+            "genres": genres,
+            "my_movies": my_movies,
+            "my_people": my_people
+        }
+        return render(request, "my_genres.html", ctx)
 
 
 class AddGenreView(StaffMemberCheck, View):
