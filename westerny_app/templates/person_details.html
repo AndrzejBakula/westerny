@@ -16,7 +16,7 @@
         {% if user.is_superuser or user.is_staff and not person.person_added_by.is_superuser or person.person_added_by == user and not person.person_edited_by.is_staff %}
         <a class="btn btn-success btn-lg guzik" href="{% url 'edit-person' person.id %}"> Edytuj Osobę</a>
         {% endif %}
-        {% if user.is_superuser and user.username == "Westerny" %}
+        {% if user.is_superuser and user.username == "Westerny" or not person.person_accepted_by and user.is_staff %}
         <a class="btn btn-danger btn-lg guzik" href="{% url 'delete-person' person.id %}"> Usuń Osobę</a>
         {% endif %}
         {% if user.is_staff and not person.person_accepted_by %}
