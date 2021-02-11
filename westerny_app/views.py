@@ -1793,7 +1793,7 @@ class AddActorMovieView(ActivateUserCheck, View):
         return render(request, "add_actor_movie.html", ctx)
     
 
-class DeleteActorMovieView(StaffMemberCheck, View):
+class DeleteActorMovieView(ActivateUserCheck, View):
     def get(self, request, movie_id, person_id):
         movie = Movie.objects.get(id=movie_id)
         person = Person.objects.get(id=person_id)

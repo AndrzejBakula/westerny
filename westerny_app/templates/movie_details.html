@@ -17,7 +17,7 @@
         {% if user.is_superuser or user.is_staff and not movie.movie_added_by.is_superuser or movie.movie_added_by == user and not movie.movie_edited_by.is_staff %}
         <a class="btn btn-success btn-lg guzik" href="{% url 'edit-movie' movie.id %}"> Edytuj Western</a>
         {% endif %}
-        {% if user.is_superuser and user.username == "Westerny" %}
+        {% if user.is_superuser and user.username == "Westerny" or not movie.movie_accepted_by and user.is_staff %}
         <a class="btn btn-danger btn-lg guzik" href="{% url 'delete-movie' movie.id %}"> Usuń Western</a>
         {% endif %}
         {% if user.is_staff and not movie.movie_accepted_by %}
