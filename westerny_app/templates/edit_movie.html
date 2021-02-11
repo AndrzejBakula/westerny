@@ -13,7 +13,7 @@
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'movies' %}">WESTERNY</a>
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'people' %}">LUDZIE</a>
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'genres' %}">GATUNKI</a>
-        <a class="btn btn-success btn-lg guzik" href="{% url 'movie-details' movie.id %}"> Szczegóły Osoby</a>
+        <a class="btn btn-success btn-lg guzik" href="{% url 'movie-details' movie.id %}"> Szczegóły Westernu</a>
         {% if user.is_superuser %}
         <a class="btn btn-danger btn-lg guzik" href="{% url 'delete-movie' movie.id %}"> Usuń Osobę</a>
         {% endif %}
