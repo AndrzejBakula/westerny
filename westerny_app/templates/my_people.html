@@ -12,6 +12,9 @@
         {% if my_movies.count > 0 %}
         <a class="btn btn-link btn-lg guzik" href="{% url 'my-movies' %}">Dodane Westerny</a>
         {% endif %}
+        {% if my_genres.count > 0 %}
+        <a class="btn btn-link btn-lg guzik" href="{% url 'my-genres' %}">Dodane Gatunki</a>
+        {% endif %}
         <a class="btn btn-dark btn-lg guzik" href="{% url 'search-my-person' %}"> Szukaj Osoby</a>
         {% if user.is_staff %}
         <a class="btn btn-success btn-lg guzik" href="{% url 'add-person' %}"> Dodaj Osobę</a>

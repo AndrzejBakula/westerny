@@ -619,7 +619,8 @@ class MyMoviesView(ActivateUserCheck, View):
 
         ctx = {
             "movies": movies,
-            "my_people": my_people
+            "my_people": my_people,
+            "my_genres": my_genres
         }
         return render(request, "my_movies.html", ctx)
     
@@ -1195,6 +1196,7 @@ class MyPeopleView(ActivateUserCheck, View):
             user = User.objects.get(pk=int(request.session.get("user_id")))
         people = Person.objects.filter(person_added_by=user).order_by("last_name")
         my_movies = Movie.objects.filter(movie_added_by=user, movie_accepted_by__isnull=False)
+        my_genres = Genre.objects.filter(genre_added_by=user, genre_accepted_by__isnull=False)
 
         paginator = Paginator(people, 10)
         page = request.GET.get("page")
@@ -1202,7 +1204,8 @@ class MyPeopleView(ActivateUserCheck, View):
 
         ctx = {
             "people": people,
-            "my_movies": my_movies
+            "my_movies": my_movies,
+            "my_genres": my_genres
         }
         return render(request, "my_people.html", ctx)
 
