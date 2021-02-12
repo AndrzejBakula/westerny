@@ -1387,7 +1387,7 @@ class EditPersonView(ActivateUserCheck, View):
     def get(self, request, id):
         person = Person.objects.get(id=id)
         user = User.objects.get(pk=int(request.session.get("user_id")))
-        if (person.person_added_by == user and person.person_edited_by == None) or (person.person_added_by == user and not person.person_edited_by.is_staff) or user.is_superuser or user.is_staff:
+        if (person.person_added_by == user and person.person_edited_by == None) or (person.person_added_by == user and not person.person_edited_by.is_staff) or user.is_staff:
             initial_data = {
                 "first_name": person.first_name,
                 "last_name": person.last_name,
