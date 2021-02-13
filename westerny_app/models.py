@@ -112,6 +112,7 @@ class Movie(models.Model):
     movie_accepted_by = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="movie_accepted")
     movie_edited_by = models.ForeignKey(User, null=True, on_delete=models.DO_NOTHING, related_name="movie_edited")
     movie_article = models.ManyToManyField(Article, default=None)
+    watchlist = models.ManyToManyField(User, default=None, related_name="watchlist")
 
 
 class MovieRating(models.Model):
