@@ -238,9 +238,9 @@ class RegisterView(View):
                 email_body,
                 "noreply@semycolon.com",
                 [user.email],
-                )
-            
+                )            
             email.send(fail_silently=False)
+
             rank = Rank.objects.get(name="kawalerzysta")
             UserRank.objects.create(user=user, rank=rank)
             message = f"Dodano nowego kawalerzystę {user.username}. Wysłano telegram potwierdzający do skrzynki na listy."
@@ -1469,6 +1469,7 @@ class DeletePersonView(StaffMemberCheck, View):
     
     def post(self, request, id):
         person = Person.objects.get(id=id)
+        soldier = User.objects.get(id=person.person_added_by.id)
         person_ratings = PersonRating.objects.filter(person=id)
         for i in person_ratings:
             i.delete()
@@ -1479,6 +1480,15 @@ class DeletePersonView(StaffMemberCheck, View):
         for i in personmovies:
             i.delete()
         person.delete()
+        email_subject = "Wpis został usunięty."
+        email_body = "Baczność " + soldier.username + "! Twój wpis o " + person.first_name + " " + person.last_name + " został usunięty, ponieważ nie nadawał się do akceptacji."
+        email = EmailMessage(
+            email_subject,
+            email_body,
+            "noreply@semycolon.com",
+            [soldier.email],
+            )            
+        email.send(fail_silently=False)
         return redirect("/people")
 
 
