@@ -919,6 +919,7 @@ class DeleteMovieView(StaffMemberCheck, View):
     
     def post(self, request, id):
         movie = Movie.objects.get(id=id)
+        soldier = User.objects.get(id=movie.movie_added_by.id)
         movie_ratings = MovieRating.objects.filter(movie=id)
         for i in movie_ratings:
             i.delete()
@@ -928,6 +929,17 @@ class DeleteMovieView(StaffMemberCheck, View):
         articles = Article.objects.filter(movie=movie)
         for i in articles:
             i.delete()
+        movie.delete()
+        
+        email_subject = "Wpis został usunięty."
+        email_body = "Baczność " + soldier.username + "! Twój wpis o " + movie.title + " został usunięty, ponieważ nie nadawał się do akceptacji."
+        email = EmailMessage(
+            email_subject,
+            email_body,
+            "noreply@semycolon.com",
+            [soldier.email],
+            )            
+        email.send(fail_silently=False)
         return redirect("/movies")
 
 
