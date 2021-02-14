@@ -560,6 +560,9 @@ class StatsView(View):
         waiting_movies = Movie.objects.filter(movie_accepted_by=None)
         waiting_people = Person.objects.filter(person_accepted_by=None)
         waiting_articles = Article.objects.filter(is_accepted=False)
+        movie_ratings = len([i for i in MovieRating.objects.all()])
+        people_ratings = len([i for i in PersonRating.objects.all()])
+        ratings = movie_ratings + people_ratings
 
         ctx = {
             "civils": civils,
@@ -576,7 +579,8 @@ class StatsView(View):
             "counter": counter,
             "waiting_movies": waiting_movies,
             "waiting_people": waiting_people,
-            "waiting_articles": waiting_articles
+            "waiting_articles": waiting_articles,
+            "ratings": ratings
         }
         return render(request, "stats.html", ctx)
 
