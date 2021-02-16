@@ -16,7 +16,7 @@ from django.views import View
 from django.contrib.auth.models import User
 from westerny_project.settings import PROTOCOLE
 from westerny_app.models import Movie, Genre, Person, Article, Rank, UserRank, PersonRating, Rating, MovieRating
-from westerny_app.models import PersonMovie, Counter
+from westerny_app.models import PersonMovie, Counter, Deleted
 from westerny_app.forms import AddMovieForm, AddGenreForm, AddPersonForm, EditGenreForm, RegisterForm, LoginForm
 from westerny_app.forms import SearchMovieForm, SearchPersonForm, AddArticleForm, EditPersonForm, RatingForm
 from westerny_app.forms import EditMovieForm, AddActorForm, ResetForm
@@ -394,11 +394,13 @@ class MyPlaceView(ActivateUserCheck, View):
         added_genres = len(Genre.objects.filter(genre_added_by=user, genre_accepted_by__isnull=False))
         links = len(Article.objects.filter(article_added_by=user, is_accepted=True))
         notes = added_westerns + added_people + added_genres + links
+        rejected = Deleted.objects.filter(added_by=user)
 
         accepted_westerns = len(Movie.objects.filter(movie_accepted_by=user))
         accepted_people = len(Person.objects.filter(person_accepted_by=user))
         accepted_genres = len(Genre.objects.filter(genre_accepted_by=user))
         accepted_notes = accepted_westerns + accepted_people + accepted_genres
+        deleted = Deleted.objects.filter(deleted_by=user)
 
         userrank = UserRank.objects.get(user=user.id).rank
 
@@ -465,7 +467,9 @@ class MyPlaceView(ActivateUserCheck, View):
             "waiting_articles": waiting_articles,
             "my_movies": my_movies,
             "my_people": my_people,
-            "my_genres": my_genres
+            "my_genres": my_genres,
+            "deleted": deleted,
+            "rejected": rejected
         }
         return render(request, "my_place.html", ctx)
     
@@ -489,11 +493,13 @@ class UserDetailsView(View):
         added_genres = len([i for i in genres if i.genre_accepted_by])
         links = len(Article.objects.filter(article_added_by=soldier))
         notes = added_westerns + added_people + added_genres + links
+        rejected = Deleted.objects.filter(added_by=soldier)
 
         accepted_westerns = len(Movie.objects.filter(movie_accepted_by=soldier))
         accepted_people = len(Person.objects.filter(person_accepted_by=soldier))
         accepted_genres = len(Genre.objects.filter(genre_accepted_by=soldier))
         accepted_notes = accepted_westerns + accepted_people + accepted_genres
+        deleted = Deleted.objects.filter(deleted_by=soldier)
 
         userrank = UserRank.objects.get(user=soldier)
 
@@ -508,7 +514,9 @@ class UserDetailsView(View):
             "accepted_people": accepted_people,
             "accepted_genres": accepted_genres,
             "accepted_notes": accepted_notes,
-            "userrank": userrank
+            "userrank": userrank,
+            "deleted": deleted,
+            "rejected": rejected
         }
         return render(request, "user_details.html", ctx)
     
@@ -923,6 +931,7 @@ class DeleteMovieView(StaffMemberCheck, View):
     
     def post(self, request, id):
         movie = Movie.objects.get(id=id)
+        user = User.objects.get(pk=int(request.session.get("user_id")))
         soldier = User.objects.get(id=movie.movie_added_by.id)
         movie_ratings = MovieRating.objects.filter(movie=id)
         for i in movie_ratings:
@@ -933,8 +942,8 @@ class DeleteMovieView(StaffMemberCheck, View):
         articles = Article.objects.filter(movie=movie)
         for i in articles:
             i.delete()
-        movie.delete()
-        
+        Deleted.objects.create(added_by=soldier, deleted_by=user)
+        movie.delete()        
         email_subject = "Wpis został usunięty."
         email_body = "Baczność " + soldier.username + "! Twój wpis o " + movie.title + " został usunięty, ponieważ nie nadawał się do akceptacji."
         email = EmailMessage(
@@ -1337,6 +1346,26 @@ class SearchMyPersonView(ActivateUserCheck, View):
             return render(request, "search_my_person.html", ctx)
 
 
+class PeopleRankView(View):
+    def get(self, request):
+        for i in Person.objects.all():
+            rating_sum = sum([j.rating.rating for j in i.personrating_set.all()])
+            rating_quant = len([j.rating.rating for j in i.personrating_set.all()])
+            if rating_quant != 0:
+                i.person_rating = round(rating_sum/rating_quant, 2)
+                i.save()
+        people = Person.objects.filter(person_rating__isnull=False).order_by("person_rating").reverse()
+
+        paginator = Paginator(people, 10)
+        page = request.GET.get("page")
+        people = paginator.get_page(page)
+
+        ctx = {
+            "people": people
+        }
+        return render(request, "people_rank.html", ctx)
+
+
 class AddPersonView(ActivateUserCheck, View):
     def get(self, request):
         form = AddPersonForm()
@@ -1485,6 +1514,7 @@ class DeletePersonView(StaffMemberCheck, View):
     
     def post(self, request, id):
         person = Person.objects.get(id=id)
+        user = User.objects.get(pk=int(request.session.get("user_id")))
         soldier = User.objects.get(id=person.person_added_by.id)
         person_ratings = PersonRating.objects.filter(person=id)
         for i in person_ratings:
@@ -1495,6 +1525,7 @@ class DeletePersonView(StaffMemberCheck, View):
         personmovies = PersonMovie.objects.filter(persons=id)
         for i in personmovies:
             i.delete()
+        Deleted.objects.create(added_by=soldier, deleted_by=user)
         person.delete()
         email_subject = "Wpis został usunięty."
         email_body = "Baczność " + soldier.username + "! Twój wpis o " + person.first_name + " " + person.last_name + " został usunięty, ponieważ nie nadawał się do akceptacji."

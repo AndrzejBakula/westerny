@@ -12,7 +12,6 @@
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'movies' %}">WESTERNY</a>
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'genres' %}">GATUNKI</a>
         <a class="btn btn-dark btn-lg guzik" href="{% url 'search-person' %}"> Szukaj Osoby</a>
-        <a class="btn btn-light btn-lg guzik2" href="{% url 'people-rank' %}"> Ranking</a>
         {% if user.is_staff %}
         <a class="btn btn-success btn-lg guzik" href="{% url 'add-person' %}"> Dodaj Osobę</a>
         {% endif %}
@@ -43,7 +42,7 @@
     {% for person in people %}
     <div class="d-flex flex-row justify-content-center align-items-center">
         {% if person.person_accepted_by %}
-        <a  class="btn btn-link align-self-center" href="{% url 'person-details' person.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ person }}</a>
+        <a  class="btn btn-link align-self-center" href="{% url 'person-details' person.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ person.person_rating }} - {{ person }}</a>
         {% endif %}
     </div>
     {% endfor %}

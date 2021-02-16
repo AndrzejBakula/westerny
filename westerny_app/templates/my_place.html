@@ -76,17 +76,22 @@
             <i>Suma zapisanych kart almanachu: {{ notes }}</i>
         </h3>
         <h4 class="display-5 align-self-center header">
-            Ilość dodanych westernów: {{ westerns }}
+            Liczba dodanych westernów: {{ westerns }}
         </h4>
         <h4 class="display-5 align-self-center header">
-            Ilość dodanych ludzi: {{ people }}
+            Liczba dodanych ludzi: {{ people }}
         </h4>
         <h4 class="display-5 align-self-center header">
-            Ilość dodanych gatunków: {{ genres }}
+            Liczba dodanych gatunków: {{ genres }}
         </h4>
         <h4 class="display-5 align-self-center header">
-            Ilość dodanych linków: {{ links }}
+            Liczba dodanych linków: {{ links }}
         </h4>
+        {% if rejected.count > 0 %}
+        <h4 class="display-5 align-self-center header">
+            Liczba odrzuconych wpisów: {{ rejected.count }}
+        </h4>
+        {% endif %}
     </div>
     {% if user.is_staff %}
     <hr>
@@ -95,14 +100,19 @@
             <i>Suma zatwierdzonych kart almanachu: {{ accepted_notes }}</i>
         </h3>
         <h4 class="display-5 align-self-center header">
-            Ilość zatwierdzonych westernów: {{ accepted_westerns }}
+            Liczba zatwierdzonych westernów: {{ accepted_westerns }}
         </h4>
         <h4 class="display-5 align-self-center header">
-            Ilość zatwierdzonych ludzi: {{ accepted_people }}
+            Liczba zatwierdzonych ludzi: {{ accepted_people }}
         </h4>
         <h4 class="display-5 align-self-center header">
-            Ilość zatwierdzonych gatunków: {{ accepted_genres }}
+            Liczba zatwierdzonych gatunków: {{ accepted_genres }}
         </h4>
+        {% if deleted.count > 0 %}
+        <h4 class="display-5 align-self-center header">
+            Liczba usuniętych wpisów: {{ deleted.count }}
+        </h4>
+        {% endif %}
     </div>
     {% endif %}
 

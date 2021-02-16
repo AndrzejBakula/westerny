@@ -129,3 +129,8 @@ class PersonMovie(models.Model):
     personmovie_added_by = models.ForeignKey(User, null=False, default=1, on_delete=models.DO_NOTHING)
 
 
+class Deleted(models.Model):
+    added_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="added_by")
+    deleted_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name="deleted_by")
+
+
