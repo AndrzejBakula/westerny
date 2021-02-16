@@ -1368,12 +1368,12 @@ class SearchMyPersonView(ActivateUserCheck, View):
 
 class PeopleRankView(View):
     def get(self, request):
-        # for i in Person.objects.all():
-        #     rating_sum = sum([j.rating.rating for j in i.personrating_set.all()])
-        #     rating_quant = len([j.rating.rating for j in i.personrating_set.all()])
-        #     if rating_quant != 0:
-        #         i.person_rating = round(rating_sum/rating_quant, 2)
-        #         i.save()
+        for i in Person.objects.all():
+            rating_sum = sum([j.rating.rating for j in i.personrating_set.all()])
+            rating_quant = len([j.rating.rating for j in i.personrating_set.all()])
+            if rating_quant != 0:
+                i.person_rating = round(rating_sum/rating_quant, 2)
+                i.save()
         people = Person.objects.filter(person_rating__isnull=False).order_by("person_rating").reverse()
 
         paginator = Paginator(people, 10)
