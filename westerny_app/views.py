@@ -705,7 +705,7 @@ class SearchMyMovieView(ActivateUserCheck, View):
 
 class MoviesRankView(View):
     def get(self, request):
-        movies = Movie.objects.filter(movie_accepted_by__isnull=False, movie_rating__isnull=False).order_by("title").order_by("movie_rating").reverse()
+        movies = Movie.objects.filter(movie_accepted_by__isnull=False, movie_rating__isnull=False).order_by("-movie_rating", "title")
 
         paginator = Paginator(movies, 10)
         page = request.GET.get("page")
@@ -1369,7 +1369,7 @@ class SearchMyPersonView(ActivateUserCheck, View):
 
 class PeopleRankView(View):
     def get(self, request):
-        people = Person.objects.filter(person_rating__isnull=False).order_by("last_name").order_by("person_rating").reverse()
+        people = Person.objects.filter(person_rating__isnull=False, person_accepted_by__isnull=False).order_by("-person_rating", "last_name")
 
         paginator = Paginator(people, 10)
         page = request.GET.get("page")
