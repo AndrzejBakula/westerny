@@ -12,7 +12,6 @@
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'people' %}">LUDZIE</a>
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'genres' %}">GATUNKI</a>
         <a class="btn btn-dark btn-lg guzik" href="{% url 'search-movie' %}"> Szukaj Westernu</a>
-        <a class="btn btn-light btn-lg guzik2" href="{% url 'movies-rank' %}"> Ranking</a>
         {% if user.is_staff %}
         <a class="btn btn-success btn-lg guzik" href="{% url 'add-movie' %}"> Dodaj Western</a>
         {% endif %}
@@ -43,7 +42,7 @@
     {% for movie in movies %}
     <div class="d-flex flex-row justify-content-center align-items-center">
         {% if movie.movie_accepted_by %}
-        <a  class="btn btn-link align-self-center" href="{% url 'movie-details' movie.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{movie.year}} - {{movie.title}}</a>
+        <a  class="btn btn-link align-self-center" href="{% url 'movie-details' movie.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{movie.movie_rating}} - {{movie.title}}</a>
         {% endif %}
     </div>
     {% endfor %}

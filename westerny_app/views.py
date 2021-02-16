@@ -703,6 +703,26 @@ class SearchMyMovieView(ActivateUserCheck, View):
             return render(request, "search_my_movie.html", ctx)
 
 
+class MoviesRankView(View):
+    def get(self, request):
+        for i in Movie.objects.all():
+            rating_sum = sum([j.rating.rating for j in i.movierating_set.all()])
+            rating_quant = len([j.rating.rating for j in i.movierating_set.all()])
+            if rating_quant != 0:
+                i.movie_rating = round(rating_sum/rating_quant, 2)
+                i.save()
+        movies = Movie.objects.filter(movie_accepted_by__isnull=False, movie_rating__isnull=False).order_by("movie_rating").reverse()
+
+        paginator = Paginator(movies, 10)
+        page = request.GET.get("page")
+        movies = paginator.get_page(page)
+
+        ctx = {
+            "movies": movies
+        }
+        return render(request, "movies_rank.html", ctx)
+
+
 class AddMovieView(ActivateUserCheck, View):
     def get(self, request):
         form = AddMovieForm()
@@ -1348,6 +1368,12 @@ class SearchMyPersonView(ActivateUserCheck, View):
 
 class PeopleRankView(View):
     def get(self, request):
+        # for i in Person.objects.all():
+        #     rating_sum = sum([j.rating.rating for j in i.personrating_set.all()])
+        #     rating_quant = len([j.rating.rating for j in i.personrating_set.all()])
+        #     if rating_quant != 0:
+        #         i.person_rating = round(rating_sum/rating_quant, 2)
+        #         i.save()
         people = Person.objects.filter(person_rating__isnull=False).order_by("person_rating").reverse()
 
         paginator = Paginator(people, 10)
