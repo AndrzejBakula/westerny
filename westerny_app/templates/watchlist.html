@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %} Moja Lista {% endblock %}
+
+{% block content %}
+
+<div class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;">
+    <div class="d-flex flex-row justify-content-around flex-wrap">
+        <a class="btn btn-primary btn-lg guzik" href="{% url 'index' %}">STRONA GŁÓWNA</a>
+    </div>
+    <div class="d-flex flex-row justify-content-around flex-wrap">
+        {% if my_movies.count > 0 %}
+        <a class="btn btn-link btn-lg guzik" href="{% url 'my-movies' %}">Dodane Westerny</a>
+        {% endif %}
+        {% if my_people.count > 0 %}
+        <a class="btn btn-link btn-lg guzik" href="{% url 'my-people' %}">Dodani Ludzie</a>
+        {% endif %}
+        {% if my_genres.count > 0 %}
+        <a class="btn btn-link btn-lg guzik" href="{% url 'my-genres' %}">Dodane Gatunki</a>
+        {% endif %}
+    </div>
+
+    {% if message %}
+    <hr>
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h3 class="display-5 align-self-center header">
+            {{ message }}
+        </h3>
+    </div>
+    {% endif %}
+
+    {% if not message %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h2 class="display-5 align-self-center header2"><i><u>Moja Lista</u></i></h2>
+    </div>
+
+    {% for movie in movies %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <a  class="btn btn-link align-self-center" href="{% url 'movie-details' movie.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{movie.year}} - {{movie.title}}</a>
+    </div>
+    {% endfor %}
+
+    <!-- Pagination: -->
+    <hr>
+    <nav aria-label="Page navigation example">
+    <ul class="pagination">
+        {% if movies.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page=1">pierwsza</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{ movies.previous_page_number }}">poprzednia</a></li>
+        {% endif %}
+        {% for num in movies.paginator.page_range %}
+        {% if movies.number == num %}
+            <li class="page-item"><a class="page-link" href="?page={{ movies.page_number }}"><strong>{{ num }}/{{ movies.paginator.num_pages }}</strong></a></li>
+        {% endif %}
+        {% endfor %}
+        {% if movies.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ movies.next_page_number }}">następna</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{ movies.paginator.num_pages }}">ostatnia</a></li>
+        {% endif %}
+    </ul>
+    </nav>
+    {% endif %}
+
+</div>
+
+{% endblock %}

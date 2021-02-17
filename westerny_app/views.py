@@ -1901,3 +1901,46 @@ class DeleteActorMovieView(ActivateUserCheck, View):
         personmovie.delete()
         message = "Aktor został usunięty z filmu."
         return redirect(f"/movie_details/{movie_id}")
+
+
+class AddWatchlistView(ActivateUserCheck, View):
+    def get(self, request, movie_id):
+        movie = Movie.objects.get(id=movie_id)
+        user = User.objects.get(pk=int(request.session.get("user_id")))
+        if not user in movie.watchlist.all():
+            movie.watchlist.add(user)
+            movie.save()
+        return redirect(f"/movie_details/{movie_id}")
+
+
+class RemoveWatchlistView(ActivateUserCheck, View):
+    def get(self, request, movie_id):
+        movie = Movie.objects.get(id=movie_id)
+        user = User.objects.get(pk=int(request.session.get("user_id")))
+        if user in movie.watchlist.all():
+            movie.watchlist.remove(user)
+            movie.save()
+        return redirect(f"/movie_details/{movie_id}")
+
+
+class WatchlistView(ActivateUserCheck, View):
+    def get(self, request):
+        user = None
+        if request.session.get("user_id"):
+            user = User.objects.get(pk=int(request.session.get("user_id")))
+        movies = Movie.objects.filter(movie_accepted_by__isnull=False, watchlist=user).order_by("year")
+        my_people = Person.objects.filter(person_added_by=user, person_accepted_by__isnull=False)
+        my_genres = Genre.objects.filter(genre_added_by=user, genre_accepted_by__isnull=False)
+        my_movies = Movie.objects.filter(movie_added_by=user, movie_accepted_by__isnull=False)
+
+        paginator = Paginator(movies, 10)
+        page = request.GET.get("page")
+        movies = paginator.get_page(page)
+
+        ctx = {
+            "movies": movies,
+            "my_people": my_people,
+            "my_genres": my_genres,
+            "my_movies": my_movies
+        }
+        return render(request, "watchlist.html", ctx)

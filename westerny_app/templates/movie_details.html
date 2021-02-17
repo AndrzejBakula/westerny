@@ -14,6 +14,9 @@
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'genres' %}">GATUNKI</a>
         <a class="btn btn-warning btn-lg guzik2" href="{% url 'people' %}">LUDZIE</a>
 
+        <!-- {% if user.is_active %}
+        <a class="btn btn-light btn-lg guzik2" href="{% url 'watchlist' %}">Moja Lista</a>
+        {% endif %} -->
         {% if user.is_superuser or user.is_staff and not movie.movie_added_by.is_superuser or movie.movie_added_by == user and not movie.movie_edited_by.is_staff %}
         <a class="btn btn-success btn-lg guzik" href="{% url 'edit-movie' movie.id %}"> Edytuj Western</a>
         {% endif %}
@@ -27,7 +30,18 @@
         <a class="btn btn-info btn-lg guzik" href="{% url 'give-edit-movie' movie.id movie.movie_added_by.id %}"> Daj edycję</a>
         {% endif %}
     </div>
-    <hr>
+
+    {% if user.is_active and not user in movie.watchlist.all %}
+    <div class="d-flex flex-row justify-content-center flex-wrap">
+        <a class="btn btn-light btn-sm guzik3" href="{% url 'add-watchlist' movie.id %}">Dodaj do mojej listy</a>
+    </div>
+    {% endif %}
+    {% if user.is_active and user in movie.watchlist.all %}
+    <div class="d-flex flex-row justify-content-center flex-wrap">
+        <a class="btn btn-dark btn-sm guzik4" href="{% url 'remove-watchlist' movie.id %}">Usuń z mojej listy</a>
+    </div>
+    {% endif %}
+
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h2 class="display-5 align-self-center header2" style="margin-left: 3vh; margin-right: 3vh;">{{ movie.title }}</h2>
     </div>
