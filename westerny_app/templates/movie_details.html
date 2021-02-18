@@ -33,12 +33,12 @@
 
     {% if user.is_active and not user in movie.watchlist.all %}
     <div class="d-flex flex-row justify-content-center flex-wrap">
-        <a class="btn btn-light btn-sm guzik3" href="{% url 'add-watchlist' movie.id %}">Dodaj do mojej listy</a>
+        <a class="btn btn-light btn-sm guzik3" href="{% url 'add-watchlist' movie.id %}">Dodaj do watchlisty</a>
     </div>
     {% endif %}
     {% if user.is_active and user in movie.watchlist.all %}
     <div class="d-flex flex-row justify-content-center flex-wrap">
-        <a class="btn btn-dark btn-sm guzik4" href="{% url 'remove-watchlist' movie.id %}">Usuń z mojej listy</a>
+        <a class="btn btn-dark btn-sm guzik4" href="{% url 'remove-watchlist' movie.id %}">Usuń z watchlisty</a>
     </div>
     {% endif %}
 

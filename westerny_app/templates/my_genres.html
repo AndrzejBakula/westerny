@@ -10,10 +10,10 @@
     </div>
     <div class="d-flex flex-row justify-content-around flex-wrap">
         {% if my_movies.count > 0 %}
-        <a class="btn btn-link btn-lg guzik" href="{% url 'my-movies' %}">Dodane Westerny</a>
+        <a class="btn btn-link btn-lg guzik" href="{% url 'my-movies' %}">Moje Westerny</a>
         {% endif %}
         {% if my_people.count > 0 %}
-        <a class="btn btn-link btn-lg guzik" href="{% url 'my-people' %}">Dodani Ludzie</a>
+        <a class="btn btn-link btn-lg guzik" href="{% url 'my-people' %}">Moi Ludzie</a>
         {% endif %}
         {% if user.is_superuser %}
         <a class="btn btn-success btn-lg guzik" href="{% url 'add-genre' %}"> Dodaj Gatunek</a>
