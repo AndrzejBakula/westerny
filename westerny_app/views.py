@@ -118,6 +118,7 @@ class IndexView(View):
         counter.save()
         last_movies = [i for i in Movie.objects.all().order_by("-id") if i.movie_accepted_by != None][:4]
         last_people = [i for i in Person.objects.all().order_by("-id") if i.person_accepted_by != None][:4]
+        last_articles = [i for i in Article.objects.all().order_by("-id") if i.is_accepted == True][:2]
         waiting_movies = Movie.objects.filter(movie_accepted_by=None)
         waiting_people = Person.objects.filter(person_accepted_by=None)
         waiting_articles = Article.objects.filter(is_accepted=False)
@@ -129,6 +130,7 @@ class IndexView(View):
                 "promotion_asks": promotion_asks,
                 "last_movies": last_movies,
                 "last_people": last_people,
+                "last_articles": last_articles,
                 "waiting_movies": waiting_movies,
                 "waiting_people": waiting_people,
                 "waiting_articles": waiting_articles
@@ -136,7 +138,8 @@ class IndexView(View):
             return render(request, "index.html", ctx)
         ctx = {
             "last_movies": last_movies,
-            "last_people": last_people
+            "last_people": last_people,
+            "last_articles": last_articles
         }
         return render(request, "index.html", ctx)
 

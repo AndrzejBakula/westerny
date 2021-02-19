@@ -50,5 +50,18 @@
     </div>
     {% endfor %}
 
+    {% if user.is_superuser %}
+    <hr>
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h3 class="display-5 align-self-center header2"><i><u>Najnowsze Linki</u></i></h3>
+    </div>
+    {% for article in last_articles %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <a  class="btn btn-link align-self-center" href="{{ article.link }}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ article.article_name }}</a>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+
 
 {% endblock %}
