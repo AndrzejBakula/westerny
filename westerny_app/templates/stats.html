@@ -67,6 +67,24 @@
         <h4 class="display-5 align-self-center header">
             Liczba ocen: {{ ratings }}
         </h4>
+
+        {% if user.is_superuser %}
+        <hr>
+        <div class="d-flex flex-row justify-content-center align-items-center">
+            <h3 class="display-5 align-self-center header2"><i><u>Najnowsze oceny</u></i></h3>
+        </div>
+        {% for rating in last_movie_ratings %}
+        <div class="d-flex flex-row justify-content-center align-items-center">
+            <a  class="btn btn-link align-self-center" href="{% url 'movie-details' rating.movie.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{rating.rating}} - {{rating.movie.title}}</a>
+        </div>
+        {% endfor %}
+        {% for rating in last_person_ratings %}
+        <div class="d-flex flex-row justify-content-center align-items-center">
+            <a  class="btn btn-link align-self-center" href="{% url 'person-details' rating.person.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{rating.rating}} - {{rating.person}}</a>
+        </div>
+        {% endfor %}
+        {% endif %}
+
     </div>
 
 

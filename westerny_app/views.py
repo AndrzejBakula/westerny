@@ -574,6 +574,8 @@ class StatsView(View):
         movie_ratings = len([i for i in MovieRating.objects.all()])
         people_ratings = len([i for i in PersonRating.objects.all()])
         ratings = movie_ratings + people_ratings
+        last_movie_ratings = [i for i in MovieRating.objects.all().order_by("-id")][:2]
+        last_person_ratings = [i for i in PersonRating.objects.all().order_by("-id")][:2]
 
         ctx = {
             "civils": civils,
@@ -591,7 +593,9 @@ class StatsView(View):
             "waiting_movies": waiting_movies,
             "waiting_people": waiting_people,
             "waiting_articles": waiting_articles,
-            "ratings": ratings
+            "ratings": ratings,
+            "last_person_ratings": last_person_ratings,
+            "last_movie_ratings": last_movie_ratings
         }
         return render(request, "stats.html", ctx)
 
