@@ -75,12 +75,12 @@
         </div>
         {% for rating in last_movie_ratings %}
         <div class="d-flex flex-row justify-content-center align-items-center">
-            <a  class="btn btn-link align-self-center" href="{% url 'movie-details' rating.movie.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{rating.movie.title}} - {{rating.rating}}</a>
+            <a  class="btn btn-link align-self-center" href="{% url 'movie-details' rating.movie.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{rating.movie.title}} - {{rating.rating}} ({{rating.user.username}})</a>
         </div>
         {% endfor %}
         {% for rating in last_person_ratings %}
         <div class="d-flex flex-row justify-content-center align-items-center">
-            <a  class="btn btn-link align-self-center" href="{% url 'person-details' rating.person.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{rating.person}} - {{rating.rating}}</a>
+            <a  class="btn btn-link align-self-center" href="{% url 'person-details' rating.person.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{rating.person}} - {{rating.rating}} ({{rating.user.username}})</a>
         </div>
         {% endfor %}
         {% endif %}
