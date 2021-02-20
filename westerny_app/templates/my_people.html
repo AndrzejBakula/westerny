@@ -15,6 +15,13 @@
         {% if my_genres.count > 0 %}
         <a class="btn btn-link btn-lg guzik" href="{% url 'my-genres' %}">Moje Gatunki</a>
         {% endif %}
+        <a class="btn btn-light btn-sm guzik2" href="{% url 'watchlist' %}">Watchlista</a>
+        {% if rated_movies.count > 0 %}
+        <a class="btn btn-link btn-sm guzik" href="{% url 'rated-movies' %}">Oceny Westernów</a>
+        {% endif %}
+        {% if rated_people.count > 0 %}
+        <a class="btn btn-link btn-sm guzik" href="{% url 'rated-people' %}">Oceny Ludzi</a>
+        {% endif %}
         <a class="btn btn-dark btn-lg guzik" href="{% url 'search-my-person' %}"> Szukaj Osoby</a>
         {% if user.is_staff %}
         <a class="btn btn-success btn-lg guzik" href="{% url 'add-person' %}"> Dodaj Osobę</a>

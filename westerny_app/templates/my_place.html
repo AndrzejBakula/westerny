@@ -18,8 +18,12 @@
         {% if my_genres.count > 0 %}
         <a class="btn btn-link btn-sm guzik" href="{% url 'my-genres' %}">Moje Gatunki</a>
         {% endif %}
-        {% if user.is_active %}
         <a class="btn btn-light btn-sm guzik2" href="{% url 'watchlist' %}">Watchlista</a>
+        {% if rated_movies.count > 0 %}
+        <a class="btn btn-link btn-sm guzik" href="{% url 'rated-movies' %}">Oceny Westernów</a>
+        {% endif %}
+        {% if rated_people.count > 0 %}
+        <a class="btn btn-link btn-sm guzik" href="{% url 'rated-people' %}">Oceny Ludzi</a>
         {% endif %}
     </div>
 

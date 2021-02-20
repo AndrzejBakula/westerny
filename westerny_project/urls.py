@@ -34,7 +34,7 @@ from westerny_app.views import UserDetailsView, GivePromotionView, PromotionAsks
 from westerny_app.views import RequestPasswordResetEmail, CompletePasswordReset, AcceptArticlePersonView, AcceptArticleMovieView
 from westerny_app.views import GiveEditPersonView, GiveEditMovieView, MyMoviesView, SearchMyMovieView, MyPeopleView
 from westerny_app.views import SearchMyPersonView, MyGenresView, PeopleRankView, MoviesRankView
-from westerny_app.views import AddWatchlistView, RemoveWatchlistView, WatchlistView
+from westerny_app.views import AddWatchlistView, RemoveWatchlistView, WatchlistView, RatedMoviesView, RatedPeopleView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -49,6 +49,8 @@ urlpatterns = [
     path('my_movies/', MyMoviesView.as_view(), name='my-movies'),
     path('my_people/', MyPeopleView.as_view(), name='my-people'),
     path('my_genres/', MyGenresView.as_view(), name='my-genres'),
+    path('rated_movies/', RatedMoviesView.as_view(), name='rated-movies'),
+    path('rated_people/', RatedPeopleView.as_view(), name='rated-people'),
     path('user_details/<int:id>', UserDetailsView.as_view(), name="user-details"),
     path('give_promotion/<int:id>', GivePromotionView.as_view(), name="give-promotion"),
     path('promotion_asks/', PromotionAsksView.as_view(), name="promotion-asks"),

@@ -451,6 +451,9 @@ class MyPlaceView(ActivateUserCheck, View):
         my_people = Person.objects.filter(person_added_by=user, person_accepted_by__isnull=False)
         my_genres = Genre.objects.filter(genre_added_by=user, genre_accepted_by__isnull=False)
 
+        rated_movies = MovieRating.objects.filter(user=user)
+        rated_people = PersonRating.objects.filter(user=user)
+
         ctx = {
             "westerns": added_westerns,
             "people": added_people,
@@ -472,7 +475,9 @@ class MyPlaceView(ActivateUserCheck, View):
             "my_people": my_people,
             "my_genres": my_genres,
             "deleted": deleted,
-            "rejected": rejected
+            "rejected": rejected,
+            "rated_movies": rated_movies,
+            "rated_people": rated_people
         }
         return render(request, "my_place.html", ctx)
     
@@ -482,6 +487,52 @@ class MyPlaceView(ActivateUserCheck, View):
         userrank.promotion_ask = True
         userrank.save()
         return redirect("/my_place")
+
+
+class RatedMoviesView(ActivateUserCheck, View):
+    def get(self, request):
+        user = User.objects.get(pk=request.session.get("user_id"))
+        rated_movies = MovieRating.objects.filter(user=user).order_by("rating__rating").reverse()
+        rated_people = PersonRating.objects.filter(user=user)
+        my_movies = Movie.objects.filter(movie_added_by=user, movie_accepted_by__isnull=False)
+        my_people = Person.objects.filter(person_added_by=user, person_accepted_by__isnull=False)
+        my_genres = Genre.objects.filter(genre_added_by=user, genre_accepted_by__isnull=False)
+
+        paginator = Paginator(rated_movies, 10)
+        page = request.GET.get("page")
+        rated_movies = paginator.get_page(page)
+
+        ctx = {
+            "rated_movies": rated_movies,
+            "rated_people": rated_people,
+            "my_movies": my_movies,
+            "my_people": my_people,
+            "my_genres": my_genres
+        }
+        return render(request, "rated_movies.html", ctx)
+
+
+class RatedPeopleView(ActivateUserCheck, View):
+    def get(self, request):
+        user = User.objects.get(pk=request.session.get("user_id"))
+        rated_people = PersonRating.objects.filter(user=user).order_by("rating__rating").reverse()
+        rated_movies = MovieRating.objects.filter(user=user)
+        my_movies = Movie.objects.filter(movie_added_by=user, movie_accepted_by__isnull=False)
+        my_people = Person.objects.filter(person_added_by=user, person_accepted_by__isnull=False)
+        my_genres = Genre.objects.filter(genre_added_by=user, genre_accepted_by__isnull=False)
+
+        paginator = Paginator(rated_people, 10)
+        page = request.GET.get("page")
+        rated_people = paginator.get_page(page)
+
+        ctx = {
+            "rated_movies": rated_movies,
+            "rated_people": rated_people,
+            "my_movies": my_movies,
+            "my_people": my_people,
+            "my_genres": my_genres
+        }
+        return render(request, "rated_people.html", ctx)
 
 
 class UserDetailsView(View):
@@ -633,6 +684,8 @@ class MyMoviesView(ActivateUserCheck, View):
         movies = Movie.objects.filter(movie_accepted_by__isnull=False, movie_added_by=user).order_by("year")
         my_people = Person.objects.filter(person_added_by=user, person_accepted_by__isnull=False)
         my_genres = Genre.objects.filter(genre_added_by=user, genre_accepted_by__isnull=False)
+        rated_movies = MovieRating.objects.filter(user=user)
+        rated_people = PersonRating.objects.filter(user=user)
 
         paginator = Paginator(movies, 10)
         page = request.GET.get("page")
@@ -641,7 +694,9 @@ class MyMoviesView(ActivateUserCheck, View):
         ctx = {
             "movies": movies,
             "my_people": my_people,
-            "my_genres": my_genres
+            "my_genres": my_genres,
+            "rated_movies": rated_movies,
+            "rated_people": rated_people
         }
         return render(request, "my_movies.html", ctx)
     
@@ -1041,6 +1096,8 @@ class MyGenresView(StaffMemberCheck, View):
         my_movies = Movie.objects.filter(movie_accepted_by__isnull=False, movie_added_by=user).order_by("year")
         my_people = Person.objects.filter(person_added_by=user, person_accepted_by__isnull=False)
         genres = Genre.objects.filter(genre_added_by=user, genre_accepted_by__isnull=False)
+        rated_movies = MovieRating.objects.filter(user=user)
+        rated_people = PersonRating.objects.filter(user=user)
 
         paginator = Paginator(genres, 10)
         page = request.GET.get("page")
@@ -1049,7 +1106,9 @@ class MyGenresView(StaffMemberCheck, View):
         ctx = {
             "genres": genres,
             "my_movies": my_movies,
-            "my_people": my_people
+            "my_people": my_people,
+            "rated_movies": rated_movies,
+            "rated_people": rated_people
         }
         return render(request, "my_genres.html", ctx)
 
@@ -1252,6 +1311,8 @@ class MyPeopleView(ActivateUserCheck, View):
         people = Person.objects.filter(person_added_by=user).order_by("last_name")
         my_movies = Movie.objects.filter(movie_added_by=user, movie_accepted_by__isnull=False)
         my_genres = Genre.objects.filter(genre_added_by=user, genre_accepted_by__isnull=False)
+        rated_movies = MovieRating.objects.filter(user=user)
+        rated_people = PersonRating.objects.filter(user=user)
 
         paginator = Paginator(people, 10)
         page = request.GET.get("page")
@@ -1260,7 +1321,9 @@ class MyPeopleView(ActivateUserCheck, View):
         ctx = {
             "people": people,
             "my_movies": my_movies,
-            "my_genres": my_genres
+            "my_genres": my_genres,
+            "rated_movies": rated_movies,
+            "rated_people": rated_people
         }
         return render(request, "my_people.html", ctx)
 
@@ -1941,6 +2004,8 @@ class WatchlistView(ActivateUserCheck, View):
         my_people = Person.objects.filter(person_added_by=user, person_accepted_by__isnull=False)
         my_genres = Genre.objects.filter(genre_added_by=user, genre_accepted_by__isnull=False)
         my_movies = Movie.objects.filter(movie_added_by=user, movie_accepted_by__isnull=False)
+        rated_movies = MovieRating.objects.filter(user=user)
+        rated_people = PersonRating.objects.filter(user=user)
 
         paginator = Paginator(movies, 10)
         page = request.GET.get("page")
@@ -1950,6 +2015,8 @@ class WatchlistView(ActivateUserCheck, View):
             "movies": movies,
             "my_people": my_people,
             "my_genres": my_genres,
-            "my_movies": my_movies
+            "my_movies": my_movies,
+            "rated_movies": rated_movies,
+            "rated_people": rated_people
         }
         return render(request, "watchlist.html", ctx)
