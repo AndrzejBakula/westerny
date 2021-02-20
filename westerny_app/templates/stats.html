@@ -21,9 +21,11 @@
     <h4 class="display-5 align-self-center header">
         Liczba odwiedzin fortu: {{ counter.counter }}
     </h4>
+    {% if user.is_staff %}
     <h5 class="display-5 align-self-center header">
         Najnowszy rekrut: {{ newest_soldier.username }} {% if user.is_superuser %} ({{newest_soldier.email}}) {% endif %}
     </h5>
+    {% endif %}
     <hr>
     {% if waiting_movies.count > 0 or waiting_people.count > 0 or waiting_articles.count > 0 %}
     <h4 class="display-5 align-self-center header">
