@@ -31,7 +31,7 @@
     {% for movie in movies %}
     <div class="d-flex flex-row justify-content-center align-items-center">
         {% if movie.movie_accepted_by %}
-        <a  class="btn btn-link align-self-center" href="{% url 'movie-details' movie.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{forloop.counter|add:movies.start_index}}. {{movie.title}} - {{movie.movie_rating}} ({{ movie.movierating_set.all.count }} {% if movie.movierating_set.all.count == 1 %}głos{% elif movie.movierating_set.all.count > 1 and  4 >= movie.movierating_set.all.count %}głosy{% else %}głosów{% endif %})</a>
+        <a  class="btn btn-link align-self-center" href="{% url 'movie-details' movie.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{forloop.counter0|add:movies.start_index}}. {{movie.title}} - {{movie.movie_rating}} ({{ movie.movierating_set.all.count }} {% if movie.movierating_set.all.count == 1 %}głos{% elif movie.movierating_set.all.count > 1 and  4 >= movie.movierating_set.all.count %}głosy{% else %}głosów{% endif %})</a>
         {% endif %}
     </div>
     {% endfor %}
