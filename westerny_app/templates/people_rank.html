@@ -30,7 +30,7 @@
 
     {% for person in people %}
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <a  class="btn btn-link align-self-center" href="{% url 'person-details' person.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{ person.person_rating }} - {{ person }} ({{ person.personrating_set.all.count }} {% if person.personrating_set.all.count == 1 %}głos{% elif person.personrating_set.all.count > 1 and  4 >= person.personrating_set.all.count %}głosy{% else %}głosów{% endif %})</a>
+        <a  class="btn btn-link align-self-center" href="{% url 'person-details' person.id %}" style="font-family: Georgia, serif; font-size: x-large; color: white; text-shadow: 2px 2px 1px black">{{forloop.counter|add:people.start_index}}. {{ person }} - {{ person.person_rating }} ({{ person.personrating_set.all.count }} {% if person.personrating_set.all.count == 1 %}głos{% elif person.personrating_set.all.count > 1 and  4 >= person.personrating_set.all.count %}głosy{% else %}głosów{% endif %})</a>
     </div>
     {% endfor %}
 
