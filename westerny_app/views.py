@@ -492,7 +492,7 @@ class MyPlaceView(ActivateUserCheck, View):
 class RatedMoviesView(ActivateUserCheck, View):
     def get(self, request):
         user = User.objects.get(pk=request.session.get("user_id"))
-        rated_movies = MovieRating.objects.filter(user=user).order_by("rating__rating").reverse()
+        rated_movies = MovieRating.objects.filter(user=user).order_by("-rating__rating", "movie__year")
         rated_people = PersonRating.objects.filter(user=user)
         my_movies = Movie.objects.filter(movie_added_by=user, movie_accepted_by__isnull=False)
         my_people = Person.objects.filter(person_added_by=user, person_accepted_by__isnull=False)
@@ -515,7 +515,7 @@ class RatedMoviesView(ActivateUserCheck, View):
 class RatedPeopleView(ActivateUserCheck, View):
     def get(self, request):
         user = User.objects.get(pk=request.session.get("user_id"))
-        rated_people = PersonRating.objects.filter(user=user).order_by("rating__rating").reverse()
+        rated_people = PersonRating.objects.filter(user=user).order_by("rating__rating", "person__last_name").reverse()
         rated_movies = MovieRating.objects.filter(user=user)
         my_movies = Movie.objects.filter(movie_added_by=user, movie_accepted_by__isnull=False)
         my_people = Person.objects.filter(person_added_by=user, person_accepted_by__isnull=False)
