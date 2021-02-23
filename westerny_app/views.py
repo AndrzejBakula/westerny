@@ -14,6 +14,7 @@ from datetime import timezone, date, timedelta
 from .utils import token_generator
 from django.views import View
 from django.contrib.auth.models import User
+from django.db.models import Count
 from westerny_project.settings import PROTOCOLE
 from westerny_app.models import Movie, Genre, Person, Article, Rank, UserRank, PersonRating, Rating, MovieRating
 from westerny_app.models import PersonMovie, Counter, Deleted
@@ -769,7 +770,7 @@ class SearchMyMovieView(ActivateUserCheck, View):
 
 class MoviesRankView(View):
     def get(self, request):
-        movies = Movie.objects.filter(movie_accepted_by__isnull=False, movie_rating__isnull=False).order_by("-movie_rating", "title")
+        movies = Movie.objects.filter(movie_accepted_by__isnull=False, movie_rating__isnull=False).annotate(num_movies=Count("movierating")).order_by("-movie_rating", "-num_movies", "title")
 
         paginator = Paginator(movies, 10)
         page = request.GET.get("page")
@@ -1441,7 +1442,7 @@ class SearchMyPersonView(ActivateUserCheck, View):
 
 class PeopleRankView(View):
     def get(self, request):
-        people = Person.objects.filter(person_rating__isnull=False, person_accepted_by__isnull=False).order_by("-person_rating", "last_name")
+        people = Person.objects.filter(person_rating__isnull=False, person_accepted_by__isnull=False).annotate(num_rating=Count("personrating")).order_by("-person_rating","-num_rating", "last_name")
 
         paginator = Paginator(people, 10)
         page = request.GET.get("page")
