@@ -1350,6 +1350,29 @@ class PeopleView(View):
         return render(request, "people.html", ctx)
 
 
+class PeopleNewestView(View):
+    def get(self, request):
+        user = None
+        if request.session.get("user_id"):
+            user = User.objects.get(pk=int(request.session.get("user_id")))
+        people = Person.objects.all().order_by("-id")
+        waiting_people = Person.objects.filter(person_accepted_by=None)
+        waiting_people_user = Person.objects.filter(person_added_by=user, person_accepted_by=None)
+        waiting_articles = len([i for i in Article.objects.filter(is_accepted=False) if len(i.person_set.all()) > 0])
+
+        paginator = Paginator(people, 10)
+        page = request.GET.get("page")
+        people = paginator.get_page(page)
+
+        ctx = {
+            "people": people,
+            "waiting_people": waiting_people,
+            "waiting_people_user": waiting_people_user,
+            "waiting_articles": waiting_articles
+        }
+        return render(request, "people_newest.html", ctx)
+
+
 class MyPeopleView(ActivateUserCheck, View):
     def get(self, request):
         user = None
