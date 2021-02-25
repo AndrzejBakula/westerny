@@ -677,6 +677,52 @@ class MoviesView(View):
         return render(request, "movies.html", ctx)
 
 
+class MoviesView(View):
+    def get(self, request):
+        user = None
+        if request.session.get("user_id"):
+            user = User.objects.get(pk=int(request.session.get("user_id")))
+        movies = Movie.objects.filter(movie_accepted_by__isnull=False).order_by("year")
+        waiting_movies = len([i for i in Movie.objects.filter(movie_accepted_by=None)])
+        waiting_movies_user = len([i for i in Movie.objects.filter(movie_accepted_by=None) if i.movie_added_by == user])
+        waiting_articles = len([i for i in Article.objects.filter(is_accepted=False) if len(i.movie_set.all()) > 0])
+
+        paginator = Paginator(movies, 10)
+        page = request.GET.get("page")
+        movies = paginator.get_page(page)
+
+        ctx = {
+            "movies": movies,
+            "waiting_movies": waiting_movies,
+            "waiting_movies_user": waiting_movies_user,
+            "waiting_articles": waiting_articles
+        }
+        return render(request, "movies.html", ctx)
+
+
+class MoviesNewestView(View):
+    def get(self, request):
+        user = None
+        if request.session.get("user_id"):
+            user = User.objects.get(pk=int(request.session.get("user_id")))
+        movies = Movie.objects.filter(movie_accepted_by__isnull=False).order_by("-id")
+        waiting_movies = len([i for i in Movie.objects.filter(movie_accepted_by=None)])
+        waiting_movies_user = len([i for i in Movie.objects.filter(movie_accepted_by=None) if i.movie_added_by == user])
+        waiting_articles = len([i for i in Article.objects.filter(is_accepted=False) if len(i.movie_set.all()) > 0])
+
+        paginator = Paginator(movies, 10)
+        page = request.GET.get("page")
+        movies = paginator.get_page(page)
+
+        ctx = {
+            "movies": movies,
+            "waiting_movies": waiting_movies,
+            "waiting_movies_user": waiting_movies_user,
+            "waiting_articles": waiting_articles
+        }
+        return render(request, "movies_newest.html", ctx)
+
+
 class MyMoviesView(ActivateUserCheck, View):
     def get(self, request):
         user = None
