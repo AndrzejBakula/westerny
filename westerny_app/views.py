@@ -626,8 +626,8 @@ class StatsView(View):
         movie_ratings = len([i for i in MovieRating.objects.all()])
         people_ratings = len([i for i in PersonRating.objects.all()])
         ratings = movie_ratings + people_ratings
-        last_movie_ratings = [i for i in MovieRating.objects.all().order_by("-id")][:2]
-        last_person_ratings = [i for i in PersonRating.objects.all().order_by("-id")][:2]
+        last_movie_ratings = [i for i in MovieRating.objects.all().order_by("-id")][:3]
+        last_person_ratings = [i for i in PersonRating.objects.all().order_by("-id")][:3]
         newest_soldier = User.objects.all().order_by("-id")[0]
 
         ctx = {

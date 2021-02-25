@@ -49,9 +49,7 @@
             Liczba dowódców: {{ commanders.count }}
         </h4>
         {% if user.is_staff %}
-        <h5 class="display-5 align-self-center header">
-            Najnowszy rekrut: {{ newest_soldier.username }} {% if user.is_superuser %} ({{newest_soldier.email}}) {% endif %}
-        </h5>
+            <a  class="btn btn-link align-self-center" href="{% url 'user-details' newest_soldier.id %}" style="font-family: Georgia, serif; font-size: large; color: white; text-shadow: 2px 2px 1px black">Najnowszy rekrut: {{ newest_soldier.username }} {% if user.is_superuser %} ({{newest_soldier.email}}) {% endif %}</a>
         {% endif %}
         <hr>
         <h3 class="display-5 align-self-center header">
