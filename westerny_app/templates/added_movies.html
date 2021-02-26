@@ -9,6 +9,7 @@
         <a class="btn btn-primary btn-lg guzik" href="{% url 'index' %}">STRONA GŁÓWNA</a>
     </div>
     <div class="d-flex flex-row justify-content-around flex-wrap">
+        <a class="btn btn-link btn-lg guzik" href="{% url 'user-details' soldier.id %}">Towarzysz Broni</a>
         {% if my_people.count > 0 %}
         <a class="btn btn-link btn-lg guzik" href="{% url 'added-people' soldier.id %}">Dodani Ludzie</a>
         {% endif %}
