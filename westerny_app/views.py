@@ -540,14 +540,14 @@ class UserDetailsView(View):
     def get(self, request, id):
         soldier = User.objects.get(pk=id)
         check_rank(soldier)
-        westerns = Movie.objects.filter(movie_added_by=soldier)
-        added_westerns = len([i for i in westerns if i.movie_accepted_by])
-        people = Person.objects.filter(person_added_by=soldier)
-        added_people = len([i for i in people if i.person_accepted_by])
-        genres = Genre.objects.filter(genre_added_by=soldier)
-        added_genres = len([i for i in genres if i.genre_accepted_by])
+        westerns = Movie.objects.filter(movie_added_by=soldier, movie_accepted_by__isnull=False)
+        westerns_count = len([i for i in westerns if i.movie_accepted_by])
+        people = Person.objects.filter(person_added_by=soldier, person_accepted_by__isnull=False)
+        people_count = len([i for i in people if i.person_accepted_by])
+        genres = Genre.objects.filter(genre_added_by=soldier, genre_accepted_by__isnull=False)
+        genres_count = len([i for i in genres if i.genre_accepted_by])
         links = len(Article.objects.filter(article_added_by=soldier))
-        notes = added_westerns + added_people + added_genres + links
+        notes = westerns_count + people_count + genres_count + links
         rejected = Deleted.objects.filter(added_by=soldier)
 
         accepted_westerns = len(Movie.objects.filter(movie_accepted_by=soldier))
@@ -560,9 +560,9 @@ class UserDetailsView(View):
 
         ctx = {
             "soldier": soldier,
-            "westerns": added_westerns,
-            "people": added_people,
-            "genres": added_genres,
+            "westerns_count": westerns_count,
+            "people_count": people_count,
+            "genres_count": genres_count,
             "notes": notes,
             "links": links,
             "accepted_westerns": accepted_westerns,
@@ -574,7 +574,67 @@ class UserDetailsView(View):
             "rejected": rejected
         }
         return render(request, "user_details.html", ctx)
+
+
+
+class AddedMoviesView(View):
+    def get(self, request, id):
+        soldier = User.objects.get(pk=id)
+        movies = Movie.objects.filter(movie_accepted_by__isnull=False, movie_added_by=soldier).order_by("year")
+        my_people = Person.objects.filter(person_added_by=soldier, person_accepted_by__isnull=False).order_by("last_name")
+        my_genres = Genre.objects.filter(genre_added_by=soldier, genre_accepted_by__isnull=False).order_by("name")
+
+        paginator = Paginator(movies, 10)
+        page = request.GET.get("page")
+        movies = paginator.get_page(page)
+
+        ctx = {
+            "soldier": soldier,
+            "movies": movies,
+            "my_people": my_people,
+            "my_genres": my_genres
+        }
+        return render(request, "added_movies.html", ctx)
     
+
+class AddedPeopleView(View):
+    def get(self, request, id):
+        soldier = User.objects.get(pk=id)
+        people = Person.objects.filter(person_added_by=soldier, person_accepted_by__isnull=False).order_by("last_name")
+        my_movies = Movie.objects.filter(movie_added_by=soldier, movie_accepted_by__isnull=False)
+        my_genres = Genre.objects.filter(genre_added_by=soldier, genre_accepted_by__isnull=False)
+
+        paginator = Paginator(people, 10)
+        page = request.GET.get("page")
+        people = paginator.get_page(page)
+
+        ctx = {
+            "soldier": soldier,
+            "people": people,
+            "my_movies": my_movies,
+            "my_genres": my_genres
+        }
+        return render(request, "added_people.html", ctx)
+
+
+class AddedGenresView(View):
+    def get(self, request, id):
+        soldier = User.objects.get(pk=id)
+        my_movies = Movie.objects.filter(movie_accepted_by__isnull=False, movie_added_by=soldier)
+        my_people = Person.objects.filter(person_added_by=soldier, person_accepted_by__isnull=False)
+        genres = Genre.objects.filter(genre_added_by=soldier, genre_accepted_by__isnull=False).order_by("name")
+
+        paginator = Paginator(genres, 10)
+        page = request.GET.get("page")
+        genres = paginator.get_page(page)
+
+        ctx = {
+            "soldier": soldier,
+            "genres": genres,
+            "my_movies": my_movies,
+            "my_people": my_people
+        }
+        return render(request, "added_genres.html", ctx)
 
 
 class GivePromotionView(SuperUserCheck, View):
