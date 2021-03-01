@@ -59,11 +59,11 @@
         {% endif %}
     </div>
 
-    {% if 0 > promotion_add and user.is_staff or 0 > promotion_add and not user.is_staff and user.userrank_set.all.0.promotion_ask == True %}
+    {% if 1 > promotion_add and user.is_staff or 1 > promotion_add and not user.is_staff and user.userrank_set.all.0.promotion_ask == True %}
     <div class="d-flex flex-row justify-content-center align-items-center">
-        <h3 class="display-5 align-self-center header2" style="margin-left: 3vh; margin-right: 3vh;"><i>Wystąpiłeś do generalicji o awans.</i></h3>
+        <h3 class="display-5 align-self-center header2" style="margin-left: 3vh; margin-right: 3vh;"><i>Wystąpiłeś o awans - generalicja rozpatruje wniosek.</i></h3>
     </div>
-    {% elif promotion_add != None or promotion_accept != None %}
+    {% elif promotion_add != None and promotion_add > 0 or promotion_accept != None and promotion_accept > 0 %}
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h3 class="display-5 align-self-center header2" style="margin-left: 3vh; margin-right: 3vh;"><i>Do awansu pozostało: {% if not user.is_staff %} {{ promotion_add }} pkt {% endif %} {% if user.is_staff %} {{ promotion_accept }} pkt oficerskich {% endif %}</i></h3>
     </div>
