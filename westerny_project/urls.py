@@ -36,6 +36,7 @@ from westerny_app.views import GiveEditPersonView, GiveEditMovieView, MyMoviesVi
 from westerny_app.views import SearchMyPersonView, MyGenresView, PeopleRankView, MoviesRankView
 from westerny_app.views import AddWatchlistView, RemoveWatchlistView, WatchlistView, RatedMoviesView, RatedPeopleView
 from westerny_app.views import MoviesNewestView, PeopleNewestView, AddedMoviesView, AddedPeopleView, AddedGenresView
+from westerny_app.views import SoldiersView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -104,6 +105,7 @@ urlpatterns = [
     path('add_watchlist/<int:movie_id>', AddWatchlistView.as_view(), name="add-watchlist"),
     path('add_removelist/<int:movie_id>', RemoveWatchlistView.as_view(), name="remove-watchlist"),
     path('watchlist/', WatchlistView.as_view(), name="watchlist"),
+    path('soldiers/', SoldiersView.as_view(), name="soldiers"),
 
     path('reset_password/', RequestPasswordResetEmail.as_view(), name='reset-password'),
     path('set_new_password/<uidb64>/<token>', CompletePasswordReset.as_view(), name="set-new-password"),
