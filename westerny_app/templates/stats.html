@@ -8,9 +8,11 @@
     <div class="d-flex flex-row justify-content-around flex-wrap">
         <a class="btn btn-primary btn-lg guzik" href="{% url 'index' %}">STRONA GŁÓWNA</a>
     </div>
+    {% if user.is_staff %}
     <div class="d-flex flex-row justify-content-around flex-wrap">
         <a class="btn btn-link btn-sm guzik" href="{% url 'soldiers' %}">Członkowie Regimentu</a>
     </div>
+    {% endif %}
 
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h2 class="display-5 align-self-center header2"><i>Statystyki</i></h2>
