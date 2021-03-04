@@ -2154,7 +2154,7 @@ class WatchlistView(ActivateUserCheck, View):
 
 class SoldiersView(StaffMemberCheck, View):
     def get(self, request):
-        soldiers = [i for i in User.objects.filter(userrank__isnull=False).order_by("-userrank__rank__id") if i.username not in ("west", "westerny", "Andrzej Bakuła")]
+        soldiers = [i for i in User.objects.filter(userrank__isnull=False).order_by("-userrank__rank__id", "username") if i.username not in ("west", "westerny", "Andrzej Bakuła")]
 
         paginator = Paginator(soldiers, 10)
         page = request.GET.get("page")
