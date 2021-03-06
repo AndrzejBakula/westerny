@@ -1813,7 +1813,7 @@ class AddArticleGenreView(StaffMemberCheck, View):
                     "message": message
                 }
                 return render(request, "add_article_genre.html", ctx)
-            article = Article.objects.create(article_name=data["name"], author=data["author"], article_added_by=user, link=data["url"])
+            article = Article.objects.create(article_name=data["name"], author=data["author"], article_added_by=user, link=data["url"], is_accepted=True)
             genre.genre_article.add(article)
             genre.save()
             message = "Artykuł dodany pomyślnie"
