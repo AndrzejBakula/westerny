@@ -71,6 +71,14 @@
         <h4 class="display-5 align-self-center header">
             Liczba dodanych linków: {{ links }}
         </h4>
+        <h4 class="display-5 align-self-center header">
+            Liczba dodanych ról: {{ roles }}
+        </h4>
+        {% if user.is_superuser %}
+        <h4 class="display-5 align-self-center header">
+            Liczba ocen: {{ ratings }}
+        </h4>
+        {% endif %}
         {% if rejected.count > 0 and user.is_staff %}
         <h4 class="display-5 align-self-center header">
             Liczba odrzuconych wpisów: {{ rejected.count }}

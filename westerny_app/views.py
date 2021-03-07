@@ -551,6 +551,8 @@ class UserDetailsView(View):
         genres = Genre.objects.filter(genre_added_by=soldier, genre_accepted_by__isnull=False)
         genres_count = len([i for i in genres if i.genre_accepted_by])
         links = len(Article.objects.filter(article_added_by=soldier))
+        roles = len(PersonMovie.objects.filter(personmovie_added_by=soldier))
+        ratings = len(PersonRating.objects.filter(user=soldier)) + len(MovieRating.objects.filter(user=soldier))
         notes = westerns_count + people_count + genres_count + links
         rejected = Deleted.objects.filter(added_by=soldier)
 
@@ -569,6 +571,8 @@ class UserDetailsView(View):
             "genres_count": genres_count,
             "notes": notes,
             "links": links,
+            "roles": roles,
+            "ratings": ratings,
             "accepted_westerns": accepted_westerns,
             "accepted_people": accepted_people,
             "accepted_genres": accepted_genres,
