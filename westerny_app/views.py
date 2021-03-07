@@ -397,6 +397,8 @@ class MyPlaceView(ActivateUserCheck, View):
         added_people = len(Person.objects.filter(person_added_by=user, person_accepted_by__isnull=False))
         added_genres = len(Genre.objects.filter(genre_added_by=user, genre_accepted_by__isnull=False))
         links = len(Article.objects.filter(article_added_by=user, is_accepted=True))
+        roles = len(PersonMovie.objects.filter(personmovie_added_by=user))
+        ratings = len(PersonRating.objects.filter(user=user)) + len(MovieRating.objects.filter(user=user))
         notes = added_westerns + added_people + added_genres + links
         rejected = Deleted.objects.filter(added_by=user)
 
@@ -461,6 +463,8 @@ class MyPlaceView(ActivateUserCheck, View):
             "genres": added_genres,
             "notes": notes,
             "links": links,
+            "roles": roles,
+            "ratings": ratings,
             "accepted_westerns": accepted_westerns,
             "accepted_people": accepted_people,
             "accepted_genres": accepted_genres,
