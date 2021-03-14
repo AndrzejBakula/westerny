@@ -698,6 +698,7 @@ class StatsView(View):
         last_movie_ratings = [i for i in MovieRating.objects.all().order_by("-id")][:3]
         last_person_ratings = [i for i in PersonRating.objects.all().order_by("-id")][:3]
         newest_soldier = User.objects.all().order_by("-id")[0]
+        last_roles = PersonMovie.objects.all().order_by("-id")[:2]
 
         ctx = {
             "civils": civils,
@@ -719,7 +720,8 @@ class StatsView(View):
             "roles": roles,
             "last_person_ratings": last_person_ratings,
             "last_movie_ratings": last_movie_ratings,
-            "newest_soldier": newest_soldier
+            "newest_soldier": newest_soldier,
+            "last_roles": last_roles
         }
         return render(request, "stats.html", ctx)
 

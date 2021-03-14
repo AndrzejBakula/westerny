@@ -80,7 +80,6 @@
         </h4>
 
         {% if user.is_superuser %}
-        <hr>
         <div class="d-flex flex-row justify-content-center align-items-center">
             <h4 class="display-5 align-self-center header2"><i><u>Najnowsze oceny</u></i></h4>
         </div>
@@ -92,6 +91,15 @@
         {% for rating in last_person_ratings %}
         <div class="d-flex flex-row justify-content-center align-items-center">
             <a  class="btn btn-link align-self-center" href="{% url 'person-details' rating.person.id %}" style="font-family: Georgia, serif; font-size: large; color: white; text-shadow: 2px 2px 1px black">{{rating.person}} - {{rating.rating}} {% if user.username == "Westerny" %} ({{rating.user.username}}) {% endif %}</a>
+        </div>
+        {% endfor %}
+
+        <div class="d-flex flex-row justify-content-center align-items-center">
+            <h4 class="display-5 align-self-center header2"><i><u>Najnowsze role</u></i></h4>
+        </div>
+        {% for role in last_roles %}
+        <div class="d-flex flex-row justify-content-center align-items-center">
+            <a  class="btn btn-link align-self-center" href="{% url 'movie-details' role.movies.id %}" style="font-family: Georgia, serif; font-size: large; color: white; text-shadow: 2px 2px 1px black">{{role.persons}} - {{role.role}} ({{role.personmovie_added_by.username}})</a>
         </div>
         {% endfor %}
         {% endif %}
