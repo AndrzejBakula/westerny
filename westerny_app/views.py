@@ -15,6 +15,7 @@ from .utils import token_generator
 from django.views import View
 from django.contrib.auth.models import User
 from django.db.models import Count
+from django.db.models import Q
 from westerny_project.settings import PROTOCOLE
 from westerny_app.models import Movie, Genre, Person, Article, Rank, UserRank, PersonRating, Rating, MovieRating
 from westerny_app.models import PersonMovie, Counter, Deleted
@@ -679,8 +680,8 @@ class StatsView(View):
         counter = Counter.objects.all()[0]
         civils = User.objects.filter(is_active=False)
         users = User.objects.filter(is_active=True)
-        fort = len(civils) + len(users)
-        officers = User.objects.filter(is_staff=True, is_superuser=False)
+        fort = len(civils) + len(users) - 1
+        officers = User.objects.filter(username__exact="westerny", is_staff=True, is_superuser=False)
         commanders = User.objects.filter(is_superuser=True)
         cavaliers = User.objects.filter(is_active=True, is_staff=False, is_superuser=False)
         westerns = Movie.objects.filter(movie_accepted_by__isnull=False)
