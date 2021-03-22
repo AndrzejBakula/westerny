@@ -681,7 +681,7 @@ class StatsView(View):
         civils = User.objects.filter(is_active=False)
         users = User.objects.filter(is_active=True)
         fort = len(civils) + len(users) - 1
-        officers = User.objects.filter(username__exact="westerny", is_staff=True, is_superuser=False)
+        officers = len([i for i in User.objects.filter(is_staff=True, is_superuser=False) if i.username != "westerny"])
         commanders = User.objects.filter(is_superuser=True)
         cavaliers = User.objects.filter(is_active=True, is_staff=False, is_superuser=False)
         westerns = Movie.objects.filter(movie_accepted_by__isnull=False)
