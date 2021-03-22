@@ -679,8 +679,8 @@ class StatsView(View):
     def get(self, request):
         counter = Counter.objects.all()[0]
         civils = User.objects.filter(is_active=False)
-        users = User.objects.filter(is_active=True)
-        fort = len(civils) + len(users) - 3
+        users = len([i for i in User.objects.filter(is_active=True)]) - 3
+        fort = len(civils) + users
         officers = len([i for i in User.objects.filter(is_staff=True, is_superuser=False) if i.username != "westerny"])
         commanders = User.objects.filter(is_superuser=True)
         cavaliers = len([i for i in User.objects.filter(is_active=True, is_staff=False, is_superuser=False) if i.username != "west"])
