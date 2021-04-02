@@ -22,11 +22,12 @@
         <img src="{% static 'images/FortLaramie_resized.jpg' %}" style="border-color: black; border-style: solid; width: 95%; margin: 2.5%;">
     </div>
 
-    {% if user.is_staff %}
+
     <h4 class="display-5 align-self-center header">
         Liczba odwiedzin fortu: {{ counter.counter }}
     </h4>
     <hr>
+    {% if user.is_staff %}
     {% if waiting_movies.count > 0 or waiting_people.count > 0 or waiting_articles.count > 0 %}
     <h4 class="display-5 align-self-center header">
         SĄ OCZEKUJĄCE WPISY!!!
