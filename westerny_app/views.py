@@ -1291,7 +1291,7 @@ class AddGenreView(StaffMemberCheck, View):
 class GenreDetailsView(View):
     def get(self, request, id):
         genre = Genre.objects.get(id=id)
-        movies = Movie.objects.filter(genre=genre, movie_accepted_by__isnull=False)
+        movies = Movie.objects.filter(genre=genre, movie_accepted_by__isnull=False).order_by("year")
         articles = [i for i in Article.objects.filter(genre__id=id)]
         articles_check = len(articles)
 
