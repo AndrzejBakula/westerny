@@ -29,6 +29,7 @@
     <hr>
     {% endif %}
     
+    {% if not error_message %}
     <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'add-genre' %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
@@ -36,6 +37,9 @@
 
         <button type="submit" id="submit">Dodaj Gatunek</button>
     </form>
+    {% endif %}
+    <hr>
+    <button><a href="{% url 'genres' %}">Powrót</a></button>
 
 
 </div>

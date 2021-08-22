@@ -29,6 +29,7 @@
     </div>
     {% endif %}
 
+    {% if not message %}
     <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'add-person' %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
@@ -36,7 +37,19 @@
 
         <button type="submit" id="submit">Dodaj Osobę</button>
     </form>
+    {% endif %}
 
+    {% if message %}
+    <hr>
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h3 class="display-5 align-self-center header">
+            {{ message }}
+        </h3>
+    </div>
+    {% endif %}
+
+    <hr>
+    <button><a href="{% url 'people' %}">Powrót</a></button>
 
 
 </div>

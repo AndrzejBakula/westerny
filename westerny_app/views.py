@@ -750,29 +750,6 @@ class MoviesView(View):
         return render(request, "movies.html", ctx)
 
 
-class MoviesView(View):
-    def get(self, request):
-        user = None
-        if request.session.get("user_id"):
-            user = User.objects.get(pk=int(request.session.get("user_id")))
-        movies = Movie.objects.filter(movie_accepted_by__isnull=False).order_by("year", "title")
-        waiting_movies = len([i for i in Movie.objects.filter(movie_accepted_by=None)])
-        waiting_movies_user = len([i for i in Movie.objects.filter(movie_accepted_by=None) if i.movie_added_by == user])
-        waiting_articles = len([i for i in Article.objects.filter(is_accepted=False) if len(i.movie_set.all()) > 0])
-
-        paginator = Paginator(movies, 10)
-        page = request.GET.get("page")
-        movies = paginator.get_page(page)
-
-        ctx = {
-            "movies": movies,
-            "waiting_movies": waiting_movies,
-            "waiting_movies_user": waiting_movies_user,
-            "waiting_articles": waiting_articles
-        }
-        return render(request, "movies.html", ctx)
-
-
 class MoviesNewestView(View):
     def get(self, request):
         user = None
@@ -953,14 +930,10 @@ class AddMovieView(ActivateUserCheck, View):
                         movie.org_title = data["org_title"]
                     movie.save()
                     message = "Dodano nowy western"
-                    movies = Movie.objects.all().order_by("year")
-                    waiting_movies = len([i for i in Movie.objects.all() if i.movie_accepted_by == None])
                     ctx = {
                         "message": message,
-                        "movies": movies,
-                        "waiting_movies": waiting_movies
                     }
-                    return render(request, "movies.html", ctx)
+                    return render(request, "add_movie.html", ctx)
                 else:
                     movie = Movie.objects.create(
                         title=data["title"],
@@ -983,14 +956,10 @@ class AddMovieView(ActivateUserCheck, View):
                         movie.org_title = data["org_title"]
                     movie.save()
                     message = "Twoja propozycja czeka na akceptację"
-                    movies = Movie.objects.all().order_by("year")
-                    waiting_movies = len([i for i in Movie.objects.all() if i.movie_accepted_by == None])
                     ctx = {
                         "message": message,
-                        "movies": movies,
-                        "waiting_movies": waiting_movies
                     }
-                    return render(request, "movies.html", ctx)
+                    return render(request, "add_movie.html", ctx)
 
 
 class MovieDetailsView(View):
@@ -1637,7 +1606,7 @@ class AddPersonView(ActivateUserCheck, View):
                         "people": people,
                         "waiting_people": waiting_people
                     }
-                    return render(request, "people.html", ctx)
+                    return render(request, "add_person.html", ctx)
                 else:
                     person = Person.objects.create(
                         first_name=request.POST.get("first_name"),
@@ -1658,7 +1627,7 @@ class AddPersonView(ActivateUserCheck, View):
                         "people": people,
                         "waiting_people": waiting_people
                     }
-                    return render(request, "people.html", ctx)
+                    return render(request, "add_person.html", ctx)
 
 
 class EditPersonView(ActivateUserCheck, View):
