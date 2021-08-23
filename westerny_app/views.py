@@ -1805,7 +1805,7 @@ class AddArticleGenreView(StaffMemberCheck, View):
                 "article": article,
                 "message": message
             }
-            return redirect(f"/genre_details/{genre.id}")
+            return render(request, "add_article_genre.html", ctx)
         ctx = {
             "form": form,
             "genre": genre,
