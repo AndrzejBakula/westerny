@@ -155,7 +155,7 @@ class RegisterView(View):
 
     FORBIDDEN = ("westerny", "Westerny", "WESTERNY", "WeStErNy", "wEsTeRnY", "west", "West", "WEST",
                 "Westernowy", "WESTERNOWY", "westernowy", "Westernowo", "westernowo", "WESTERNOWO",
-                "western", "WESTERN", "Western", "westerns", "Westerns", "WESTERNS")
+                "western", "WESTERN", "Western", "westerns", "Westerns", "WESTERNS", "WESterny")
 
     def get(self, request):
         form = RegisterForm()
