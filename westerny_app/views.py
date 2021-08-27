@@ -1770,8 +1770,8 @@ class GiveEditPersonView(StaffMemberCheck, View):
 
 
 class AddArticleGenreView(StaffMemberCheck, View):
-    def get(self, request, id):
-        genre = Genre.objects.get(id=id)
+    def get(self, request, genre_id):
+        genre = Genre.objects.get(id=genre_id)
         form = AddArticleForm()
         ctx = {
             "genre": genre,
@@ -1779,9 +1779,9 @@ class AddArticleGenreView(StaffMemberCheck, View):
         }
         return render(request, "add_article_genre.html", ctx)
     
-    def post(self, request, id):
+    def post(self, request, genre_id):
         form = AddArticleForm(request.POST)
-        genre = Genre.objects.get(id=id)
+        genre = Genre.objects.get(id=genre_id)
         user = User.objects.get(pk=int(request.session.get("user_id")))
         message = "Coś poszło nie tak"
         if form.is_valid():
@@ -1832,9 +1832,9 @@ class DeleteArticleGenreView(StaffMemberCheck, View):
 
 
 class AddArticlePersonView(ActivateUserCheck, View):
-    def get(self, request, id):
+    def get(self, request, person_id):
         user = User.objects.get(pk=int(request.session.get("user_id")))
-        person = Person.objects.get(id=id)
+        person = Person.objects.get(id=person_id)
         waiting_articles = [i for i in Article.objects.filter(article_added_by=user, is_accepted=False)]
         if user.is_staff or 3 > len(waiting_articles):
             form = AddArticleForm()
@@ -1845,9 +1845,9 @@ class AddArticlePersonView(ActivateUserCheck, View):
             return render(request, "add_article_person.html", ctx)
         return redirect("/people")
     
-    def post(self, request, id):
+    def post(self, request, person_id):
         form = AddArticleForm(request.POST)
-        person = Person.objects.get(id=id)
+        person = Person.objects.get(id=person_id)
         user = User.objects.get(pk=int(request.session.get("user_id")))
         error_message = "Coś poszło nie tak"
         message = None
@@ -1926,9 +1926,9 @@ class AcceptArticlePersonView(StaffMemberCheck, View):
 
 
 class AddArticleMovieView(ActivateUserCheck, View):
-    def get(self, request, id):
+    def get(self, request, movie_id):
         user = User.objects.get(pk=int(request.session.get("user_id")))
-        movie = Movie.objects.get(id=id)
+        movie = Movie.objects.get(id=movie_id)
         waiting_articles = [i for i in Article.objects.filter(article_added_by=user, is_accepted=False)]
         if user.is_staff or 3 > len(waiting_articles):
             form = AddArticleForm()
@@ -1939,9 +1939,9 @@ class AddArticleMovieView(ActivateUserCheck, View):
             return render(request, "add_article_movie.html", ctx)
         return redirect("/movies")
     
-    def post(self, request, id):
+    def post(self, request, movie_id):
         form = AddArticleForm(request.POST)
-        movie = Movie.objects.get(id=id)
+        movie = Movie.objects.get(id=movie_id)
         user = User.objects.get(pk=int(request.session.get("user_id")))
         error_message = "Coś poszło nie tak"
         message = None
