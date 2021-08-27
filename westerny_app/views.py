@@ -732,7 +732,7 @@ class MoviesView(View):
         user = None
         if request.session.get("user_id"):
             user = User.objects.get(pk=int(request.session.get("user_id")))
-        movies = Movie.objects.filter(movie_accepted_by__isnull=False).order_by("year")
+        movies = Movie.objects.filter(movie_accepted_by__isnull=False).order_by("year", "title")
         waiting_movies = len([i for i in Movie.objects.filter(movie_accepted_by=None)])
         waiting_movies_user = len([i for i in Movie.objects.filter(movie_accepted_by=None) if i.movie_added_by == user])
         waiting_articles = len([i for i in Article.objects.filter(is_accepted=False) if len(i.movie_set.all()) > 0])
@@ -2112,7 +2112,7 @@ class WatchlistView(ActivateUserCheck, View):
         user = None
         if request.session.get("user_id"):
             user = User.objects.get(pk=int(request.session.get("user_id")))
-        movies = Movie.objects.filter(movie_accepted_by__isnull=False, watchlist=user).order_by("year").order_by("title")
+        movies = Movie.objects.filter(movie_accepted_by__isnull=False, watchlist=user).order_by("year", "title")
         my_people = Person.objects.filter(person_added_by=user, person_accepted_by__isnull=False)
         my_genres = Genre.objects.filter(genre_added_by=user, genre_accepted_by__isnull=False)
         my_movies = Movie.objects.filter(movie_added_by=user, movie_accepted_by__isnull=False)
