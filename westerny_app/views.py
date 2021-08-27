@@ -2112,7 +2112,7 @@ class WatchlistView(ActivateUserCheck, View):
         user = None
         if request.session.get("user_id"):
             user = User.objects.get(pk=int(request.session.get("user_id")))
-        movies = Movie.objects.filter(movie_accepted_by__isnull=False, watchlist=user).order_by("year")
+        movies = Movie.objects.filter(movie_accepted_by__isnull=False, watchlist=user).order_by("year").order_by("title")
         my_people = Person.objects.filter(person_added_by=user, person_accepted_by__isnull=False)
         my_genres = Genre.objects.filter(genre_added_by=user, genre_accepted_by__isnull=False)
         my_movies = Movie.objects.filter(movie_added_by=user, movie_accepted_by__isnull=False)
