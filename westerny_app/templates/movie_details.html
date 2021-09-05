@@ -17,7 +17,7 @@
         <!-- {% if user.is_active %}
         <a class="btn btn-light btn-lg guzik2" href="{% url 'watchlist' %}">Moja Lista</a>
         {% endif %} -->
-        {% if user.is_superuser or user.is_staff and not movie.movie_added_by.is_superuser or movie.movie_added_by == user and not movie.movie_edited_by.is_staff %}
+        {% if user.is_superuser or user.username == "Mariusz Czernic" or user.is_staff and not movie.movie_added_by.is_superuser or movie.movie_added_by == user and not movie.movie_edited_by.is_staff %}
         <a class="btn btn-success btn-lg guzik" href="{% url 'edit-movie' movie.id %}"> Edytuj Western</a>
         {% endif %}
         {% if user.is_superuser and user.username == "Westerny" or not movie.movie_accepted_by and user.is_staff %}
