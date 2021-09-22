@@ -63,7 +63,7 @@ def check_rank(user):
             userrank.rank = sierzant
             return userrank.save()
         return userrank.save()
-    elif user.is_staff == True:
+    elif user.is_staff == True and user.is_superuser == False:
         userrank.rank = porucznik
         if ( 25 <= sum_of_accepted < 75):
             userrank.rank = kapitan

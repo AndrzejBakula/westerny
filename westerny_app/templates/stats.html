@@ -100,7 +100,7 @@
         </div>
         {% for role in last_roles %}
         <div class="d-flex flex-row justify-content-center align-items-center">
-            <a  class="btn btn-link align-self-center" href="{% url 'movie-details' role.movies.id %}" style="font-family: Georgia, serif; font-size: large; color: white; text-shadow: 2px 2px 1px black">{{role.persons}} - {{role.role}} ({{role.personmovie_added_by.username}})</a>
+            <a  class="btn btn-link align-self-center" href="{% url 'movie-details' role.movies.id %}" style="font-family: Georgia, serif; font-size: large; color: white; text-shadow: 2px 2px 1px black">{{role.persons}} - {{role.role}} {% if user.username == "Westerny"%} ({{role.personmovie_added_by.username}}) {% endif %}</a>
         </div>
         {% endfor %}
         {% endif %}
