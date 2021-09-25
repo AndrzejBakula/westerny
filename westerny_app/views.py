@@ -656,8 +656,8 @@ class GivePromotionView(SuperUserCheck, View):
         }
         return render(request, "give_promotion.html", ctx)
     
-    def post(self, request, id):
-        soldier = User.objects.get(id=id)
+    def post(self, request, soldier_id):
+        soldier = User.objects.get(id=soldier_id)
         userrank = UserRank.objects.get(user=soldier)
         rank = Rank.objects.get(name="porucznik")
         userrank.rank = rank
