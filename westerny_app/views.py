@@ -1553,7 +1553,7 @@ class SearchMyPersonView(ActivateUserCheck, View):
 
 class PeopleRankView(View):
     def get(self, request):
-        people = Person.objects.annotate(num_rating=Count("personrating")).filter(person_rating__isnull=False, person_accepted_by__isnull=False, num_rating__gt=9).order_by("-person_rating","-num_rating", "last_name")
+        people = Person.objects.annotate(num_rating=Count("personrating")).filter(person_rating__isnull=False, person_accepted_by__isnull=False, num_rating__gt=7).order_by("-person_rating","-num_rating", "last_name")
 
         paginator = Paginator(people, 10)
         page = request.GET.get("page")
