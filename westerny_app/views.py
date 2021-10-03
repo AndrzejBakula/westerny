@@ -866,7 +866,7 @@ class SearchMyMovieView(ActivateUserCheck, View):
 
 class MoviesRankView(View):
     def get(self, request):
-        movies = Movie.objects.filter(movie_accepted_by__isnull=False, movie_rating__isnull=False).annotate(num_movies=Count("movierating")).order_by("-movie_rating", "-num_movies", "title")
+        movies = Movie.objects.annotate(num_movies=Count("movierating")).filter(movie_accepted_by__isnull=False, movie_rating__isnull=False, num_movies__gt=9).order_by("-movie_rating", "-num_movies", "title")
 
         paginator = Paginator(movies, 10)
         page = request.GET.get("page")
