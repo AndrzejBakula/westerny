@@ -1683,6 +1683,8 @@ class EditPersonView(ActivateUserCheck, View):
             person.date_birth = request.POST.get("date_birth")
             if request.POST.get("date_death") not in ("", None):
                 person.date_death = request.POST.get("date_death")
+            else:
+                person.date_death = None
             person.person_edited_by = user
             if request.FILES.get("image") != None or request.POST.get("delete_image"):
                 person.person_image = request.FILES.get("image")
