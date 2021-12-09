@@ -1075,8 +1075,7 @@ class EditMovieView(ActivateUserCheck, View):
                 return render(request, "edit_movie.html", ctx)
             user = User.objects.get(pk=int(request.session.get("user_id")))
             movie.title = data["title"]
-            if data["org_title"] not in ("", None):
-                movie.org_title = data["org_title"]
+            movie.org_title = data["org_title"]
             movie.year = data["year"]
             movie.director.set(data["director"])
             movie.screenplay.set(data["screenplay"])
