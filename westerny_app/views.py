@@ -1,6 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model, authenticate, login, logout
-from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import (
+    PermissionRequiredMixin,
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+)
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.mail import EmailMessage
@@ -17,14 +21,37 @@ from django.contrib.auth.models import User
 from django.db.models import Count
 from django.db.models import Q
 from westerny_project.settings import PROTOCOLE
-from westerny_app.models import Movie, Genre, Person, Article, Rank, UserRank, PersonRating, Rating, MovieRating
+from westerny_app.models import (
+    Movie,
+    Genre,
+    Person,
+    Article,
+    Rank,
+    UserRank,
+    PersonRating,
+    Rating,
+    MovieRating,
+)
 from westerny_app.models import PersonMovie, Counter, Deleted
-from westerny_app.forms import AddMovieForm, AddGenreForm, AddPersonForm, EditGenreForm, RegisterForm, LoginForm
-from westerny_app.forms import SearchMovieForm, SearchPersonForm, AddArticleForm, EditPersonForm, RatingForm
+from westerny_app.forms import (
+    AddMovieForm,
+    AddGenreForm,
+    AddPersonForm,
+    EditGenreForm,
+    RegisterForm,
+    LoginForm,
+)
+from westerny_app.forms import (
+    SearchMovieForm,
+    SearchPersonForm,
+    AddArticleForm,
+    EditPersonForm,
+    RatingForm,
+)
 from westerny_app.forms import EditMovieForm, AddActorForm, ResetForm
 
 
-#RANK CHECKING METHOD:
+# RANK CHECKING METHOD:
 def check_rank(user):
     userrank = UserRank.objects.get(user=user.id)
 
@@ -39,17 +66,17 @@ def check_rank(user):
     gubernator = Rank.objects.get(name="gubernator")
 
     movies = Movie.objects.filter(movie_added_by=user)
-    added_movies = len([i for i in movies if i.movie_accepted_by])*2
+    added_movies = len([i for i in movies if i.movie_accepted_by]) * 2
     people = Person.objects.filter(person_added_by=user)
     added_people = len([i for i in people if i.person_accepted_by])
     genres = Genre.objects.filter(genre_added_by=user)
     added_genre = len([i for i in genres if i.genre_accepted_by])
-    sum_of_added = added_genre+added_movies+added_people
+    sum_of_added = added_genre + added_movies + added_people
 
     accpted_movies = len(Movie.objects.filter(movie_accepted_by=user))
     accepted_people = len(Person.objects.filter(person_accepted_by=user))
     accepted_genre = len(Genre.objects.filter(genre_accepted_by=user))
-    sum_of_accepted = added_genre+accepted_people+accpted_movies
+    sum_of_accepted = added_genre + accepted_people + accpted_movies
 
     if user.username == "Westerny":
         userrank.rank = gubernator
@@ -65,10 +92,10 @@ def check_rank(user):
         return userrank.save()
     elif user.is_staff == True and user.is_superuser == False:
         userrank.rank = porucznik
-        if ( 25 <= sum_of_accepted < 75):
+        if 25 <= sum_of_accepted < 75:
             userrank.rank = kapitan
             return userrank.save()
-        elif (75 <= sum_of_accepted < 150):
+        elif 75 <= sum_of_accepted < 150:
             userrank.rank = major
             return userrank.save()
         elif sum_of_accepted >= 150:
@@ -77,7 +104,7 @@ def check_rank(user):
         return userrank.save()
     elif user.is_superuser == True:
         userrank.rank = general
-        return userrank.save()       
+        return userrank.save()
 
 
 def validate_email(email):
@@ -87,7 +114,7 @@ def validate_email(email):
     return False
 
 
-#USER CHECK CLASSES:
+# USER CHECK CLASSES:
 class VerificationView(View):
     def get(self, request, uidb64, token):
         uid = force_text(urlsafe_base64_decode(uidb64))
@@ -112,15 +139,25 @@ class ActivateUserCheck(UserPassesTestMixin, View):
         return self.request.user.is_authenticated
 
 
-#MAIN VIEWS CLASSES:
+# MAIN VIEWS CLASSES:
 class IndexView(View):
     def get(self, request):
         counter = Counter.objects.all()[0]
         counter.counter += 1
         counter.save()
-        last_movies = [i for i in Movie.objects.all().order_by("-id") if i.movie_accepted_by != None][:3]
-        last_people = [i for i in Person.objects.all().order_by("-id") if i.person_accepted_by != None][:3]
-        last_articles = [i for i in Article.objects.all().order_by("-id") if i.is_accepted == True][:2]
+        last_movies = [
+            i
+            for i in Movie.objects.all().order_by("-id")
+            if i.movie_accepted_by != None
+        ][:3]
+        last_people = [
+            i
+            for i in Person.objects.all().order_by("-id")
+            if i.person_accepted_by != None
+        ][:3]
+        last_articles = [
+            i for i in Article.objects.all().order_by("-id") if i.is_accepted == True
+        ][:2]
         waiting_movies = Movie.objects.filter(movie_accepted_by=None)
         waiting_people = Person.objects.filter(person_accepted_by=None)
         waiting_articles = Article.objects.filter(is_accepted=False)
@@ -135,13 +172,13 @@ class IndexView(View):
                 "last_articles": last_articles,
                 "waiting_movies": waiting_movies,
                 "waiting_people": waiting_people,
-                "waiting_articles": waiting_articles
+                "waiting_articles": waiting_articles,
             }
             return render(request, "index.html", ctx)
         ctx = {
             "last_movies": last_movies,
             "last_people": last_people,
-            "last_articles": last_articles
+            "last_articles": last_articles,
         }
         return render(request, "index.html", ctx)
 
@@ -153,14 +190,34 @@ class RulesView(View):
 
 class RegisterView(View):
 
-    FORBIDDEN = ("westerny", "Westerny", "WESTERNY", "WeStErNy", "wEsTeRnY", "west", "West", "WEST",
-                "Westernowy", "WESTERNOWY", "westernowy", "Westernowo", "westernowo", "WESTERNOWO",
-                "western", "WESTERN", "Western", "westerns", "Westerns", "WESTERNS", "WESterny")
+    FORBIDDEN = (
+        "westerny",
+        "Westerny",
+        "WESTERNY",
+        "WeStErNy",
+        "wEsTeRnY",
+        "west",
+        "West",
+        "WEST",
+        "Westernowy",
+        "WESTERNOWY",
+        "westernowy",
+        "Westernowo",
+        "westernowo",
+        "WESTERNOWO",
+        "western",
+        "WESTERN",
+        "Western",
+        "westerns",
+        "Westerns",
+        "WESTERNS",
+        "WESterny",
+    )
 
     def get(self, request):
         form = RegisterForm()
         return render(request, "register.html", {"form": form})
-    
+
     def post(self, request):
         users = [i.username for i in User.objects.all()]
         username = request.POST["username"]
@@ -179,7 +236,7 @@ class RegisterView(View):
                 "username": username,
                 "email": email,
                 "message": message,
-                "form": form
+                "form": form,
             }
             return render(request, "register.html", ctx)
         elif len(password) < 6:
@@ -188,7 +245,7 @@ class RegisterView(View):
                 "username": username,
                 "email": email,
                 "message": message,
-                "form": form
+                "form": form,
             }
             return render(request, "register.html", ctx)
         elif username in ("", None) or email in ("", None) or password in ("", None):
@@ -197,32 +254,20 @@ class RegisterView(View):
                 "username": username,
                 "email": email,
                 "message": message,
-                "form": form
+                "form": form,
             }
             return render(request, "register.html", ctx)
         elif username in users:
             message = "Taki kawalerzysta widnieje już w rejestrze pułku."
-            ctx = {
-                "email": email,
-                "message": message,
-                "form": form
-            }
+            ctx = {"email": email, "message": message, "form": form}
             return render(request, "register.html", ctx)
         elif username in self.FORBIDDEN:
             message = "Taką nazwę nosi poszukiwany listem gończym bandyta."
-            ctx = {
-                "email": email,
-                "message": message,
-                "form": form
-            }
+            ctx = {"email": email, "message": message, "form": form}
             return render(request, "register.html", ctx)
         elif validate_email(email):
             message = "Ta skrzynka na listy jest już zajęta."
-            ctx = {
-                "username": username,
-                "message": message,
-                "form": form
-            }
+            ctx = {"username": username, "message": message, "form": form}
             return render(request, "register.html", ctx)
         else:
             user = User.objects.create(username=username, email=email)
@@ -232,28 +277,33 @@ class RegisterView(View):
 
             uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
             domain = get_current_site(request).domain
-            link = reverse("activate", kwargs={'uidb64': uidb64, 'token': token_generator.make_token(user)})
+            link = reverse(
+                "activate",
+                kwargs={"uidb64": uidb64, "token": token_generator.make_token(user)},
+            )
 
-            activate_url = PROTOCOLE+domain+link
+            activate_url = PROTOCOLE + domain + link
 
             email_subject = "Aktywuj konto kawalerzysty."
-            email_body = "Baczność, rekrucie " + user.username + "! Użyj poniższego linku werbunkowego i udaj się do kwatermistrza.\n" + activate_url
+            email_body = (
+                "Baczność, rekrucie "
+                + user.username
+                + "! Użyj poniższego linku werbunkowego i udaj się do kwatermistrza.\n"
+                + activate_url
+            )
             email = EmailMessage(
                 email_subject,
                 email_body,
                 "noreply@semycolon.com",
                 [user.email],
-                )            
+            )
             email.send(fail_silently=False)
 
             rank = Rank.objects.get(name="kawalerzysta")
             UserRank.objects.create(user=user, rank=rank)
             message = f"Dodano nowego kawalerzystę {user.username}. Wysłano telegram potwierdzający do skrzynki na listy."
             form = LoginForm()
-            ctx = {
-                "message": message,
-                "form": form
-            }
+            ctx = {"message": message, "form": form}
             return render(request, "login.html", ctx)
 
 
@@ -261,7 +311,7 @@ class LoginView(View):
     def get(self, request):
         form = LoginForm()
         return render(request, "login.html", {"form": form})
-    
+
     def post(self, request):
 
         username = request.POST["username"]
@@ -273,10 +323,7 @@ class LoginView(View):
             request.session["user_id"] = user.pk
             return redirect("/")
         message = 'Niepoprawne dane logowania. Rejestracja dostępna w sekcji "nabór".'
-        ctx = {
-            "message": message,
-            "form": LoginForm(request.POST)
-        }
+        ctx = {"message": message, "form": LoginForm(request.POST)}
         return render(request, "login.html", ctx)
 
 
@@ -289,45 +336,42 @@ class LogoutView(ActivateUserCheck, View):
 
 
 class RequestPasswordResetEmail(View):
-    def get(self, request):        
-        return render(request, 'registration/reset_password.html')
-    
+    def get(self, request):
+        return render(request, "registration/reset_password.html")
+
     def post(self, request):
-        email = request.POST['email']
-        
+        email = request.POST["email"]
+
         if not validate_email(email):
             message = "Podaj właściwą skrzynkę pocztową."
-            ctx = {
-            "values": request.POST,
-            "message": message
-        }
-            return render(request, 'registration/reset_password.html', ctx)
-        
+            ctx = {"values": request.POST, "message": message}
+            return render(request, "registration/reset_password.html", ctx)
+
         current_site = get_current_site(request)
         user = User.objects.filter(email=email)
         if user.exists():
             email_contents = {
-                'user': user[0],
-                'domain': current_site.domain,
-                'uid': urlsafe_base64_encode(force_bytes(user[0].pk)),
-                'token': PasswordResetTokenGenerator().make_token(user[0]),
+                "user": user[0],
+                "domain": current_site.domain,
+                "uid": urlsafe_base64_encode(force_bytes(user[0].pk)),
+                "token": PasswordResetTokenGenerator().make_token(user[0]),
             }
-        link = reverse('set-new-password', kwargs={
-            'uidb64': email_contents['uid'], 'token': email_contents['token']})
+        link = reverse(
+            "set-new-password",
+            kwargs={"uidb64": email_contents["uid"], "token": email_contents["token"]},
+        )
         email_subject = "Resetowanie hasła"
-        reset_url = PROTOCOLE+current_site.domain+link
+        reset_url = PROTOCOLE + current_site.domain + link
         email = EmailMessage(
             email_subject,
             "Baczność! Należy kliknąć w poniższy link \n" + reset_url,
             "noreply@semycolon.com",
             [user[0].email],
         )
-        email.send(fail_silently=False)  
+        email.send(fail_silently=False)
         message = "Generalicja wysłała do ciebie list intencyjny."
-        ctx = {
-            "message": message
-        }
-        return render(request, 'registration/reset_password.html', ctx)
+        ctx = {"message": message}
+        return render(request, "registration/reset_password.html", ctx)
 
 
 class CompletePasswordReset(View):
@@ -339,7 +383,9 @@ class CompletePasswordReset(View):
             user = User.objects.get(pk=user_id)
             if not PasswordResetTokenGenerator().check_token(user, token):
                 message = "Użyto niewłaściwego listu intencyjnego. Wystąp o nowy."
-                return render(request, "registration/set_new_password.html", {"message": message})
+                return render(
+                    request, "registration/set_new_password.html", {"message": message}
+                )
         except Exception as identifier:
             pass
 
@@ -349,7 +395,7 @@ class CompletePasswordReset(View):
             "form": form,
         }
         return render(request, "registration/set_new_password.html", ctx)
-    
+
     def post(self, request, uidb64, token):
         form = ResetForm(request.POST)
         password = request.POST.get("password")
@@ -360,7 +406,7 @@ class CompletePasswordReset(View):
                 "uidb64": uidb64,
                 "token": token,
                 "error_message": error_message,
-                "form": form
+                "form": form,
             }
             return render(request, "registration/set_new_password.html", ctx)
         elif len(password) < 6:
@@ -369,7 +415,7 @@ class CompletePasswordReset(View):
                 "uidb64": uidb64,
                 "token": token,
                 "error_message": error_message,
-                "form": form
+                "form": form,
             }
             return render(request, "registration/set_new_password.html", ctx)
         try:
@@ -378,15 +424,11 @@ class CompletePasswordReset(View):
             user.set_password(password)
             user.save()
             message = "Hasło zostało ustawione."
-            ctx = {
-                "message": message
-            }
+            ctx = {"message": message}
             return render(request, "registration/set_new_password.html", ctx)
         except Exception as identifier:
             message = "Coś poszło nie tak, spróbuj ponownie."
-            ctx = {
-                "message": message
-            }
+            ctx = {"message": message}
             return render(request, "registration/set_new_password.html", ctx)
 
 
@@ -394,12 +436,22 @@ class MyPlaceView(ActivateUserCheck, View):
     def get(self, request):
         user = User.objects.get(pk=request.session.get("user_id"))
         check_rank(user)
-        added_westerns = len(Movie.objects.filter(movie_added_by=user, movie_accepted_by__isnull=False))
-        added_people = len(Person.objects.filter(person_added_by=user, person_accepted_by__isnull=False))
-        added_genres = len(Genre.objects.filter(genre_added_by=user, genre_accepted_by__isnull=False))
+        added_westerns = len(
+            Movie.objects.filter(movie_added_by=user, movie_accepted_by__isnull=False)
+        )
+        added_people = len(
+            Person.objects.filter(
+                person_added_by=user, person_accepted_by__isnull=False
+            )
+        )
+        added_genres = len(
+            Genre.objects.filter(genre_added_by=user, genre_accepted_by__isnull=False)
+        )
         links = len(Article.objects.filter(article_added_by=user, is_accepted=True))
         roles = len(PersonMovie.objects.filter(personmovie_added_by=user))
-        ratings = len(PersonRating.objects.filter(user=user)) + len(MovieRating.objects.filter(user=user))
+        ratings = len(PersonRating.objects.filter(user=user)) + len(
+            MovieRating.objects.filter(user=user)
+        )
         notes = added_westerns + added_people + added_genres + links
         rejected = Deleted.objects.filter(added_by=user)
 
@@ -426,34 +478,52 @@ class MyPlaceView(ActivateUserCheck, View):
         promotion_ask = False
         if UserRank.objects.get(user=user).promotion_ask == True:
             promotion_ask = None
-        added_points = added_westerns*2 + added_people
+        added_points = added_westerns * 2 + added_people
         accepted_points = accepted_westerns + accepted_people + added_genres
         if userrank == kawalerzysta:
-            promotion_add = 10-added_points
+            promotion_add = 10 - added_points
         elif userrank == kapral:
-            promotion_add = 30-added_points
+            promotion_add = 30 - added_points
         elif userrank == sierzant:
-            promotion_add = 50-added_points
-            if UserRank.objects.get(user=user).promotion_ask == False and added_points >= 50:
+            promotion_add = 50 - added_points
+            if (
+                UserRank.objects.get(user=user).promotion_ask == False
+                and added_points >= 50
+            ):
                 promotion_ask = True
         elif userrank == porucznik:
-            promotion_accept = 25-accepted_points
+            promotion_accept = 25 - accepted_points
         elif userrank == kapitan:
-            promotion_accept = 75-accepted_points
+            promotion_accept = 75 - accepted_points
         elif userrank == major:
-            promotion_accept = 150-accepted_points
+            promotion_accept = 150 - accepted_points
         elif userrank == pulkownik:
-            promotion_accept = 250-accepted_points
-            if accepted_points >= 250 and UserRank.objects.get(user=user).promotion_ask == False:
+            promotion_accept = 250 - accepted_points
+            if (
+                accepted_points >= 250
+                and UserRank.objects.get(user=user).promotion_ask == False
+            ):
                 promotion_ask = True
 
-        waiting_people = Person.objects.filter(person_accepted_by=None, person_added_by=user)
-        waiting_movies = Movie.objects.filter(movie_accepted_by=None, movie_added_by=user)
-        waiting_articles = Article.objects.filter(article_added_by=user, is_accepted=False)
+        waiting_people = Person.objects.filter(
+            person_accepted_by=None, person_added_by=user
+        )
+        waiting_movies = Movie.objects.filter(
+            movie_accepted_by=None, movie_added_by=user
+        )
+        waiting_articles = Article.objects.filter(
+            article_added_by=user, is_accepted=False
+        )
 
-        my_movies = Movie.objects.filter(movie_added_by=user, movie_accepted_by__isnull=False)
-        my_people = Person.objects.filter(person_added_by=user, person_accepted_by__isnull=False)
-        my_genres = Genre.objects.filter(genre_added_by=user, genre_accepted_by__isnull=False)
+        my_movies = Movie.objects.filter(
+            movie_added_by=user, movie_accepted_by__isnull=False
+        )
+        my_people = Person.objects.filter(
+            person_added_by=user, person_accepted_by__isnull=False
+        )
+        my_genres = Genre.objects.filter(
+            genre_added_by=user, genre_accepted_by__isnull=False
+        )
 
         rated_movies = MovieRating.objects.filter(user=user)
         rated_people = PersonRating.objects.filter(user=user)
@@ -483,10 +553,10 @@ class MyPlaceView(ActivateUserCheck, View):
             "deleted": deleted,
             "rejected": rejected,
             "rated_movies": rated_movies,
-            "rated_people": rated_people
+            "rated_people": rated_people,
         }
         return render(request, "my_place.html", ctx)
-    
+
     def post(self, request):
         user = User.objects.get(pk=request.session.get("user_id"))
         userrank = UserRank.objects.get(user=user)
@@ -498,11 +568,19 @@ class MyPlaceView(ActivateUserCheck, View):
 class RatedMoviesView(ActivateUserCheck, View):
     def get(self, request):
         user = User.objects.get(pk=request.session.get("user_id"))
-        rated_movies = MovieRating.objects.filter(user=user).order_by("-rating__rating", "movie__year")
+        rated_movies = MovieRating.objects.filter(user=user).order_by(
+            "-rating__rating", "movie__year"
+        )
         rated_people = PersonRating.objects.filter(user=user)
-        my_movies = Movie.objects.filter(movie_added_by=user, movie_accepted_by__isnull=False)
-        my_people = Person.objects.filter(person_added_by=user, person_accepted_by__isnull=False)
-        my_genres = Genre.objects.filter(genre_added_by=user, genre_accepted_by__isnull=False)
+        my_movies = Movie.objects.filter(
+            movie_added_by=user, movie_accepted_by__isnull=False
+        )
+        my_people = Person.objects.filter(
+            person_added_by=user, person_accepted_by__isnull=False
+        )
+        my_genres = Genre.objects.filter(
+            genre_added_by=user, genre_accepted_by__isnull=False
+        )
 
         paginator = Paginator(rated_movies, 10)
         page = request.GET.get("page")
@@ -513,7 +591,7 @@ class RatedMoviesView(ActivateUserCheck, View):
             "rated_people": rated_people,
             "my_movies": my_movies,
             "my_people": my_people,
-            "my_genres": my_genres
+            "my_genres": my_genres,
         }
         return render(request, "rated_movies.html", ctx)
 
@@ -521,11 +599,19 @@ class RatedMoviesView(ActivateUserCheck, View):
 class RatedPeopleView(ActivateUserCheck, View):
     def get(self, request):
         user = User.objects.get(pk=request.session.get("user_id"))
-        rated_people = PersonRating.objects.filter(user=user).order_by("-rating__rating", "person__last_name")
+        rated_people = PersonRating.objects.filter(user=user).order_by(
+            "-rating__rating", "person__last_name"
+        )
         rated_movies = MovieRating.objects.filter(user=user)
-        my_movies = Movie.objects.filter(movie_added_by=user, movie_accepted_by__isnull=False)
-        my_people = Person.objects.filter(person_added_by=user, person_accepted_by__isnull=False)
-        my_genres = Genre.objects.filter(genre_added_by=user, genre_accepted_by__isnull=False)
+        my_movies = Movie.objects.filter(
+            movie_added_by=user, movie_accepted_by__isnull=False
+        )
+        my_people = Person.objects.filter(
+            person_added_by=user, person_accepted_by__isnull=False
+        )
+        my_genres = Genre.objects.filter(
+            genre_added_by=user, genre_accepted_by__isnull=False
+        )
 
         paginator = Paginator(rated_people, 10)
         page = request.GET.get("page")
@@ -536,7 +622,7 @@ class RatedPeopleView(ActivateUserCheck, View):
             "rated_people": rated_people,
             "my_movies": my_movies,
             "my_people": my_people,
-            "my_genres": my_genres
+            "my_genres": my_genres,
         }
         return render(request, "rated_people.html", ctx)
 
@@ -545,15 +631,23 @@ class UserDetailsView(View):
     def get(self, request, user_id):
         soldier = User.objects.get(pk=user_id)
         check_rank(soldier)
-        westerns = Movie.objects.filter(movie_added_by=soldier, movie_accepted_by__isnull=False)
+        westerns = Movie.objects.filter(
+            movie_added_by=soldier, movie_accepted_by__isnull=False
+        )
         westerns_count = len([i for i in westerns if i.movie_accepted_by])
-        people = Person.objects.filter(person_added_by=soldier, person_accepted_by__isnull=False)
+        people = Person.objects.filter(
+            person_added_by=soldier, person_accepted_by__isnull=False
+        )
         people_count = len([i for i in people if i.person_accepted_by])
-        genres = Genre.objects.filter(genre_added_by=soldier, genre_accepted_by__isnull=False)
+        genres = Genre.objects.filter(
+            genre_added_by=soldier, genre_accepted_by__isnull=False
+        )
         genres_count = len([i for i in genres if i.genre_accepted_by])
         links = len(Article.objects.filter(article_added_by=soldier))
         roles = len(PersonMovie.objects.filter(personmovie_added_by=soldier))
-        ratings = len(PersonRating.objects.filter(user=soldier)) + len(MovieRating.objects.filter(user=soldier))
+        ratings = len(PersonRating.objects.filter(user=soldier)) + len(
+            MovieRating.objects.filter(user=soldier)
+        )
         notes = westerns_count + people_count + genres_count + links
         rejected = Deleted.objects.filter(added_by=soldier)
 
@@ -580,18 +674,23 @@ class UserDetailsView(View):
             "accepted_notes": accepted_notes,
             "userrank": userrank,
             "deleted": deleted,
-            "rejected": rejected
+            "rejected": rejected,
         }
         return render(request, "user_details.html", ctx)
-
 
 
 class AddedMoviesView(View):
     def get(self, request, soldier_id):
         soldier = User.objects.get(pk=soldier_id)
-        movies = Movie.objects.filter(movie_accepted_by__isnull=False, movie_added_by=soldier).order_by("year")
-        my_people = Person.objects.filter(person_added_by=soldier, person_accepted_by__isnull=False).order_by("last_name")
-        my_genres = Genre.objects.filter(genre_added_by=soldier, genre_accepted_by__isnull=False).order_by("name")
+        movies = Movie.objects.filter(
+            movie_accepted_by__isnull=False, movie_added_by=soldier
+        ).order_by("year")
+        my_people = Person.objects.filter(
+            person_added_by=soldier, person_accepted_by__isnull=False
+        ).order_by("last_name")
+        my_genres = Genre.objects.filter(
+            genre_added_by=soldier, genre_accepted_by__isnull=False
+        ).order_by("name")
 
         paginator = Paginator(movies, 10)
         page = request.GET.get("page")
@@ -601,17 +700,23 @@ class AddedMoviesView(View):
             "soldier": soldier,
             "movies": movies,
             "my_people": my_people,
-            "my_genres": my_genres
+            "my_genres": my_genres,
         }
         return render(request, "added_movies.html", ctx)
-    
+
 
 class AddedPeopleView(View):
     def get(self, request, soldier_id):
         soldier = User.objects.get(pk=soldier_id)
-        people = Person.objects.filter(person_added_by=soldier, person_accepted_by__isnull=False).order_by("last_name")
-        my_movies = Movie.objects.filter(movie_added_by=soldier, movie_accepted_by__isnull=False)
-        my_genres = Genre.objects.filter(genre_added_by=soldier, genre_accepted_by__isnull=False)
+        people = Person.objects.filter(
+            person_added_by=soldier, person_accepted_by__isnull=False
+        ).order_by("last_name")
+        my_movies = Movie.objects.filter(
+            movie_added_by=soldier, movie_accepted_by__isnull=False
+        )
+        my_genres = Genre.objects.filter(
+            genre_added_by=soldier, genre_accepted_by__isnull=False
+        )
 
         paginator = Paginator(people, 10)
         page = request.GET.get("page")
@@ -621,7 +726,7 @@ class AddedPeopleView(View):
             "soldier": soldier,
             "people": people,
             "my_movies": my_movies,
-            "my_genres": my_genres
+            "my_genres": my_genres,
         }
         return render(request, "added_people.html", ctx)
 
@@ -629,9 +734,15 @@ class AddedPeopleView(View):
 class AddedGenresView(View):
     def get(self, request, soldier_id):
         soldier = User.objects.get(pk=soldier_id)
-        my_movies = Movie.objects.filter(movie_accepted_by__isnull=False, movie_added_by=soldier)
-        my_people = Person.objects.filter(person_added_by=soldier, person_accepted_by__isnull=False)
-        genres = Genre.objects.filter(genre_added_by=soldier, genre_accepted_by__isnull=False).order_by("name")
+        my_movies = Movie.objects.filter(
+            movie_accepted_by__isnull=False, movie_added_by=soldier
+        )
+        my_people = Person.objects.filter(
+            person_added_by=soldier, person_accepted_by__isnull=False
+        )
+        genres = Genre.objects.filter(
+            genre_added_by=soldier, genre_accepted_by__isnull=False
+        ).order_by("name")
 
         paginator = Paginator(genres, 10)
         page = request.GET.get("page")
@@ -641,7 +752,7 @@ class AddedGenresView(View):
             "soldier": soldier,
             "genres": genres,
             "my_movies": my_movies,
-            "my_people": my_people
+            "my_people": my_people,
         }
         return render(request, "added_genres.html", ctx)
 
@@ -650,16 +761,20 @@ class GivePromotionView(SuperUserCheck, View):
     def get(self, request, soldier_id):
         soldier = User.objects.get(id=soldier_id)
         userrank = UserRank.objects.get(user=soldier)
-        ctx = {
-            "userrank": userrank,
-            "soldier": soldier
-        }
+        ctx = {"userrank": userrank, "soldier": soldier}
         return render(request, "give_promotion.html", ctx)
-    
+
     def post(self, request, soldier_id):
         soldier = User.objects.get(id=soldier_id)
         userrank = UserRank.objects.get(user=soldier)
         rank = Rank.objects.get(name="porucznik")
+        rank2 = Rank.objects.get(name="generał")
+        if userrank.rank == "pułkownik":
+            userrank.rank = rank2
+            userrank.promotion_ask = False
+            soldier.is_superuser = True
+            userrank.save()
+            soldier.save()
         userrank.rank = rank
         userrank.promotion_ask = False
         soldier.is_staff = True
@@ -672,7 +787,9 @@ class GivePromotionView(SuperUserCheck, View):
 class PromotionAsksView(ActivateUserCheck, View):
     def get(self, request):
         promotion_asks = UserRank.objects.filter(promotion_ask=True)
-        return render(request, "promotion_asks.html", {"promotion_asks": promotion_asks})
+        return render(
+            request, "promotion_asks.html", {"promotion_asks": promotion_asks}
+        )
 
 
 class StatsView(View):
@@ -681,9 +798,23 @@ class StatsView(View):
         civils = User.objects.filter(is_active=False)
         users = len([i for i in User.objects.filter(is_active=True)]) - 3
         fort = len(civils) + users
-        officers = len([i for i in User.objects.filter(is_staff=True, is_superuser=False) if i.username != "westerny"])
+        officers = len(
+            [
+                i
+                for i in User.objects.filter(is_staff=True, is_superuser=False)
+                if i.username != "westerny"
+            ]
+        )
         commanders = User.objects.filter(is_superuser=True)
-        cavaliers = len([i for i in User.objects.filter(is_active=True, is_staff=False, is_superuser=False) if i.username not in ("west", "Andrzej Bakuła")])
+        cavaliers = len(
+            [
+                i
+                for i in User.objects.filter(
+                    is_active=True, is_staff=False, is_superuser=False
+                )
+                if i.username not in ("west", "Andrzej Bakuła")
+            ]
+        )
         westerns = Movie.objects.filter(movie_accepted_by__isnull=False)
         people = Person.objects.filter(person_accepted_by__isnull=False)
         genres = Genre.objects.filter(genre_accepted_by__isnull=False)
@@ -697,7 +828,9 @@ class StatsView(View):
         ratings = movie_ratings + people_ratings
         roles = len([i for i in PersonMovie.objects.all()])
         last_movie_ratings = [i for i in MovieRating.objects.all().order_by("-id")][:3]
-        last_person_ratings = [i for i in PersonRating.objects.all().order_by("-id")][:3]
+        last_person_ratings = [i for i in PersonRating.objects.all().order_by("-id")][
+            :3
+        ]
         newest_soldier = User.objects.all().order_by("-id")[0]
         last_roles = PersonMovie.objects.all().order_by("-id")[:2]
 
@@ -722,7 +855,7 @@ class StatsView(View):
             "last_person_ratings": last_person_ratings,
             "last_movie_ratings": last_movie_ratings,
             "newest_soldier": newest_soldier,
-            "last_roles": last_roles
+            "last_roles": last_roles,
         }
         return render(request, "stats.html", ctx)
 
@@ -732,10 +865,24 @@ class MoviesView(View):
         user = None
         if request.session.get("user_id"):
             user = User.objects.get(pk=int(request.session.get("user_id")))
-        movies = Movie.objects.filter(movie_accepted_by__isnull=False).order_by("year", "title")
+        movies = Movie.objects.filter(movie_accepted_by__isnull=False).order_by(
+            "year", "title"
+        )
         waiting_movies = len([i for i in Movie.objects.filter(movie_accepted_by=None)])
-        waiting_movies_user = len([i for i in Movie.objects.filter(movie_accepted_by=None) if i.movie_added_by == user])
-        waiting_articles = len([i for i in Article.objects.filter(is_accepted=False) if len(i.movie_set.all()) > 0])
+        waiting_movies_user = len(
+            [
+                i
+                for i in Movie.objects.filter(movie_accepted_by=None)
+                if i.movie_added_by == user
+            ]
+        )
+        waiting_articles = len(
+            [
+                i
+                for i in Article.objects.filter(is_accepted=False)
+                if len(i.movie_set.all()) > 0
+            ]
+        )
 
         paginator = Paginator(movies, 10)
         page = request.GET.get("page")
@@ -745,7 +892,7 @@ class MoviesView(View):
             "movies": movies,
             "waiting_movies": waiting_movies,
             "waiting_movies_user": waiting_movies_user,
-            "waiting_articles": waiting_articles
+            "waiting_articles": waiting_articles,
         }
         return render(request, "movies.html", ctx)
 
@@ -757,8 +904,20 @@ class MoviesNewestView(View):
             user = User.objects.get(pk=int(request.session.get("user_id")))
         movies = Movie.objects.filter(movie_accepted_by__isnull=False).order_by("-id")
         waiting_movies = len([i for i in Movie.objects.filter(movie_accepted_by=None)])
-        waiting_movies_user = len([i for i in Movie.objects.filter(movie_accepted_by=None) if i.movie_added_by == user])
-        waiting_articles = len([i for i in Article.objects.filter(is_accepted=False) if len(i.movie_set.all()) > 0])
+        waiting_movies_user = len(
+            [
+                i
+                for i in Movie.objects.filter(movie_accepted_by=None)
+                if i.movie_added_by == user
+            ]
+        )
+        waiting_articles = len(
+            [
+                i
+                for i in Article.objects.filter(is_accepted=False)
+                if len(i.movie_set.all()) > 0
+            ]
+        )
 
         paginator = Paginator(movies, 10)
         page = request.GET.get("page")
@@ -768,7 +927,7 @@ class MoviesNewestView(View):
             "movies": movies,
             "waiting_movies": waiting_movies,
             "waiting_movies_user": waiting_movies_user,
-            "waiting_articles": waiting_articles
+            "waiting_articles": waiting_articles,
         }
         return render(request, "movies_newest.html", ctx)
 
@@ -778,9 +937,15 @@ class MyMoviesView(ActivateUserCheck, View):
         user = None
         if request.session.get("user_id"):
             user = User.objects.get(pk=int(request.session.get("user_id")))
-        movies = Movie.objects.filter(movie_accepted_by__isnull=False, movie_added_by=user).order_by("year")
-        my_people = Person.objects.filter(person_added_by=user, person_accepted_by__isnull=False)
-        my_genres = Genre.objects.filter(genre_added_by=user, genre_accepted_by__isnull=False)
+        movies = Movie.objects.filter(
+            movie_accepted_by__isnull=False, movie_added_by=user
+        ).order_by("year")
+        my_people = Person.objects.filter(
+            person_added_by=user, person_accepted_by__isnull=False
+        )
+        my_genres = Genre.objects.filter(
+            genre_added_by=user, genre_accepted_by__isnull=False
+        )
         rated_movies = MovieRating.objects.filter(user=user)
         rated_people = PersonRating.objects.filter(user=user)
 
@@ -793,21 +958,27 @@ class MyMoviesView(ActivateUserCheck, View):
             "my_people": my_people,
             "my_genres": my_genres,
             "rated_movies": rated_movies,
-            "rated_people": rated_people
+            "rated_people": rated_people,
         }
         return render(request, "my_movies.html", ctx)
-    
+
 
 class WaitingMoviesView(StaffMemberCheck, View):
     def get(self, request):
         movies = Movie.objects.filter(movie_accepted_by=None).order_by("year")
-        movie_waiting_articles = set([i.movie_set.all()[0] for i in Article.objects.filter(is_accepted=False) if len(i.movie_set.all()) > 0])
+        movie_waiting_articles = set(
+            [
+                i.movie_set.all()[0]
+                for i in Article.objects.filter(is_accepted=False)
+                if len(i.movie_set.all()) > 0
+            ]
+        )
         waiting_articles = len(movie_waiting_articles)
 
         ctx = {
             "movies": movies,
             "movie_waiting_articles": movie_waiting_articles,
-            "waiting_articles": waiting_articles
+            "waiting_articles": waiting_articles,
         }
 
         return render(request, "waiting_movies.html", ctx)
@@ -822,19 +993,13 @@ class SearchMovieView(View):
         form = SearchMovieForm(request.POST)
         if form.is_valid():
             text = form.cleaned_data["text"]
-            movies = Movie.objects.filter(title__icontains=text).order_by(
-                "title"
-            )
+            movies = Movie.objects.filter(title__icontains=text).order_by("title")
 
             paginator = Paginator(movies, 10)
             page = request.GET.get("page")
             movies = paginator.get_page(page)
 
-            ctx = {
-                "form": form,
-                "movies": movies,
-                "post": request.POST
-                }
+            ctx = {"form": form, "movies": movies, "post": request.POST}
             return render(request, "search_movie.html", ctx)
 
 
@@ -848,33 +1013,35 @@ class SearchMyMovieView(ActivateUserCheck, View):
         user = User.objects.get(pk=int(request.session.get("user_id")))
         if form.is_valid():
             text = form.cleaned_data["text"]
-            movies = Movie.objects.filter(title__icontains=text, movie_added_by=user).order_by(
-                "title"
-            )
+            movies = Movie.objects.filter(
+                title__icontains=text, movie_added_by=user
+            ).order_by("title")
 
             paginator = Paginator(movies, 10)
             page = request.GET.get("page")
             movies = paginator.get_page(page)
 
-            ctx = {
-                "form": form,
-                "movies": movies,
-                "post": request.POST
-                }
+            ctx = {"form": form, "movies": movies, "post": request.POST}
             return render(request, "search_my_movie.html", ctx)
 
 
 class MoviesRankView(View):
     def get(self, request):
-        movies = Movie.objects.annotate(num_movies=Count("movierating")).filter(movie_accepted_by__isnull=False, movie_rating__isnull=False, num_movies__gt=9).order_by("-movie_rating", "-num_movies", "title")
+        movies = (
+            Movie.objects.annotate(num_movies=Count("movierating"))
+            .filter(
+                movie_accepted_by__isnull=False,
+                movie_rating__isnull=False,
+                num_movies__gt=9,
+            )
+            .order_by("-movie_rating", "-num_movies", "title")
+        )
 
         paginator = Paginator(movies, 10)
         page = request.GET.get("page")
         movies = paginator.get_page(page)
 
-        ctx = {
-            "movies": movies
-        }
+        ctx = {"movies": movies}
         return render(request, "movies_rank.html", ctx)
 
 
@@ -882,7 +1049,7 @@ class AddMovieView(ActivateUserCheck, View):
     def get(self, request):
         form = AddMovieForm()
         return render(request, "add_movie.html", {"form": form})
-    
+
     def post(self, request):
         form = AddMovieForm(request.POST)
         if form.is_valid():
@@ -902,7 +1069,7 @@ class AddMovieView(ActivateUserCheck, View):
                 ctx = {
                     "error_message": "Taki western jest już w bazie.",
                     "form": form,
-                    "data": request.POST
+                    "data": request.POST,
                 }
                 return render(request, "add_movie.html", ctx)
             else:
@@ -914,7 +1081,7 @@ class AddMovieView(ActivateUserCheck, View):
                         movie_description=data["description"],
                         movie_image=request.FILES.get("image"),
                         movie_added_by=user,
-                        movie_accepted_by=user
+                        movie_accepted_by=user,
                     )
                     for i in director:
                         movie.director.add(i)
@@ -940,7 +1107,7 @@ class AddMovieView(ActivateUserCheck, View):
                         year=year,
                         movie_description=data["description"],
                         movie_image=request.FILES.get("image"),
-                        movie_added_by=user
+                        movie_added_by=user,
                     )
                     for i in director:
                         movie.director.add(i)
@@ -973,13 +1140,15 @@ class MovieDetailsView(View):
         movierating = MovieRating.objects.filter(movie=movie_id)
         sum_movierating = round(sum([i.rating.rating for i in movierating]), 2)
         if len(movierating) > 0:
-            rating = round(sum_movierating/len(movierating), 2)
+            rating = round(sum_movierating / len(movierating), 2)
         for i in movierating:
             if i.user == user:
                 user_rating = i.rating
         form = RatingForm()
         articles = Article.objects.filter(movie__id=movie_id)
-        user_waiting_articles = Article.objects.filter(article_added_by=user, is_accepted=False)
+        user_waiting_articles = Article.objects.filter(
+            article_added_by=user, is_accepted=False
+        )
         ctx = {
             "movie": movie,
             "form": form,
@@ -987,10 +1156,10 @@ class MovieDetailsView(View):
             "rating": rating,
             "articles": articles,
             "len_movierating": len(movierating),
-            "user_waiting_articles": user_waiting_articles
+            "user_waiting_articles": user_waiting_articles,
         }
         return render(request, "movie_details.html", ctx)
-    
+
     def post(self, request, movie_id):
         form = RatingForm(request.POST)
         if form.is_valid():
@@ -998,14 +1167,16 @@ class MovieDetailsView(View):
             user = User.objects.get(pk=int(request.session.get("user_id")))
             user_rating = int(request.POST.get("rating"))
             rating = Rating.objects.get(id=user_rating)
-            movierating = MovieRating.objects.create(user=user, rating=rating, movie=movie)
+            movierating = MovieRating.objects.create(
+                user=user, rating=rating, movie=movie
+            )
             rating = None
             movierating = MovieRating.objects.filter(movie=movie_id)
             sum_movierating = round(sum([i.rating.rating for i in movierating]), 2)
             if len(movierating) > 0:
-                rating = round(sum_movierating/len(movierating), 2)
+                rating = round(sum_movierating / len(movierating), 2)
             movie.movie_rating = rating
-            movie.save() 
+            movie.save()
         return redirect(f"/movie_details/{movie.id}")
 
 
@@ -1013,7 +1184,11 @@ class EditMovieView(ActivateUserCheck, View):
     def get(self, request, movie_id):
         movie = Movie.objects.get(id=movie_id)
         user = User.objects.get(pk=int(request.session.get("user_id")))
-        if (movie.movie_added_by == user and movie.movie_edited_by == None) or (movie.movie_added_by == user and not movie.movie_edited_by.is_staff) or user.is_staff:
+        if (
+            (movie.movie_added_by == user and movie.movie_edited_by == None)
+            or (movie.movie_added_by == user and not movie.movie_edited_by.is_staff)
+            or user.is_staff
+        ):
             initial_data = {
                 "title": movie.title,
                 "org_title": movie.org_title,
@@ -1023,16 +1198,13 @@ class EditMovieView(ActivateUserCheck, View):
                 "screenplay": [i for i in movie.screenplay.all()],
                 "music": [i for i in movie.music.all()],
                 "cinema": [i for i in movie.cinema.all()],
-                "genre": [i for i in movie.genre.all()]
+                "genre": [i for i in movie.genre.all()],
             }
             form = EditMovieForm(initial=initial_data)
-            ctx = {
-                "movie": movie,
-                "form": form
-            }
+            ctx = {"movie": movie, "form": form}
             return render(request, "edit_movie.html", ctx)
         return redirect("/movies")
-    
+
     def post(self, request, movie_id):
         form = EditMovieForm(request.POST)
         if form.is_valid():
@@ -1063,14 +1235,14 @@ class EditMovieView(ActivateUserCheck, View):
                     "screenplay": [i for i in movie.screenplay.all()],
                     "music": [i for i in movie.music.all()],
                     "cinema": [i for i in movie.cinema.all()],
-                    "genre": [i for i in movie.genre.all()]
+                    "genre": [i for i in movie.genre.all()],
                 }
                 form = EditMovieForm(initial=initial_data)
                 ctx = {
                     "message": "Film o tym tytule jest już w bazie.",
                     "movie": movie,
                     "form": form,
-                    "data": request.POST
+                    "data": request.POST,
                 }
                 return render(request, "edit_movie.html", ctx)
             user = User.objects.get(pk=int(request.session.get("user_id")))
@@ -1090,10 +1262,7 @@ class EditMovieView(ActivateUserCheck, View):
                 movie.movie_accepted_by = user
             movie.save()
             message = "Edycja zakończona sukcesem"
-            ctx = {
-                "movie": movie,
-                "message": message
-            }
+            ctx = {"movie": movie, "message": message}
             return redirect(f"/movie_details/{movie.id}")
 
 
@@ -1101,7 +1270,7 @@ class DeleteMovieView(StaffMemberCheck, View):
     def get(self, request, movie_id):
         movie = Movie.objects.get(id=movie_id)
         return render(request, "delete_movie.html", {"movie": movie})
-    
+
     def post(self, request, movie_id):
         movie = Movie.objects.get(id=movie_id)
         user = User.objects.get(pk=int(request.session.get("user_id")))
@@ -1116,15 +1285,21 @@ class DeleteMovieView(StaffMemberCheck, View):
         for i in articles:
             i.delete()
         Deleted.objects.create(added_by=soldier, deleted_by=user)
-        movie.delete()        
+        movie.delete()
         email_subject = "Wpis został usunięty."
-        email_body = "Baczność " + soldier.username + "! Twój wpis o " + movie.title + " został usunięty, ponieważ nie nadawał się do akceptacji."
+        email_body = (
+            "Baczność "
+            + soldier.username
+            + "! Twój wpis o "
+            + movie.title
+            + " został usunięty, ponieważ nie nadawał się do akceptacji."
+        )
         email = EmailMessage(
             email_subject,
             email_body,
             "noreply@semycolon.com",
             [soldier.email],
-            )            
+        )
         email.send(fail_silently=False)
         return redirect("/movies")
 
@@ -1133,7 +1308,7 @@ class AcceptMovieView(StaffMemberCheck, View):
     def get(self, request, movie_id):
         movie = Movie.objects.get(id=movie_id)
         return render(request, "accept_movie.html", {"movie": movie})
-    
+
     def post(self, request, movie_id):
         movie = Movie.objects.get(id=movie_id)
         user = User.objects.get(pk=int(request.session.get("user_id")))
@@ -1146,12 +1321,9 @@ class GiveEditMovieView(StaffMemberCheck, View):
     def get(self, request, movie_id, soldier_id):
         movie = Movie.objects.get(id=movie_id)
         soldier = User.objects.get(id=soldier_id)
-        ctx = {
-            "movie": movie,
-            "soldier": soldier
-        }
+        ctx = {"movie": movie, "soldier": soldier}
         return render(request, "give_edit_movie.html", ctx)
-    
+
     def post(self, request, movie_id, soldier_id):
         movie = Movie.objects.get(id=movie_id)
         soldier = User.objects.get(id=soldier_id)
@@ -1169,10 +1341,7 @@ class GenresView(View):
         page = request.GET.get("page")
         genres = paginator.get_page(page)
 
-        ctx = {
-            "genres": genres,
-            "waiting_genres": waiting_genres
-        }
+        ctx = {"genres": genres, "waiting_genres": waiting_genres}
         return render(request, "genres.html", ctx)
 
 
@@ -1181,9 +1350,15 @@ class MyGenresView(StaffMemberCheck, View):
         user = None
         if request.session.get("user_id"):
             user = User.objects.get(pk=int(request.session.get("user_id")))
-        my_movies = Movie.objects.filter(movie_accepted_by__isnull=False, movie_added_by=user).order_by("year")
-        my_people = Person.objects.filter(person_added_by=user, person_accepted_by__isnull=False)
-        genres = Genre.objects.filter(genre_added_by=user, genre_accepted_by__isnull=False)
+        my_movies = Movie.objects.filter(
+            movie_accepted_by__isnull=False, movie_added_by=user
+        ).order_by("year")
+        my_people = Person.objects.filter(
+            person_added_by=user, person_accepted_by__isnull=False
+        )
+        genres = Genre.objects.filter(
+            genre_added_by=user, genre_accepted_by__isnull=False
+        )
         rated_movies = MovieRating.objects.filter(user=user)
         rated_people = PersonRating.objects.filter(user=user)
 
@@ -1196,7 +1371,7 @@ class MyGenresView(StaffMemberCheck, View):
             "my_movies": my_movies,
             "my_people": my_people,
             "rated_movies": rated_movies,
-            "rated_people": rated_people
+            "rated_people": rated_people,
         }
         return render(request, "my_genres.html", ctx)
 
@@ -1205,7 +1380,7 @@ class AddGenreView(StaffMemberCheck, View):
     def get(self, request):
         form = AddGenreForm()
         return render(request, "add_genre.html", {"form": form})
-    
+
     def post(self, request):
         form = AddGenreForm(request.POST)
         if form.is_valid():
@@ -1216,7 +1391,7 @@ class AddGenreView(StaffMemberCheck, View):
                 ctx = {
                     "error_message": "Ten gatunek już jest w bazie.",
                     "form": form,
-                    "data": request.POST
+                    "data": request.POST,
                 }
                 return render(request, "add_genre.html", ctx)
             else:
@@ -1227,15 +1402,17 @@ class AddGenreView(StaffMemberCheck, View):
                         genre_description=request.POST.get("description"),
                         genre_image=request.FILES.get("image"),
                         genre_added_by=user,
-                        genre_accepted_by=user
+                        genre_accepted_by=user,
                     )
                     message = "Dodano nowy gatunek"
                     genres = Genre.objects.all().order_by("name")
-                    waiting_genres = len([i for i in Genre.objects.all() if i.genre_accepted_by == None])
+                    waiting_genres = len(
+                        [i for i in Genre.objects.all() if i.genre_accepted_by == None]
+                    )
                     ctx = {
                         "message": message,
                         "genres": genres,
-                        "waiting_genres": waiting_genres
+                        "waiting_genres": waiting_genres,
                     }
                     return render(request, "genres.html", ctx)
                 else:
@@ -1243,15 +1420,17 @@ class AddGenreView(StaffMemberCheck, View):
                         name=genre,
                         genre_description=request.POST.get("description"),
                         genre_image=request.FILES.get("image"),
-                        genre_added_by=user
+                        genre_added_by=user,
                     )
                     message = "Twoja propozycja czeka na akceptację"
                     genres = Genre.objects.all().order_by("name")
-                    waiting_genres = len([i for i in Genre.objects.all() if i.genre_accepted_by == None])
+                    waiting_genres = len(
+                        [i for i in Genre.objects.all() if i.genre_accepted_by == None]
+                    )
                     ctx = {
                         "message": message,
                         "genres": genres,
-                        "waiting_genres": waiting_genres
+                        "waiting_genres": waiting_genres,
                     }
                     return render(request, "genres.html", ctx)
 
@@ -1259,7 +1438,9 @@ class AddGenreView(StaffMemberCheck, View):
 class GenreDetailsView(View):
     def get(self, request, genre_id):
         genre = Genre.objects.get(id=genre_id)
-        movies = Movie.objects.filter(genre=genre, movie_accepted_by__isnull=False).order_by("year")
+        movies = Movie.objects.filter(
+            genre=genre, movie_accepted_by__isnull=False
+        ).order_by("year")
         articles = [i for i in Article.objects.filter(genre__id=genre_id)]
         articles_check = len(articles)
 
@@ -1271,7 +1452,7 @@ class GenreDetailsView(View):
             "genre": genre,
             "articles": articles,
             "articles_check": articles_check,
-            "movies": movies
+            "movies": movies,
         }
         return render(request, "genre_details.html", ctx)
 
@@ -1279,17 +1460,11 @@ class GenreDetailsView(View):
 class EditGenreView(StaffMemberCheck, View):
     def get(self, request, genre_id):
         genre = Genre.objects.get(id=genre_id)
-        initial_data = {
-            "name": genre.name,
-            "description": genre.genre_description
-        }
+        initial_data = {"name": genre.name, "description": genre.genre_description}
         form = EditGenreForm(initial=initial_data)
-        ctx = {
-            "genre": genre,
-            "form": form
-        }
+        ctx = {"genre": genre, "form": form}
         return render(request, "edit_genre.html", ctx)
-    
+
     def post(self, request, genre_id):
         form = EditGenreForm(request.POST)
         if form.is_valid():
@@ -1302,14 +1477,14 @@ class EditGenreView(StaffMemberCheck, View):
             if genre_name in genres:
                 initial_data = {
                     "name": genre.name,
-                    "description": genre.genre_description
+                    "description": genre.genre_description,
                 }
                 form = EditGenreForm(initial=initial_data)
                 ctx = {
                     "message": f"Gatunek {genre_name} już jest w bazie.",
                     "genre": genre,
                     "form": form,
-                    "data": request.POST
+                    "data": request.POST,
                 }
                 return render(request, "edit_genre.html", ctx)
             user = User.objects.get(pk=int(request.session.get("user_id")))
@@ -1322,16 +1497,9 @@ class EditGenreView(StaffMemberCheck, View):
                 genre.genre_accepted_by = user
             genre.save()
             message = "Edycja zakończona sukcesem"
-            initial_data = {
-                "name": genre.name,
-                "description": genre.genre_description
-            }
+            initial_data = {"name": genre.name, "description": genre.genre_description}
             form = EditGenreForm(initial=initial_data)
-            ctx = {
-                "genre": genre,
-                "form": form,
-                "message": message
-            }
+            ctx = {"genre": genre, "form": form, "message": message}
             return redirect(f"/genre_details/{genre.id}")
 
 
@@ -1339,7 +1507,7 @@ class DeleteGenreView(SuperUserCheck, View):
     def get(self, request, genre_id):
         genre = Genre.objects.get(id=genre_id)
         return render(request, "delete_genre.html", {"genre": genre})
-    
+
     def post(self, request, genre_id):
         genre = Genre.objects.get(id=genre_id)
         articles = Article.objects.filter(genre=genre)
@@ -1359,7 +1527,7 @@ class AcceptGenreView(SuperUserCheck, View):
     def get(self, request, genre_id):
         genre = Genre.objects.get(id=genre_id)
         return render(request, "accept_genre.html", {"genre": genre})
-    
+
     def post(self, request, genre_id):
         genre = Genre.objects.get(id=genre_id)
         user = User.objects.get(pk=int(request.session.get("user_id")))
@@ -1375,8 +1543,16 @@ class PeopleView(View):
             user = User.objects.get(pk=int(request.session.get("user_id")))
         people = Person.objects.all().order_by("last_name")
         waiting_people = Person.objects.filter(person_accepted_by=None)
-        waiting_people_user = Person.objects.filter(person_added_by=user, person_accepted_by=None)
-        waiting_articles = len([i for i in Article.objects.filter(is_accepted=False) if len(i.person_set.all()) > 0])
+        waiting_people_user = Person.objects.filter(
+            person_added_by=user, person_accepted_by=None
+        )
+        waiting_articles = len(
+            [
+                i
+                for i in Article.objects.filter(is_accepted=False)
+                if len(i.person_set.all()) > 0
+            ]
+        )
 
         paginator = Paginator(people, 10)
         page = request.GET.get("page")
@@ -1386,7 +1562,7 @@ class PeopleView(View):
             "people": people,
             "waiting_people": waiting_people,
             "waiting_people_user": waiting_people_user,
-            "waiting_articles": waiting_articles
+            "waiting_articles": waiting_articles,
         }
         return render(request, "people.html", ctx)
 
@@ -1398,8 +1574,16 @@ class PeopleNewestView(View):
             user = User.objects.get(pk=int(request.session.get("user_id")))
         people = Person.objects.all().order_by("-id")
         waiting_people = Person.objects.filter(person_accepted_by=None)
-        waiting_people_user = Person.objects.filter(person_added_by=user, person_accepted_by=None)
-        waiting_articles = len([i for i in Article.objects.filter(is_accepted=False) if len(i.person_set.all()) > 0])
+        waiting_people_user = Person.objects.filter(
+            person_added_by=user, person_accepted_by=None
+        )
+        waiting_articles = len(
+            [
+                i
+                for i in Article.objects.filter(is_accepted=False)
+                if len(i.person_set.all()) > 0
+            ]
+        )
 
         paginator = Paginator(people, 10)
         page = request.GET.get("page")
@@ -1409,7 +1593,7 @@ class PeopleNewestView(View):
             "people": people,
             "waiting_people": waiting_people,
             "waiting_people_user": waiting_people_user,
-            "waiting_articles": waiting_articles
+            "waiting_articles": waiting_articles,
         }
         return render(request, "people_newest.html", ctx)
 
@@ -1420,8 +1604,12 @@ class MyPeopleView(ActivateUserCheck, View):
         if request.session.get("user_id"):
             user = User.objects.get(pk=int(request.session.get("user_id")))
         people = Person.objects.filter(person_added_by=user).order_by("last_name")
-        my_movies = Movie.objects.filter(movie_added_by=user, movie_accepted_by__isnull=False)
-        my_genres = Genre.objects.filter(genre_added_by=user, genre_accepted_by__isnull=False)
+        my_movies = Movie.objects.filter(
+            movie_added_by=user, movie_accepted_by__isnull=False
+        )
+        my_genres = Genre.objects.filter(
+            genre_added_by=user, genre_accepted_by__isnull=False
+        )
         rated_movies = MovieRating.objects.filter(user=user)
         rated_people = PersonRating.objects.filter(user=user)
 
@@ -1434,7 +1622,7 @@ class MyPeopleView(ActivateUserCheck, View):
             "my_movies": my_movies,
             "my_genres": my_genres,
             "rated_movies": rated_movies,
-            "rated_people": rated_people
+            "rated_people": rated_people,
         }
         return render(request, "my_people.html", ctx)
 
@@ -1442,12 +1630,18 @@ class MyPeopleView(ActivateUserCheck, View):
 class WaitingPeopleView(StaffMemberCheck, View):
     def get(self, request):
         people = Person.objects.filter(person_accepted_by=None).order_by("last_name")
-        person_waiting_articles = set([i.person_set.all()[0] for i in Article.objects.filter(is_accepted=False) if len(i.person_set.all()) > 0])
+        person_waiting_articles = set(
+            [
+                i.person_set.all()[0]
+                for i in Article.objects.filter(is_accepted=False)
+                if len(i.person_set.all()) > 0
+            ]
+        )
         waiting_articles = len(person_waiting_articles)
         ctx = {
             "people": people,
             "person_waiting_articles": person_waiting_articles,
-            "waiting_articles": waiting_articles
+            "waiting_articles": waiting_articles,
         }
         return render(request, "waiting_people.html", ctx)
 
@@ -1463,13 +1657,15 @@ class PersonDetailsView(View):
         personrating = PersonRating.objects.filter(person=person_id)
         sum_personrating = round(sum([i.rating.rating for i in personrating]), 2)
         if len(personrating) > 0:
-            rating = round(sum_personrating/len(personrating), 2)
+            rating = round(sum_personrating / len(personrating), 2)
         for i in personrating:
             if i.user == user:
                 user_rating = i.rating
         form = RatingForm()
         articles = Article.objects.filter(person__id=person_id)
-        user_waiting_articles = Article.objects.filter(article_added_by=user, is_accepted=False)
+        user_waiting_articles = Article.objects.filter(
+            article_added_by=user, is_accepted=False
+        )
         ctx = {
             "person": person,
             "form": form,
@@ -1477,10 +1673,10 @@ class PersonDetailsView(View):
             "rating": rating,
             "articles": articles,
             "len_personrating": len(personrating),
-            "user_waiting_articles": user_waiting_articles
+            "user_waiting_articles": user_waiting_articles,
         }
         return render(request, "person_details.html", ctx)
-    
+
     def post(self, request, person_id):
         form = RatingForm(request.POST)
         if form.is_valid():
@@ -1488,14 +1684,16 @@ class PersonDetailsView(View):
             user = User.objects.get(pk=int(request.session.get("user_id")))
             user_rating = int(request.POST.get("rating"))
             rating = Rating.objects.get(id=user_rating)
-            personrating = PersonRating.objects.create(user=user, rating=rating, person=person)
+            personrating = PersonRating.objects.create(
+                user=user, rating=rating, person=person
+            )
             rating = None
             personrating = PersonRating.objects.filter(person=person_id)
             sum_personrating = round(sum([i.rating.rating for i in personrating]), 2)
             if len(personrating) > 0:
-                rating = round(sum_personrating/len(personrating), 2)
+                rating = round(sum_personrating / len(personrating), 2)
             person.person_rating = rating
-            person.save()                
+            person.save()
         return redirect(f"/person_details/{person.id}")
 
 
@@ -1514,13 +1712,9 @@ class SearchPersonView(View):
 
             paginator = Paginator(people, 10)
             page = request.GET.get("page")
-            people = paginator.get_page(page)        
+            people = paginator.get_page(page)
 
-            ctx = {
-                "form": form,
-                "people": people,
-                "post": request.POST
-                }
+            ctx = {"form": form, "people": people, "post": request.POST}
             return render(request, "search_person.html", ctx)
 
 
@@ -1534,33 +1728,35 @@ class SearchMyPersonView(ActivateUserCheck, View):
         user = User.objects.get(pk=int(request.session.get("user_id")))
         if form.is_valid():
             text = request.POST.get("text")
-            people = Person.objects.filter(last_name__icontains=text, person_added_by=user).order_by(
-                "last_name"
-            )
+            people = Person.objects.filter(
+                last_name__icontains=text, person_added_by=user
+            ).order_by("last_name")
 
             paginator = Paginator(people, 10)
             page = request.GET.get("page")
-            people = paginator.get_page(page)        
+            people = paginator.get_page(page)
 
-            ctx = {
-                "form": form,
-                "people": people,
-                "post": request.POST
-                }
+            ctx = {"form": form, "people": people, "post": request.POST}
             return render(request, "search_my_person.html", ctx)
 
 
 class PeopleRankView(View):
     def get(self, request):
-        people = Person.objects.annotate(num_rating=Count("personrating")).filter(person_rating__isnull=False, person_accepted_by__isnull=False, num_rating__gt=7).order_by("-person_rating","-num_rating", "last_name")
+        people = (
+            Person.objects.annotate(num_rating=Count("personrating"))
+            .filter(
+                person_rating__isnull=False,
+                person_accepted_by__isnull=False,
+                num_rating__gt=7,
+            )
+            .order_by("-person_rating", "-num_rating", "last_name")
+        )
 
         paginator = Paginator(people, 10)
         page = request.GET.get("page")
         people = paginator.get_page(page)
 
-        ctx = {
-            "people": people
-        }
+        ctx = {"people": people}
         return render(request, "people_rank.html", ctx)
 
 
@@ -1573,13 +1769,16 @@ class AddPersonView(ActivateUserCheck, View):
         form = AddPersonForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
-            names = [f"{i.first_name.title()} {i.last_name.title()}" for i in Person.objects.all()]
+            names = [
+                f"{i.first_name.title()} {i.last_name.title()}"
+                for i in Person.objects.all()
+            ]
             name = f"{data['first_name'].title()} {data['last_name'].title()}"
             if name in names:
                 ctx = {
                     "error_message": "Taka osoba jest już w bazie.",
                     "form": form,
-                    "data": request.POST
+                    "data": request.POST,
                 }
                 return render(request, "add_person.html", ctx)
             else:
@@ -1592,18 +1791,24 @@ class AddPersonView(ActivateUserCheck, View):
                         person_image=request.FILES.get("image"),
                         date_birth=data["date_birth"],
                         person_added_by=user,
-                        person_accepted_by=user
+                        person_accepted_by=user,
                     )
                     if data["date_death"] not in ("", None):
                         person.date_death = data["date_death"]
                     person.save()
                     message = "Dodano nową osobę"
                     people = Person.objects.all().order_by("last_name")
-                    waiting_people = len([i for i in Person.objects.all() if i.person_accepted_by == None])
+                    waiting_people = len(
+                        [
+                            i
+                            for i in Person.objects.all()
+                            if i.person_accepted_by == None
+                        ]
+                    )
                     ctx = {
                         "message": message,
                         "people": people,
-                        "waiting_people": waiting_people
+                        "waiting_people": waiting_people,
                     }
                     return render(request, "add_person.html", ctx)
                 else:
@@ -1613,18 +1818,24 @@ class AddPersonView(ActivateUserCheck, View):
                         person_description=request.POST.get("description"),
                         date_birth=data["date_birth"],
                         person_image=request.FILES.get("image"),
-                        person_added_by=user
+                        person_added_by=user,
                     )
                     if data["date_death"] not in ("", None):
                         person.date_death = data["date_death"]
                     person.save()
                     message = "Twoja propozycja czeka na akceptację"
                     people = Person.objects.all().order_by("last_name")
-                    waiting_people = len([i for i in Person.objects.all() if i.person_accepted_by == None])
+                    waiting_people = len(
+                        [
+                            i
+                            for i in Person.objects.all()
+                            if i.person_accepted_by == None
+                        ]
+                    )
                     ctx = {
                         "message": message,
                         "people": people,
-                        "waiting_people": waiting_people
+                        "waiting_people": waiting_people,
                     }
                     return render(request, "add_person.html", ctx)
 
@@ -1633,28 +1844,32 @@ class EditPersonView(ActivateUserCheck, View):
     def get(self, request, person_id):
         person = Person.objects.get(id=person_id)
         user = User.objects.get(pk=int(request.session.get("user_id")))
-        if (person.person_added_by == user and person.person_edited_by == None) or (person.person_added_by == user and not person.person_edited_by.is_staff) or user.is_staff:
+        if (
+            (person.person_added_by == user and person.person_edited_by == None)
+            or (person.person_added_by == user and not person.person_edited_by.is_staff)
+            or user.is_staff
+        ):
             initial_data = {
                 "first_name": person.first_name,
                 "last_name": person.last_name,
                 "description": person.person_description,
                 "date_birth": person.date_birth,
-                "date_death": person.date_death
+                "date_death": person.date_death,
             }
             form = EditPersonForm(initial=initial_data)
-            ctx = {
-                "person": person,
-                "form": form
-            }
+            ctx = {"person": person, "form": form}
             return render(request, "edit_person.html", ctx)
         return redirect("/people")
-    
+
     def post(self, request, person_id):
         form = EditPersonForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
             person = Person.objects.get(id=person_id)
-            names = [f"{i.first_name.title()} {i.last_name.title()}" for i in Person.objects.all()]
+            names = [
+                f"{i.first_name.title()} {i.last_name.title()}"
+                for i in Person.objects.all()
+            ]
             name = f"{person.first_name.title()} {person.last_name.title()}"
             if name in names:
                 names.remove(name)
@@ -1665,14 +1880,14 @@ class EditPersonView(ActivateUserCheck, View):
                     "last_name": person.last_name,
                     "description": person.person_description,
                     "date_birth": person.date_birth,
-                    "date_death": person.date_death
+                    "date_death": person.date_death,
                 }
                 form = EditPersonForm(initial=initial_data)
                 ctx = {
                     "message": f"Osoba {person_name} już jest w bazie.",
                     "person": person,
                     "form": form,
-                    "data": request.POST
+                    "data": request.POST,
                 }
                 return render(request, "edit_person.html", ctx)
             user = User.objects.get(pk=int(request.session.get("user_id")))
@@ -1696,14 +1911,10 @@ class EditPersonView(ActivateUserCheck, View):
                 "last_name": person.last_name,
                 "description": person.person_description,
                 "date_birth": person.date_birth,
-                "date_death": person.date_death
+                "date_death": person.date_death,
             }
             form = EditPersonForm(initial=initial_data)
-            ctx = {
-                "person": person,
-                "form": form,
-                "message": message
-            }
+            ctx = {"person": person, "form": form, "message": message}
             return redirect(f"/person_details/{person.id}")
 
 
@@ -1711,7 +1922,7 @@ class DeletePersonView(StaffMemberCheck, View):
     def get(self, request, person_id):
         person = Person.objects.get(id=person_id)
         return render(request, "delete_person.html", {"person": person})
-    
+
     def post(self, request, person_id):
         person = Person.objects.get(id=person_id)
         user = User.objects.get(pk=int(request.session.get("user_id")))
@@ -1728,13 +1939,21 @@ class DeletePersonView(StaffMemberCheck, View):
         Deleted.objects.create(added_by=soldier, deleted_by=user)
         person.delete()
         email_subject = "Wpis został usunięty."
-        email_body = "Baczność " + soldier.username + "! Twój wpis o " + person.first_name + " " + person.last_name + " został usunięty, ponieważ nie nadawał się do akceptacji."
+        email_body = (
+            "Baczność "
+            + soldier.username
+            + "! Twój wpis o "
+            + person.first_name
+            + " "
+            + person.last_name
+            + " został usunięty, ponieważ nie nadawał się do akceptacji."
+        )
         email = EmailMessage(
             email_subject,
             email_body,
             "noreply@semycolon.com",
             [soldier.email],
-            )            
+        )
         email.send(fail_silently=False)
         return redirect("/people")
 
@@ -1743,7 +1962,7 @@ class AcceptPersonView(StaffMemberCheck, View):
     def get(self, request, person_id):
         person = Person.objects.get(id=person_id)
         return render(request, "accept_person.html", {"person": person})
-    
+
     def post(self, request, person_id):
         person = Person.objects.get(id=person_id)
         user = User.objects.get(pk=int(request.session.get("user_id")))
@@ -1756,12 +1975,9 @@ class GiveEditPersonView(StaffMemberCheck, View):
     def get(self, request, person_id, soldier_id):
         person = Person.objects.get(id=person_id)
         soldier = User.objects.get(id=soldier_id)
-        ctx = {
-            "person": person,
-            "soldier": soldier
-        }
+        ctx = {"person": person, "soldier": soldier}
         return render(request, "give_edit_person.html", ctx)
-    
+
     def post(self, request, person_id, soldier_id):
         person = Person.objects.get(id=person_id)
         soldier = User.objects.get(id=soldier_id)
@@ -1774,12 +1990,9 @@ class AddArticleGenreView(StaffMemberCheck, View):
     def get(self, request, genre_id):
         genre = Genre.objects.get(id=genre_id)
         form = AddArticleForm()
-        ctx = {
-            "genre": genre,
-            "form": form
-        }
+        ctx = {"genre": genre, "form": form}
         return render(request, "add_article_genre.html", ctx)
-    
+
     def post(self, request, genre_id):
         form = AddArticleForm(request.POST)
         genre = Genre.objects.get(id=genre_id)
@@ -1790,28 +2003,21 @@ class AddArticleGenreView(StaffMemberCheck, View):
             links = [i.link for i in Article.objects.all()]
             if data["url"] in links:
                 message = "Taki link jest już w naszym archiwum."
-                ctx = {
-                    "form": form,
-                    "genre": genre,
-                    "message": message
-                }
+                ctx = {"form": form, "genre": genre, "message": message}
                 return render(request, "add_article_genre.html", ctx)
-            article = Article.objects.create(article_name=data["name"], author=data["author"], article_added_by=user, link=data["url"], is_accepted=True)
+            article = Article.objects.create(
+                article_name=data["name"],
+                author=data["author"],
+                article_added_by=user,
+                link=data["url"],
+                is_accepted=True,
+            )
             genre.genre_article.add(article)
             genre.save()
             message = "Artykuł dodany pomyślnie"
-            ctx = {
-                "form": form,
-                "genre": genre,
-                "article": article,
-                "message": message
-            }
+            ctx = {"form": form, "genre": genre, "article": article, "message": message}
             return render(request, "add_article_genre.html", ctx)
-        ctx = {
-            "form": form,
-            "genre": genre,
-            "message": message
-        }
+        ctx = {"form": form, "genre": genre, "message": message}
         return render(request, "add_article_genre.html", ctx)
 
 
@@ -1819,12 +2025,9 @@ class DeleteArticleGenreView(StaffMemberCheck, View):
     def get(self, request, genre_id, article_id):
         genre = Genre.objects.get(id=genre_id)
         article = Article.objects.get(id=article_id)
-        ctx = {
-            "genre": genre,
-            "article": article
-        }
+        ctx = {"genre": genre, "article": article}
         return render(request, "delete_article_genre.html", ctx)
-    
+
     def post(self, request, genre_id, article_id):
         article = Article.objects.get(id=article_id)
         article.delete()
@@ -1836,16 +2039,15 @@ class AddArticlePersonView(ActivateUserCheck, View):
     def get(self, request, person_id):
         user = User.objects.get(pk=int(request.session.get("user_id")))
         person = Person.objects.get(id=person_id)
-        waiting_articles = [i for i in Article.objects.filter(article_added_by=user, is_accepted=False)]
+        waiting_articles = [
+            i for i in Article.objects.filter(article_added_by=user, is_accepted=False)
+        ]
         if user.is_staff or 3 > len(waiting_articles):
             form = AddArticleForm()
-            ctx = {
-                "person": person,
-                "form": form
-            }
+            ctx = {"person": person, "form": form}
             return render(request, "add_article_person.html", ctx)
         return redirect("/people")
-    
+
     def post(self, request, person_id):
         form = AddArticleForm(request.POST)
         person = Person.objects.get(id=person_id)
@@ -1857,19 +2059,26 @@ class AddArticlePersonView(ActivateUserCheck, View):
             links = [i.link for i in Article.objects.all()]
             if data["url"] in links:
                 error_message = "Taki link jest już w naszym archiwum."
-                ctx = {
-                    "form": form,
-                    "person": person,
-                    "error_message": error_message
-                }
+                ctx = {"form": form, "person": person, "error_message": error_message}
                 return render(request, "add_article_person.html", ctx)
             if user.is_staff:
-                article = Article.objects.create(article_name=data["name"], author=data["author"], article_added_by=user, link=data["url"], is_accepted=True)
+                article = Article.objects.create(
+                    article_name=data["name"],
+                    author=data["author"],
+                    article_added_by=user,
+                    link=data["url"],
+                    is_accepted=True,
+                )
                 person.person_article.add(article)
                 person.save()
                 message = "Artykuł dodany pomyślnie."
             else:
-                article = Article.objects.create(article_name=data["name"], author=data["author"], article_added_by=user, link=data["url"])
+                article = Article.objects.create(
+                    article_name=data["name"],
+                    author=data["author"],
+                    article_added_by=user,
+                    link=data["url"],
+                )
                 person.person_article.add(article)
                 person.save()
                 message = "Artykuł czeka na akceptację."
@@ -1877,14 +2086,10 @@ class AddArticlePersonView(ActivateUserCheck, View):
                 "form": form,
                 "person": person,
                 "article": article,
-                "message": message
+                "message": message,
             }
             return render(request, "add_article_person.html", ctx)
-        ctx = {
-            "form": form,
-            "person": person,
-            "error_message": error_message
-        }
+        ctx = {"form": form, "person": person, "error_message": error_message}
         return render(request, "add_article_person.html", ctx)
 
 
@@ -1893,14 +2098,19 @@ class DeleteArticlePersonView(ActivateUserCheck, View):
         user = User.objects.get(pk=int(request.session.get("user_id")))
         person = Person.objects.get(id=person_id)
         article = Article.objects.get(id=article_id)
-        if user.is_superuser or user.is_staff and not article.is_accepted or article.article_added_by == user and not person.person_edited_by or article.article_added_by == user and person.person_edited_by == user:
-            ctx = {
-                "person": person,
-                "article": article
-            }
+        if (
+            user.is_superuser
+            or user.is_staff
+            and not article.is_accepted
+            or article.article_added_by == user
+            and not person.person_edited_by
+            or article.article_added_by == user
+            and person.person_edited_by == user
+        ):
+            ctx = {"person": person, "article": article}
             return render(request, "delete_article_person.html", ctx)
         return redirect("/people")
-    
+
     def post(self, request, person_id, article_id):
         article = Article.objects.get(id=article_id)
         article.delete()
@@ -1912,12 +2122,9 @@ class AcceptArticlePersonView(StaffMemberCheck, View):
     def get(self, request, person_id, article_id):
         person = Person.objects.get(id=person_id)
         article = Article.objects.get(id=article_id)
-        ctx = {
-            "person": person,
-            "article": article
-        }
+        ctx = {"person": person, "article": article}
         return render(request, "accept_article_person.html", ctx)
-    
+
     def post(self, request, person_id, article_id):
         article = Article.objects.get(id=article_id)
         article.is_accepted = True
@@ -1930,16 +2137,15 @@ class AddArticleMovieView(ActivateUserCheck, View):
     def get(self, request, movie_id):
         user = User.objects.get(pk=int(request.session.get("user_id")))
         movie = Movie.objects.get(id=movie_id)
-        waiting_articles = [i for i in Article.objects.filter(article_added_by=user, is_accepted=False)]
+        waiting_articles = [
+            i for i in Article.objects.filter(article_added_by=user, is_accepted=False)
+        ]
         if user.is_staff or 3 > len(waiting_articles):
             form = AddArticleForm()
-            ctx = {
-                "movie": movie,
-                "form": form
-            }
+            ctx = {"movie": movie, "form": form}
             return render(request, "add_article_movie.html", ctx)
         return redirect("/movies")
-    
+
     def post(self, request, movie_id):
         form = AddArticleForm(request.POST)
         movie = Movie.objects.get(id=movie_id)
@@ -1951,33 +2157,32 @@ class AddArticleMovieView(ActivateUserCheck, View):
             links = [i.link for i in Article.objects.all()]
             if data["url"] in links:
                 error_message = "Taki link jest już w naszym archiwum."
-                ctx = {
-                    "form": form,
-                    "movie": movie,
-                    "error_message": error_message
-                }
+                ctx = {"form": form, "movie": movie, "error_message": error_message}
                 return render(request, "add_article_movie.html", ctx)
             if user.is_staff:
-                article = Article.objects.create(article_name=data["name"], author=data["author"], article_added_by=user, link=data["url"], is_accepted=True)
+                article = Article.objects.create(
+                    article_name=data["name"],
+                    author=data["author"],
+                    article_added_by=user,
+                    link=data["url"],
+                    is_accepted=True,
+                )
                 movie.movie_article.add(article)
                 movie.save()
                 message = "Artykuł dodany pomyślnie."
             else:
-                article = Article.objects.create(article_name=data["name"], author=data["author"], article_added_by=user, link=data["url"])
+                article = Article.objects.create(
+                    article_name=data["name"],
+                    author=data["author"],
+                    article_added_by=user,
+                    link=data["url"],
+                )
                 movie.movie_article.add(article)
                 movie.save()
                 message = "Artykuł czeka na akceptację."
-            ctx = {
-                "form": form,
-                "movie": movie,
-                "message": message
-            }
+            ctx = {"form": form, "movie": movie, "message": message}
             return render(request, "add_article_movie.html", ctx)
-        ctx = {
-            "form": form,
-            "movie": movie,
-            "error_message": error_message
-        }
+        ctx = {"form": form, "movie": movie, "error_message": error_message}
         return render(request, "add_article_movie.html", ctx)
 
 
@@ -1986,14 +2191,19 @@ class DeleteArticleMovieView(ActivateUserCheck, View):
         movie = Movie.objects.get(id=movie_id)
         article = Article.objects.get(id=article_id)
         user = User.objects.get(pk=int(request.session.get("user_id")))
-        if user.is_superuser or user.is_staff and not article.is_accepted or article.article_added_by == user and not movie.movie_edited_by or article.article_added_by == user and movie.movie_edited_by == user:
-            ctx = {
-                "movie": movie,
-                "article": article
-            }
+        if (
+            user.is_superuser
+            or user.is_staff
+            and not article.is_accepted
+            or article.article_added_by == user
+            and not movie.movie_edited_by
+            or article.article_added_by == user
+            and movie.movie_edited_by == user
+        ):
+            ctx = {"movie": movie, "article": article}
             return render(request, "delete_article_movie.html", ctx)
         return redirect("/movies")
-    
+
     def post(self, request, movie_id, article_id):
         article = Article.objects.get(id=article_id)
         article.delete()
@@ -2005,12 +2215,9 @@ class AcceptArticleMovieView(StaffMemberCheck, View):
     def get(self, request, movie_id, article_id):
         movie = Movie.objects.get(id=movie_id)
         article = Article.objects.get(id=article_id)
-        ctx = {
-            "movie": movie,
-            "article": article
-        }
+        ctx = {"movie": movie, "article": article}
         return render(request, "accept_article_movie.html", ctx)
-    
+
     def post(self, request, movie_id, article_id):
         article = Article.objects.get(id=article_id)
         article.is_accepted = True
@@ -2023,15 +2230,17 @@ class AddActorMovieView(ActivateUserCheck, View):
     def get(self, request, movie_id):
         movie = Movie.objects.get(id=movie_id)
         user = User.objects.get(pk=int(request.session.get("user_id")))
-        if (movie.movie_added_by == user and movie.movie_edited_by == None) or (movie.movie_added_by == user and not movie.movie_edited_by.is_staff) or user.is_superuser or user.is_staff:
+        if (
+            (movie.movie_added_by == user and movie.movie_edited_by == None)
+            or (movie.movie_added_by == user and not movie.movie_edited_by.is_staff)
+            or user.is_superuser
+            or user.is_staff
+        ):
             form = AddActorForm()
-            ctx = {
-                "movie": movie,
-                "form": form
-            }
+            ctx = {"movie": movie, "form": form}
             return render(request, "add_actor_movie.html", ctx)
         return redirect("/movies")
-    
+
     def post(self, request, movie_id):
         form = AddActorForm(request.POST)
         movie = Movie.objects.get(id=movie_id)
@@ -2042,13 +2251,14 @@ class AddActorMovieView(ActivateUserCheck, View):
             starring = [i for i in movie.starring.all()]
             if data["actor"] in starring:
                 message = "Taki aktor jest już przypisany do tego filmu."
-                ctx = {
-                    "form": form,
-                    "movie": movie,
-                    "message": message
-                }
+                ctx = {"form": form, "movie": movie, "message": message}
                 return render(request, "add_actor_movie.html", ctx)
-            personmovie = PersonMovie.objects.create(role=data["role"], persons=data["actor"], movies=movie, personmovie_added_by=user)
+            personmovie = PersonMovie.objects.create(
+                role=data["role"],
+                persons=data["actor"],
+                movies=movie,
+                personmovie_added_by=user,
+            )
             movie.starring.add(personmovie.persons)
             movie.save()
             message = "Aktor dodany pomyślnie"
@@ -2056,16 +2266,12 @@ class AddActorMovieView(ActivateUserCheck, View):
                 "form": form,
                 "movie": movie,
                 "personmovie": personmovie,
-                "message": message
+                "message": message,
             }
             return redirect(f"/movie_details/{movie.id}")
-        ctx = {
-            "form": form,
-            "movie": movie,
-            "message": message
-        }
+        ctx = {"form": form, "movie": movie, "message": message}
         return render(request, "add_actor_movie.html", ctx)
-    
+
 
 class DeleteActorMovieView(ActivateUserCheck, View):
     def get(self, request, movie_id, person_id):
@@ -2073,14 +2279,16 @@ class DeleteActorMovieView(ActivateUserCheck, View):
         movie = Movie.objects.get(id=movie_id)
         person = Person.objects.get(id=person_id)
         personmovie = PersonMovie.objects.get(persons=person_id, movies=movie_id)
-        if user.is_superuser or personmovie.personmovie_added_by == user or movie.movie_added_by == user and not movie.movie_edited_by.is_staff:
-            ctx = {
-                "movie": movie,
-                "person": person
-            }
+        if (
+            user.is_superuser
+            or personmovie.personmovie_added_by == user
+            or movie.movie_added_by == user
+            and not movie.movie_edited_by.is_staff
+        ):
+            ctx = {"movie": movie, "person": person}
             return render(request, "delete_actor_movie.html", ctx)
         return redirect("/movies")
-    
+
     def post(self, request, movie_id, person_id):
         personmovie = PersonMovie.objects.get(persons=person_id, movies=movie_id)
         personmovie.delete()
@@ -2113,10 +2321,18 @@ class WatchlistView(ActivateUserCheck, View):
         user = None
         if request.session.get("user_id"):
             user = User.objects.get(pk=int(request.session.get("user_id")))
-        movies = Movie.objects.filter(movie_accepted_by__isnull=False, watchlist=user).order_by("year", "title")
-        my_people = Person.objects.filter(person_added_by=user, person_accepted_by__isnull=False)
-        my_genres = Genre.objects.filter(genre_added_by=user, genre_accepted_by__isnull=False)
-        my_movies = Movie.objects.filter(movie_added_by=user, movie_accepted_by__isnull=False)
+        movies = Movie.objects.filter(
+            movie_accepted_by__isnull=False, watchlist=user
+        ).order_by("year", "title")
+        my_people = Person.objects.filter(
+            person_added_by=user, person_accepted_by__isnull=False
+        )
+        my_genres = Genre.objects.filter(
+            genre_added_by=user, genre_accepted_by__isnull=False
+        )
+        my_movies = Movie.objects.filter(
+            movie_added_by=user, movie_accepted_by__isnull=False
+        )
         rated_movies = MovieRating.objects.filter(user=user)
         rated_people = PersonRating.objects.filter(user=user)
 
@@ -2130,21 +2346,24 @@ class WatchlistView(ActivateUserCheck, View):
             "my_genres": my_genres,
             "my_movies": my_movies,
             "rated_movies": rated_movies,
-            "rated_people": rated_people
+            "rated_people": rated_people,
         }
         return render(request, "watchlist.html", ctx)
 
 
 class SoldiersView(StaffMemberCheck, View):
     def get(self, request):
-        soldiers = [i for i in User.objects.filter(userrank__isnull=False).order_by("-userrank__rank__id", "username") if i.username not in ("west", "westerny", "Andrzej Bakuła")]
+        soldiers = [
+            i
+            for i in User.objects.filter(userrank__isnull=False).order_by(
+                "-userrank__rank__id", "username"
+            )
+            if i.username not in ("west", "westerny", "Andrzej Bakuła")
+        ]
 
         paginator = Paginator(soldiers, 10)
         page = request.GET.get("page")
         soldiers = paginator.get_page(page)
 
-        ctx = {
-            "soldiers": soldiers
-        }
+        ctx = {"soldiers": soldiers}
         return render(request, "soldiers.html", ctx)
-

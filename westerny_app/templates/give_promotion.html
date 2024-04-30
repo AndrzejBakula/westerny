@@ -27,13 +27,22 @@
     {% endif %}
 
     {% if not message %}
+    {% if not soldier.is_staff %}
     <div class="d-flex flex-row justify-content-center align-items-center">
         <h3 class="display-5 align-self-center header">
             Czy na pewno chcesz dać awans na oficera dla {{ soldier }}?
         </h3>
     </div>
-
-    <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;" action="{% url 'give-promotion' soldier.id %}" method="POST" enctype="multipart/form-data">
+    {% endif %}
+    {% if soldier.is_staff %}
+    <div class="d-flex flex-row justify-content-center align-items-center">
+        <h3 class="display-5 align-self-center header">
+            Czy na pewno chcesz dać awans na generała dla {{ soldier }}?
+        </h3>
+    </div>
+    {% endif %}
+    <form class="d-flex flex-column align-items-center" style="height: 100%; width: 100%;"
+        action="{% url 'give-promotion' soldier.id %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
         <button type="submit" id="submit">Awansuj</button>
