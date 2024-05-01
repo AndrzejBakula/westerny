@@ -81,7 +81,7 @@ def check_rank(user):
     if user.username == "Westerny":
         userrank.rank = gubernator
         return userrank.save()
-    if user.username == "SK":
+    elif user.username == "SK":
         userrank.rank = general
         return userrank.save()
     elif user.is_staff == False:
