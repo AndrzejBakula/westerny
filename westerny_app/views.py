@@ -775,6 +775,8 @@ class GivePromotionView(SuperUserCheck, View):
             soldier.is_superuser = True
             userrank.save()
             soldier.save()
+            message = "Awans przyznany"
+            return render(request, "give_promotion.html", {"message": message})
         userrank.rank = rank
         userrank.promotion_ask = False
         soldier.is_staff = True
